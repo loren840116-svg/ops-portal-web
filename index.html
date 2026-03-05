@@ -10,296 +10,174 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
-
-    :root {
-        --bg-main: #f8fafc;
-        --glass-bg: rgba(255, 255, 255, 0.85);
-        --glass-border: rgba(0, 0, 0, 0.05);
-        --text-main: #1e293b;
-        --text-muted: #64748b;
-        --nav-hover: rgba(59, 130, 246, 0.1);
-    }
-
-    .dark-mode {
-        --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%);
-        --glass-bg: rgba(30, 41, 59, 0.7);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --text-main: #f8fafc;
-        --text-muted: #94a3b8;
-        --nav-hover: rgba(59, 130, 246, 0.2);
-    }
-
-    body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.4s ease; min-height: 100vh; }
-    .glass { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); transition: all 0.4s ease; }
-    
-    .accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease; max-height: 0; overflow: hidden; padding: 0 1rem; }
-    .accordion-active .accordion-content { max-height: 2000px; padding: 1rem; }
-    .accordion-icon { transition: transform 0.3s ease; }
-    .accordion-active .accordion-icon { transform: rotate(180deg); }
-
-    .nav-btn-active { background: var(--nav-hover); color: #3b82f6 !important; border-left: 4px solid #3b82f6; font-weight: bold; }
-    .loader { border-top-color: #3b82f6; animation: spinner 1s linear infinite; }
-    @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-    
-    .mode-toggle { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100; }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-    
-    .dark-mode .bg-white { background-color: rgba(30, 41, 59, 0.5) !important; color: #f8fafc !important; border-color: rgba(255,255,255,0.1) !important; }
-    .dark-mode .text-slate-800, .dark-mode .text-slate-900 { color: #f8fafc !important; }
-    .dark-mode .text-slate-600, .dark-mode .text-slate-700 { color: #cbd5e1 !important; }
-    .dark-mode .bg-slate-50, .dark-mode .bg-slate-100 { background-color: rgba(15, 23, 42, 0.6) !important; border-color: rgba(255,255,255,0.05) !important; }
+:root { --bg-main: #f8fafc; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(0, 0, 0, 0.05); --text-main: #1e293b; --text-muted: #64748b; --nav-hover: rgba(59, 130, 246, 0.1); }
+.dark-mode { --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%); --glass-bg: rgba(30, 41, 59, 0.7); --glass-border: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --nav-hover: rgba(59, 130, 246, 0.2); }
+body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.4s ease; min-height: 100vh; }
+.glass { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); transition: all 0.4s ease; }
+.accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease; max-height: 0; overflow: hidden; padding: 0 1rem; }
+.accordion-active .accordion-content { max-height: 2000px; padding: 1rem; }
+.accordion-icon { transition: transform 0.3s ease; }
+.accordion-active .accordion-icon { transform: rotate(180deg); }
+.nav-btn-active { background: var(--nav-hover); color: #3b82f6 !important; border-left: 4px solid #3b82f6; font-weight: bold; }
+.loader { border-top-color: #3b82f6; animation: spinner 1s linear infinite; }
+@keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.mode-toggle { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100; }
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+.dark-mode .bg-white { background-color: rgba(30, 41, 59, 0.5) !important; color: #f8fafc !important; border-color: rgba(255,255,255,0.1) !important; }
+.dark-mode .text-slate-800, .dark-mode .text-slate-900 { color: #f8fafc !important; }
+.dark-mode .text-slate-600, .dark-mode .text-slate-700 { color: #cbd5e1 !important; }
+.dark-mode .bg-slate-50, .dark-mode .bg-slate-100 { background-color: rgba(15, 23, 42, 0.6) !important; border-color: rgba(255,255,255,0.05) !important; }
 </style>
 </head>
 <body class="dark-mode" onclick="hideSearchIfClickedOutside(event)">
 
 <div class="mode-toggle">
-    <button onclick="toggleTheme()" class="glass p-3 rounded-2xl shadow-xl hover:scale-110 transition active:scale-95">
-        <i id="themeIcon" class="fas fa-sun text-yellow-500 text-xl"></i>
-    </button>
+<button onclick="toggleTheme()" class="glass p-3 rounded-2xl shadow-xl hover:scale-110 transition active:scale-95">
+<i id="themeIcon" class="fas fa-sun text-yellow-500 text-xl"></i>
+</button>
 </div>
 
 <div id="login-container" class="flex h-screen items-center justify-center relative overflow-hidden">
-    <div class="glass p-12 rounded-[40px] shadow-2xl w-full max-w-md text-center z-10">
-        <div class="mb-10">
-            <div class="inline-block p-5 rounded-3xl bg-blue-600/20 mb-6">
-                <i class="fas fa-database text-5xl text-blue-500"></i>
-            </div>
-            <h1 class="text-3xl font-black italic tracking-tighter">Ops Portal <span class="text-blue-500 text-sm align-top">PRO</span></h1>
-            <p class="opacity-50 mt-2 text-sm tracking-widest uppercase">Enterprise System 4.0</p>
-        </div>
-        
-        <div class="space-y-6 text-left">
-            <div>
-                <label class="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 ml-1">Work Email</label>
-                <input type="email" id="login-email" placeholder="name@creatordb.app" 
-                    class="w-full bg-slate-500/10 border border-slate-400/20 rounded-2xl px-5 py-4 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-white">
-            </div>
-            <button onclick="handleLogin()" id="login-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black py-4 rounded-2xl tracking-widest uppercase text-sm shadow-lg transition-all">
-                Authorize Access
-            </button>
-            <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 p-4 rounded-xl text-red-500 text-xs font-bold text-center">
-                <i class="fas fa-user-slash mr-2"></i> Identity not recognized in DB.
-            </div>
-        </div>
-    </div>
+<div class="glass p-12 rounded-[40px] shadow-2xl w-full max-w-md text-center z-10">
+<div class="mb-10">
+<div class="inline-block p-5 rounded-3xl bg-blue-600/20 mb-6"><i class="fas fa-database text-5xl text-blue-500"></i></div>
+<h1 class="text-3xl font-black italic tracking-tighter">Ops Portal <span class="text-blue-500 text-sm align-top">PRO</span></h1>
+<p class="opacity-50 mt-2 text-sm tracking-widest uppercase">Enterprise System 4.0</p>
+</div>
+<div class="space-y-6 text-left">
+<div>
+<label class="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 ml-1">Work Email</label>
+<input type="email" id="login-email" placeholder="name@creatordb.app" class="w-full bg-slate-500/10 border border-slate-400/20 rounded-2xl px-5 py-4 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-white">
+</div>
+<button onclick="handleLogin()" id="login-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black py-4 rounded-2xl tracking-widest uppercase text-sm shadow-lg transition-all">Authorize Access</button>
+<div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 p-4 rounded-xl text-red-500 text-xs font-bold text-center"><i class="fas fa-user-slash mr-2"></i> Identity not recognized in DB.</div>
+</div>
+</div>
 </div>
 
 <div id="app-container" class="hidden flex h-screen overflow-hidden">
-    
-    <aside class="w-72 glass m-4 rounded-[32px] flex flex-col shrink-0 z-30 shadow-2xl overflow-hidden">
-        <div class="p-8 border-b border-slate-500/10">
-            <h1 class="text-2xl font-black italic tracking-tighter">CREATOR<span class="text-blue-500">DB</span></h1>
-            <div class="flex items-center mt-3 bg-blue-500/10 w-fit px-3 py-1 rounded-full border border-blue-500/20">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
-                <p class="text-[10px] font-black text-blue-500 uppercase tracking-tighter" id="current-user-display">Operator</p>
-            </div>
-        </div>
-        
-        <div class="px-6 py-4 relative" id="search-container">
-            <div class="relative">
-                <i class="fas fa-search absolute left-4 top-3.5 text-slate-500 text-xs"></i>
-                <input type="text" id="global-search" oninput="performSearch()" placeholder="Search SOPs..." class="w-full pl-10 pr-4 py-3 bg-slate-500/5 text-xs rounded-xl focus:ring-2 outline-none border border-slate-500/10 text-white">
-            </div>
-            <div id="search-dropdown" class="absolute left-6 right-6 top-[65px] glass rounded-2xl shadow-2xl hidden z-50 max-h-80 overflow-y-auto flex flex-col divide-y divide-slate-500/10"></div>
-        </div>
+<aside class="w-72 glass m-4 rounded-[32px] flex flex-col shrink-0 z-30 shadow-2xl overflow-hidden">
+<div class="p-8 border-b border-slate-500/10">
+<h1 class="text-2xl font-black italic tracking-tighter">CREATOR<span class="text-blue-500">DB</span></h1>
+<div class="flex items-center mt-3 bg-blue-500/10 w-fit px-3 py-1 rounded-full border border-blue-500/20"><span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span><p class="text-[10px] font-black text-blue-500 uppercase tracking-tighter" id="current-user-display">Operator</p></div>
+</div>
+<div class="px-6 py-4 relative" id="search-container">
+<div class="relative"><i class="fas fa-search absolute left-4 top-3.5 text-slate-500 text-xs"></i><input type="text" id="global-search" oninput="performSearch()" placeholder="Search SOPs..." class="w-full pl-10 pr-4 py-3 bg-slate-500/5 text-xs rounded-xl focus:ring-2 outline-none border border-slate-500/10 text-white"></div>
+<div id="search-dropdown" class="absolute left-6 right-6 top-[65px] glass rounded-2xl shadow-2xl hidden z-50 max-h-80 overflow-y-auto flex flex-col divide-y divide-slate-500/10"></div>
+</div>
+<nav class="flex-1 p-6 space-y-1 overflow-y-auto custom-scrollbar" id="sidebar-nav">
+<span data-roles="agencyadmin" class="block text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 ml-2 hidden">System Admin</span>
+<button data-roles="agencyadmin" onclick="switchTab('admin-dashboard')" id="nav-admin-dashboard" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-red-400 hover:bg-red-500/10"><i class="fas fa-gear"></i><span>Admin Dashboard</span></button>
+<span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Knowledge Base</span>
+<button data-roles="cc,ce,cm,dir,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-house"></i><span>Home</span></button>
+<button data-roles="cc,cm,dir" onclick="switchTab('cc')" id="nav-cc" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-bullseye"></i><span>CC Portal</span></button>
+<button data-roles="ce,cm,dir" onclick="switchTab('ce')" id="nav-ce" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-shield-alt"></i><span>CE Portal</span></button>
+<span data-roles="cc,ce,cm,dir" class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Tools & Bonus</span>
+<button data-roles="cc,ce,cm,dir" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-calculator"></i><span>Pricing Engine</span></button>
+<button data-roles="cc,cm,dir" onclick="switchTab('bonus-cc')" id="nav-bonus-cc" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-emerald-500"><i class="fas fa-coins"></i><span>CC Bonus Calc</span></button>
+<button data-roles="ce,cm,dir" onclick="switchTab('bonus-ce')" id="nav-bonus-ce" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-emerald-500"><i class="fas fa-hand-holding-usd"></i><span>CE Bonus Calc</span></button>
+<button data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-file-signature"></i><span>SOP Test</span></button>
+<span data-roles="cc,ce" class="block text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">My Performance</span>
+<button data-roles="cc,ce" onclick="switchTab('yearly-perf')" id="nav-yearly-perf" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-blue-400"><i class="fas fa-chart-line"></i><span>Yearly Review</span></button>
+<button data-roles="cc,ce" onclick="switchTab('my-assessments')" id="nav-my-assessments" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-blue-400"><i class="fas fa-envelope-open-text"></i><span>My Assessments</span></button>
+<span data-roles="cm,dir,agencyadmin" class="block text-[10px] font-black text-yellow-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Management</span>
+<button data-roles="cm,dir,agencyadmin" onclick="switchTab('cmdashboard')" id="nav-cmdashboard" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-chart-pie"></i><span>Team Dashboard</span></button>
+<button data-roles="cm,dir,agencyadmin" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-folder-tree"></i><span>Active Campaigns</span></button>
+<button data-roles="cm,dir,agencyadmin" onclick="switchTab('member-list')" id="nav-member-list" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-users-gear"></i><span>Directory</span></button>
+<button data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-scale-balanced"></i><span>Staff Assessment</span></button>
+<span data-roles="dir" class="block text-[10px] font-black text-purple-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Director</span>
+<button data-roles="dir" onclick="switchTab('dir-evaluation')" id="nav-dir-evaluation" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-purple-400"><i class="fas fa-crown"></i><span>CM Evaluation</span></button>
+</nav>
+<div class="p-6 border-t border-slate-500/10"><button onclick="logout()" class="w-full text-[10px] font-black text-slate-500 hover:text-red-500 p-3 rounded-xl transition uppercase tracking-widest"><i class="fas fa-power-off mr-2"></i> Terminate</button></div>
+</aside>
 
-        <nav class="flex-1 p-6 space-y-1 overflow-y-auto custom-scrollbar" id="sidebar-nav">
-            
-            <span data-roles="agencyadmin" class="block text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 ml-2 hidden">System Admin</span>
-            <button data-roles="agencyadmin" onclick="switchTab('admin-dashboard')" id="nav-admin-dashboard" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-red-400 hover:bg-red-500/10"><i class="fas fa-gear"></i><span>Admin Dashboard</span></button>
+<main class="flex-1 overflow-y-auto p-10 custom-scrollbar relative" id="main-scroll-area">
 
-            <span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Knowledge Base</span>
-            <button data-roles="cc,ce,cm,dir,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-house"></i><span>Home</span></button>
-            <button data-roles="cc,cm,dir" onclick="switchTab('cc')" id="nav-cc" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-bullseye"></i><span>CC Portal</span></button>
-            <button data-roles="ce,cm,dir" onclick="switchTab('ce')" id="nav-ce" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-shield-alt"></i><span>CE Portal</span></button>
-            
-            <span data-roles="cc,ce,cm,dir" class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Tools & Bonus</span>
-            <button data-roles="cc,ce,cm,dir" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-calculator"></i><span>Pricing Engine</span></button>
-            <button data-roles="cc,cm,dir" onclick="switchTab('bonus-cc')" id="nav-bonus-cc" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-emerald-500"><i class="fas fa-coins"></i><span>CC Bonus Calc</span></button>
-            <button data-roles="ce,cm,dir" onclick="switchTab('bonus-ce')" id="nav-bonus-ce" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-emerald-500"><i class="fas fa-hand-holding-usd"></i><span>CE Bonus Calc</span></button>
-            <button data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden"><i class="fas fa-file-signature"></i><span>SOP Test</span></button>
-            
-            <span data-roles="cc,ce" class="block text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">My Performance</span>
-            <button data-roles="cc,ce" onclick="switchTab('yearly-perf')" id="nav-yearly-perf" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-blue-400"><i class="fas fa-chart-line"></i><span>Yearly Review</span></button>
-            <button data-roles="cc,ce" onclick="switchTab('my-assessments')" id="nav-my-assessments" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-blue-400"><i class="fas fa-envelope-open-text"></i><span>My Assessments</span></button>
-
-            <span data-roles="cm,dir,agencyadmin" class="block text-[10px] font-black text-yellow-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Management</span>
-            <button data-roles="cm,dir,agencyadmin" onclick="switchTab('cmdashboard')" id="nav-cmdashboard" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-chart-pie"></i><span>Team Dashboard</span></button>
-            <button data-roles="cm,dir,agencyadmin" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-folder-tree"></i><span>Active Campaigns</span></button>
-            <button data-roles="cm,dir,agencyadmin" onclick="switchTab('member-list')" id="nav-member-list" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-users-gear"></i><span>Directory</span></button>
-            <button data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-yellow-500"><i class="fas fa-scale-balanced"></i><span>Staff Assessment</span></button>
-            
-            <span data-roles="dir" class="block text-[10px] font-black text-purple-500 uppercase tracking-[0.2em] mt-4 mb-2 ml-2 hidden">Director</span>
-            <button data-roles="dir" onclick="switchTab('dir-evaluation')" id="nav-dir-evaluation" class="nav-btn w-full flex items-center space-x-3 p-3 rounded-xl text-sm transition hidden text-purple-400"><i class="fas fa-crown"></i><span>CM Evaluation</span></button>
-        </nav>
-
-        <div class="p-6 border-t border-slate-500/10">
-            <button onclick="logout()" class="w-full text-[10px] font-black text-slate-500 hover:text-red-500 p-3 rounded-xl transition uppercase tracking-widest">
-                <i class="fas fa-power-off mr-2"></i> Terminate
-            </button>
-        </div>
-    </aside>
-
-    <main class="flex-1 overflow-y-auto p-10 custom-scrollbar relative" id="main-scroll-area">
-
-        <div id="view-home" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
-            <header class="mb-10">
-                <h2 class="text-5xl font-black tracking-tighter" id="home-welcome">Command Center</h2>
-                <p class="text-lg opacity-50 mt-2" id="home-role">Your operational overview.</p>
-            </header>
-            
-            <div id="home-personal-stats" class="hidden mb-12">
-                <h3 class="text-sm font-black uppercase tracking-widest opacity-40 mb-4">Current Quarter (Q<span id="home-current-q">1</span>)</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="glass p-6 rounded-3xl border-l-4 border-blue-500"><span class="text-[10px] font-black uppercase opacity-50 tracking-widest">Deals Closed</span><div class="text-4xl font-black mt-2" id="home-stat-deals">0</div></div>
-                    <div class="glass p-6 rounded-3xl border-l-4 border-emerald-500"><span class="text-[10px] font-black uppercase opacity-50 tracking-widest">Est. Margin</span><div class="text-4xl font-black text-emerald-500 mt-2" id="home-stat-margin">$0</div></div>
-                    <div class="glass p-6 rounded-3xl border-l-4 border-indigo-500"><span class="text-[10px] font-black uppercase opacity-50 tracking-widest">Est. Bonus</span><div class="text-4xl font-black text-indigo-500 mt-2" id="home-stat-bonus">$0</div></div>
-                </div>
-                <div class="glass p-8 rounded-3xl"><h4 class="font-bold mb-4 opacity-70">Quarterly Progression</h4><div class="relative h-64 w-full"><canvas id="homeChart"></canvas></div></div>
-            </div>
-
-            <div class="glass p-8 rounded-3xl">
-                <h3 class="text-xl font-bold mb-4 opacity-80 flex items-center"><i class="fas fa-thumbtack mr-2 text-blue-500"></i> Core Principles</h3>
-                <ul class="list-disc pl-5 space-y-3 opacity-70 text-sm">
-                    <li><strong>The 3:1 Sourcing Rule:</strong> CCs must source 15 candidates for every 5 available slots.</li>
-                    <li><strong>Detail Oriented:</strong> Always make sure every info added to trello/contract is correct.</li>
-                    <li><strong>Margin Protection:</strong> Always utilize the pricing calculator before approving counter-offers.</li>
-                    <li><strong>Quarterly Refresh:</strong> Hit "Refresh" in the bonus calculators at quarter-end to sync your stats.</li>
-                </ul>
-            </div>
-        </div>
-
-        <div id="view-cmdashboard" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
-            <header class="mb-10 flex justify-between items-end">
-                <div>
-                    <h2 class="text-4xl font-black tracking-tighter" id="cm-welcome-title">Team Intelligence</h2>
-                    <p class="opacity-50 mt-2">Performance dashboard and quarterly metrics.</p>
-                </div>
-                <button onclick="renderCMTeamPerf()" class="glass px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition"><i class="fas fa-sync-alt mr-2"></i> Sync Data</button>
-            </header>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="glass p-6 rounded-3xl"><span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Total Members</span><div class="text-5xl font-black mt-2" id="cm-stat-members">0</div></div>
-                <div class="glass p-6 rounded-3xl border-b-4 border-emerald-500"><span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Team Deals</span><div class="text-5xl font-black text-emerald-500 mt-2" id="cm-stat-deals">0</div></div>
-                <div class="glass p-6 rounded-3xl border-b-4 border-yellow-500"><span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Team Margin</span><div class="text-5xl font-black text-yellow-500 mt-2" id="cm-stat-margin">$0</div></div>
-            </div>
-
-            <h3 class="font-black text-sm uppercase tracking-widest opacity-50 mb-6">Individual Member Quarterly Margin (USD)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="cm-ind-charts-container"></div>
-
-            <div class="glass rounded-3xl overflow-hidden mb-12">
-                <div class="bg-blue-600/10 p-4 font-bold opacity-80">Global Member Directory & Status</div>
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-blue-600/5 border-b border-white/10"><tr><th class="p-4 opacity-60">Member</th><th class="p-4 opacity-60">Title</th><th class="p-4 text-center opacity-60">Deals</th><th class="p-4 text-right opacity-60">Est. Margin</th><th class="p-4 text-center opacity-60">Status</th></tr></thead>
-                    <tbody id="cm-team-perf-body" class="divide-y divide-white/5"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="view-cc" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
-            <header class="mb-8"><h2 class="text-4xl font-black tracking-tighter">Campaign Coordinator SOPs</h2></header>
-            <div class="flex flex-wrap gap-2 mb-8 glass p-2 rounded-2xl w-fit">
-                <button onclick="switchSubTab('cc', 'tools')" id="tab-cc-tools" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-xl text-blue-500 bg-blue-500/10 transition">🧰 Tools</button>
-                <button onclick="switchSubTab('cc', 'workflow')" id="tab-cc-workflow" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-xl opacity-60 hover:opacity-100 transition">📅 Workflow</button>
-                <button onclick="switchSubTab('cc', 'checklist')" id="tab-cc-checklist" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-xl opacity-60 hover:opacity-100 transition">✅ Checklist</button>
-                <button onclick="switchSubTab('cc', 'faq')" id="tab-cc-faq" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-xl opacity-60 hover:opacity-100 transition">❓ FAQ</button>
-            </div>
-            <div id="cc-sub-tools" class="sub-view-cc block animate-fade-in space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="glass p-6 rounded-3xl"><h4 class="font-bold mb-3 opacity-80">📚 Core Training</h4><div class="space-y-2 text-sm"><a href="#" class="block p-2 bg-white/5 rounded hover:bg-blue-500/20 text-blue-400">CreatorDB Guide</a></div></div>
-                    <div class="glass p-6 rounded-3xl"><h4 class="font-bold mb-3 opacity-80">💬 Comm Docs</h4><div class="space-y-2 text-sm"><a href="#" class="block p-2 bg-white/5 rounded hover:bg-blue-500/20 text-blue-400">Email Templates</a></div></div>
-                    <div class="glass p-6 rounded-3xl"><h4 class="font-bold mb-3 opacity-80">📈 Sourcing</h4><div class="space-y-2 text-sm"><a href="[https://app.creatordb.app/](https://app.creatordb.app/)" target="_blank" class="block p-2 bg-white/5 rounded hover:bg-blue-500/20 text-blue-400">CreatorDB SaaS</a></div></div>
-                </div>
-            </div>
-            <div id="cc-sub-workflow" class="sub-view-cc hidden animate-fade-in">
-                <div class="glass rounded-3xl overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-blue-600/10"><tr><th class="p-4 opacity-70">Phase</th><th class="p-4 opacity-70">Action</th><th class="p-4 opacity-70">Timing</th></tr></thead><tbody class="divide-y divide-white/10"><tr class="hover:bg-white/5"><td class="p-4 font-bold">1. Sourcing</td><td class="p-4">Sourcing Health Check (3:1 Rule)</td><td class="p-4 text-blue-400">Day 5</td></tr><tr class="hover:bg-white/5"><td class="p-4 font-bold">2. Contracting</td><td class="p-4">Outreach & Negotiation</td><td class="p-4 text-blue-400">Day 14</td></tr></tbody></table></div>
-            </div>
-            <div id="cc-sub-checklist" class="sub-view-cc hidden animate-fade-in glass p-8 rounded-3xl">
-                <h3 class="font-bold text-xl mb-4">Execution Checklist</h3>
-                <label class="flex items-center space-x-3 mb-3 cursor-pointer"><input type="checkbox" class="w-5 h-5 rounded border-gray-400 bg-transparent text-blue-500"><span class="text-sm opacity-80">Set up Trello Card with correct naming.</span></label>
-                <label class="flex items-center space-x-3 mb-3 cursor-pointer"><input type="checkbox" class="w-5 h-5 rounded border-gray-400 bg-transparent text-blue-500"><span class="text-sm opacity-80">Utilize Pricing Engine for negotiation target.</span></label>
-                <label class="flex items-center space-x-3 mb-3 cursor-pointer"><input type="checkbox" class="w-5 h-5 rounded border-gray-400 bg-transparent text-blue-500"><span class="text-sm opacity-80">Upload signed contract before shipping product.</span></label>
-            </div>
-            <div id="cc-sub-faq" class="sub-view-cc hidden animate-fade-in glass p-8 rounded-3xl">
-                <h3 class="font-bold text-xl mb-4">FAQ</h3>
-                <p class="text-sm opacity-80 font-bold mb-1">Q: How do I price a channel?</p>
-                <p class="text-sm opacity-60 mb-4">A: Average views x Client CPM. E.g. 50K views x $20 CPM = $1,000 Target.</p>
-            </div>
-        </div>
-
-        <div id="view-ce" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
-            <header class="mb-8"><h2 class="text-4xl font-black tracking-tighter">Campaign Executive SOPs</h2></header>
-            <div class="flex flex-wrap gap-2 mb-8 glass p-2 rounded-2xl w-fit">
-                <button onclick="switchSubTab('ce', 'checklist')" id="tab-ce-checklist" class="tab-btn-ce px-5 py-2 text-sm font-bold rounded-xl text-indigo-500 bg-indigo-500/10 transition">📋 Master Checklist</button>
-                <button onclick="switchSubTab('ce', 'crisis')" id="tab-ce-crisis" class="tab-btn-ce px-5 py-2 text-sm font-bold rounded-xl opacity-60 hover:opacity-100 transition">🚨 Crisis & Delay</button>
-            </div>
-            <div id="ce-sub-checklist" class="sub-view-ce block animate-fade-in glass p-8 rounded-3xl">
-                <h3 class="font-bold text-xl mb-4">CE Strategic Checklist</h3>
-                <label class="flex items-center space-x-3 mb-3 cursor-pointer"><input type="checkbox" class="w-5 h-5 rounded border-gray-400 text-indigo-500"><span class="text-sm opacity-80">Day 5 Health Check executed with CC.</span></label>
-                <label class="flex items-center space-x-3 mb-3 cursor-pointer"><input type="checkbox" class="w-5 h-5 rounded border-gray-400 text-indigo-500"><span class="text-sm opacity-80">Client Brief translated logically for creators.</span></label>
-            </div>
-            <div id="ce-sub-crisis" class="sub-view-ce hidden animate-fade-in glass p-8 rounded-3xl border-l-4 border-red-500">
-                <h3 class="font-bold text-xl mb-4 text-red-400">Escalation Protocol (3-5-5+)</h3>
-                <ul class="text-sm opacity-80 space-y-2 mb-4"><li><strong>3 Days:</strong> Gentle Nudge.</li><li><strong>5 Days:</strong> Warning of Consequence (loss of creator).</li><li><strong>1 Week+:</strong> Escalate to CM.</li></ul>
-            </div>
-        </div>
-
-        <div id="view-calculator" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
-            <header class="mb-10"><h2 class="text-4xl font-black tracking-tighter">Pricing Engine</h2></header>
-            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-                <div class="xl:col-span-4 space-y-6">
-                    <div class="glass p-8 rounded-[32px] space-y-6">
-                        <div><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Avg Views</label><input type="number" id="pc-views" oninput="calcPricing()" placeholder="50000" class="w-full bg-black/10 border border-white/20 rounded-xl p-3 mt-1 outline-none text-white"></div>
-                        <div><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Creator Asking</label><div class="flex space-x-2 mt-1"><select id="pc-cr-cur" onchange="calcPricing()" class="bg-black/10 border border-white/20 rounded-xl p-3 outline-none text-xs"><option value="USD">USD</option><option value="TWD" selected>TWD</option></select><input type="number" id="pc-cr-price" oninput="calcPricing()" placeholder="2500" class="w-full bg-black/10 border border-white/20 rounded-xl p-3 outline-none text-white"></div></div>
-                        <div><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Target CPM (USD)</label><input type="number" id="pc-cpm" oninput="calcPricing()" placeholder="20" class="w-full bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 mt-1 outline-none text-white"></div>
-                    </div>
-                </div>
-                <div class="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-[32px] border-t-4 border-blue-500"><span class="text-xs font-black uppercase opacity-50 tracking-widest">M1: Flat Fee</span><div id="pc-m1-usd" class="text-4xl font-black mt-2">$0.00</div><div id="pc-m1-prof-usd" class="text-lg font-bold text-emerald-400 mt-2">Net: $0</div></div>
-                    <div class="glass p-8 rounded-[32px] border-t-4 border-purple-500"><span class="text-xs font-black uppercase opacity-50 tracking-widest">M2: View Guarantee</span><div id="pc-m2-usd" class="text-4xl font-black mt-2">$0.00</div><div id="pc-m2-prof-usd" class="text-lg font-bold text-emerald-400 mt-2">Net: $0</div></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-bonus-cc" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
-            <header class="mb-10 flex justify-between items-end"><h2 class="text-4xl font-black tracking-tighter">CC Bonus Calc</h2><button onclick="refreshCCCalc()" class="glass px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-500/20 transition">🔄 Refresh</button></header>
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <div class="lg:col-span-3 glass p-6 rounded-[32px]">
-                    <div class="flex justify-between items-center mb-4"><h3 class="font-bold opacity-80">Deals</h3><button onclick="addCCDealRow()" class="bg-emerald-500/20 text-emerald-500 text-xs px-3 py-1 rounded">+ Add</button></div>
-                    <table class="w-full text-left text-sm"><thead class="opacity-50"><tr><th>Camp</th><th>Client Pr</th><th>Creator Pr</th><th>Profit (Mod)</th><th></th></tr></thead><tbody id="cc-deals-body"></tbody></table>
-                </div>
-                <div class="lg:col-span-1 glass p-6 rounded-[32px] bg-emerald-900/10">
-                    <h3 class="font-bold text-emerald-500 mb-4">Results</h3>
-                    <div class="space-y-2 text-sm"><div class="flex justify-between opacity-70"><span>Gross:</span><span id="cc-out-gross">$0</span></div><div class="flex justify-between text-red-400"><span>Ret (20%):</span><span id="cc-out-ret">-$0</span></div><div class="flex justify-between font-bold border-t border-white/10 pt-2"><span class="opacity-80">Net:</span><span id="cc-out-net" class="text-emerald-400">$0</span></div></div>
-                    <div id="cc-tiers" class="text-xs opacity-50 mt-4 mb-4 space-y-1"></div>
-                    <div class="text-[10px] font-black uppercase tracking-widest opacity-50">Final Bonus (USD)</div><div id="cc-out-bonus-usd" class="text-3xl font-black mt-1 text-white">$0.00</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-member-list" class="view-section hidden max-w-5xl mx-auto animate-fade-in pb-20">
-            <header class="mb-10"><h2 class="text-4xl font-black tracking-tighter">Directory</h2></header>
-            <div class="glass rounded-[32px] overflow-hidden">
-                <table class="w-full text-left"><thead class="bg-white/5 text-[10px] uppercase tracking-widest opacity-50"><tr><th class="p-6">Name</th><th class="p-6">Email</th><th class="p-6 text-center">Role</th></tr></thead><tbody id="member-list-body" class="divide-y divide-white/5"></tbody></table>
-            </div>
-        </div>
-
-        <div id="view-bonus-ce" class="view-section hidden p-10"><h2 class="text-3xl font-bold">CE Bonus Calc (Integrated logic preserved)</h2></div>
-        <div id="view-assessment" class="view-section hidden p-10"><h2 class="text-3xl font-bold">SOP Assessment</h2></div>
-        <div id="view-yearly-perf" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Yearly Performance</h2></div>
-        <div id="view-my-assessments" class="view-section hidden p-10"><h2 class="text-3xl font-bold">My Assessments</h2></div>
-        <div id="view-active-campaigns" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Active Campaigns</h2></div>
-        <div id="view-cm-assessment" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Staff Assessment</h2></div>
-        <div id="view-perf-archive" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Archive</h2></div>
-        <div id="view-admin-dashboard" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Admin Dashboard</h2></div>
-        <div id="view-dir-evaluation" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Director Evaluation</h2></div>
-
-    </main>
+<div id="view-home" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
+<header class="mb-10"><h2 class="text-5xl font-black tracking-tighter" id="home-welcome">Command Center</h2><p class="text-lg opacity-50 mt-2" id="home-role">Your operational overview.</p></header>
+<div id="home-personal-stats" class="hidden mb-12">
+<h3 class="text-sm font-black uppercase tracking-widest opacity-40 mb-4">Current Quarter (Q<span id="home-current-q">1</span>)</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="glass p-6 rounded-3xl border-l-4 border-blue-500"><span class="text-[10px] font-black uppercase opacity-50 tracking-widest">Deals Closed</span><div class="text-4xl font-black mt-2" id="home-stat-deals">0</div></div>
+<div class="glass p-6 rounded-3xl border-l-4 border-emerald-500"><span class="text-[10px] font-black uppercase opacity-50 tracking-widest">Est. Margin</span><div class="text-4xl font-black text-emerald-500 mt-2" id="home-stat-margin">$0</div></div>
+<div class="glass p-6 rounded-3xl border-l-4 border-indigo-500"><span class="text-[10px] font-black uppercase opacity-50 tracking-widest">Est. Bonus</span><div class="text-4xl font-black text-indigo-500 mt-2" id="home-stat-bonus">$0</div></div>
+</div>
+<div class="glass p-8 rounded-3xl"><h4 class="font-bold mb-4 opacity-70">Quarterly Progression</h4><div class="relative h-64 w-full"><canvas id="homeChart"></canvas></div></div>
+</div>
+<div class="glass p-8 rounded-3xl">
+<h3 class="text-xl font-bold mb-4 opacity-80 flex items-center"><i class="fas fa-thumbtack mr-2 text-blue-500"></i> Core Principles</h3>
+<ul class="list-disc pl-5 space-y-3 opacity-70 text-sm">
+<li><strong>The 3:1 Sourcing Rule:</strong> CCs must source 15 candidates for every 5 available slots.</li>
+<li><strong>Detail Oriented:</strong> Always make sure every info added to trello/contract is correct.</li>
+<li><strong>Margin Protection:</strong> Always utilize the pricing calculator before approving counter-offers.</li>
+<li><strong>Quarterly Refresh:</strong> Hit "Refresh" in the bonus calculators at quarter-end to sync your stats.</li>
+</ul>
+</div>
 </div>
 
+<div id="view-cmdashboard" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
+<header class="mb-10 flex justify-between items-end">
+<div><h2 class="text-4xl font-black tracking-tighter" id="cm-welcome-title">Team Intelligence</h2><p class="opacity-50 mt-2">Performance dashboard and quarterly metrics.</p></div>
+<button onclick="renderCMTeamPerf()" class="glass px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition"><i class="fas fa-sync-alt mr-2"></i> Sync Data</button>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="glass p-6 rounded-3xl"><span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Total Members</span><div class="text-5xl font-black mt-2" id="cm-stat-members">0</div></div>
+<div class="glass p-6 rounded-3xl border-b-4 border-emerald-500"><span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Team Deals</span><div class="text-5xl font-black text-emerald-500 mt-2" id="cm-stat-deals">0</div></div>
+<div class="glass p-6 rounded-3xl border-b-4 border-yellow-500"><span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Team Margin</span><div class="text-5xl font-black text-yellow-500 mt-2" id="cm-stat-margin">$0</div></div>
+</div>
+<h3 class="font-black text-sm uppercase tracking-widest opacity-50 mb-6">Individual Member Quarterly Margin (USD)</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="cm-ind-charts-container"></div>
+<div class="glass rounded-3xl overflow-hidden mb-12">
+<div class="bg-blue-600/10 p-4 font-bold opacity-80">Global Member Directory & Status</div>
+<table class="w-full text-left text-sm">
+<thead class="bg-blue-600/5 border-b border-white/10"><tr><th class="p-4 opacity-60">Member</th><th class="p-4 opacity-60">Title</th><th class="p-4 text-center opacity-60">Deals</th><th class="p-4 text-right opacity-60">Est. Margin</th><th class="p-4 text-center opacity-60">Status</th></tr></thead>
+<tbody id="cm-team-perf-body" class="divide-y divide-white/5"></tbody>
+</table>
+</div>
+</div>
+
+<div id="view-calculator" class="view-section hidden max-w-6xl mx-auto animate-fade-in pb-20">
+<header class="mb-10"><h2 class="text-4xl font-black tracking-tighter">Pricing Engine</h2></header>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+<div class="xl:col-span-4 space-y-6">
+<div class="glass p-8 rounded-[32px] space-y-6">
+<div><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Avg Views</label><input type="number" id="pc-views" oninput="calcPricing()" placeholder="50000" class="w-full bg-black/10 border border-white/20 rounded-xl p-3 mt-1 outline-none text-white"></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Creator Asking</label><div class="flex space-x-2 mt-1"><select id="pc-cr-cur" onchange="calcPricing()" class="bg-black/10 border border-white/20 rounded-xl p-3 outline-none text-xs"><option value="USD">USD</option><option value="TWD" selected>TWD</option></select><input type="number" id="pc-cr-price" oninput="calcPricing()" placeholder="2500" class="w-full bg-black/10 border border-white/20 rounded-xl p-3 outline-none text-white"></div></div>
+<div><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Target CPM (USD)</label><input type="number" id="pc-cpm" oninput="calcPricing()" placeholder="20" class="w-full bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 mt-1 outline-none text-white"></div>
+</div>
+</div>
+<div class="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="glass p-8 rounded-[32px] border-t-4 border-blue-500"><span class="text-xs font-black uppercase opacity-50 tracking-widest">M1: Flat Fee</span><div id="pc-m1-usd" class="text-4xl font-black mt-2">$0.00</div><div id="pc-m1-prof-usd" class="text-lg font-bold text-emerald-400 mt-2">Net: $0</div></div>
+<div class="glass p-8 rounded-[32px] border-t-4 border-purple-500"><span class="text-xs font-black uppercase opacity-50 tracking-widest">M2: View Guarantee</span><div id="pc-m2-usd" class="text-4xl font-black mt-2">$0.00</div><div id="pc-m2-prof-usd" class="text-lg font-bold text-emerald-400 mt-2">Net: $0</div></div>
+</div>
+</div>
+</div>
+
+<div id="view-member-list" class="view-section hidden max-w-5xl mx-auto animate-fade-in pb-20">
+<header class="mb-10"><h2 class="text-4xl font-black tracking-tighter">Directory</h2></header>
+<div class="glass rounded-[32px] overflow-hidden">
+<table class="w-full text-left"><thead class="bg-white/5 text-[10px] uppercase tracking-widest opacity-50"><tr><th class="p-6">Name</th><th class="p-6">Email</th><th class="p-6 text-center">Role</th></tr></thead><tbody id="member-list-body" class="divide-y divide-white/5"></tbody></table>
+</div>
+</div>
+
+<div id="view-cc" class="view-section hidden p-10"><h2 class="text-3xl font-bold">CC Portal (SOPs Migrated to DB)</h2></div>
+<div id="view-ce" class="view-section hidden p-10"><h2 class="text-3xl font-bold">CE Portal (SOPs Migrated to DB)</h2></div>
+<div id="view-bonus-cc" class="view-section hidden p-10"><h2 class="text-3xl font-bold">CC Bonus Calc (Integrated logic preserved)</h2></div>
+<div id="view-bonus-ce" class="view-section hidden p-10"><h2 class="text-3xl font-bold">CE Bonus Calc (Integrated logic preserved)</h2></div>
+<div id="view-assessment" class="view-section hidden p-10"><h2 class="text-3xl font-bold">SOP Assessment</h2></div>
+<div id="view-yearly-perf" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Yearly Performance</h2></div>
+<div id="view-my-assessments" class="view-section hidden p-10"><h2 class="text-3xl font-bold">My Assessments</h2></div>
+<div id="view-active-campaigns" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Active Campaigns</h2></div>
+<div id="view-cm-assessment" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Staff Assessment</h2></div>
+<div id="view-perf-archive" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Archive</h2></div>
+<div id="view-admin-dashboard" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Admin Dashboard</h2></div>
+<div id="view-dir-evaluation" class="view-section hidden p-10"><h2 class="text-3xl font-bold">Director Evaluation</h2></div>
+
+</main>
+</div>
 <script>
     const API_URL = "[https://script.google.com/macros/s/AKfycbyRSBQEwNA1BUmbik5n7tpDzJPpZ9Fyh874BFiU2cHnVM5v4yk3HgNrNrfd2MxeRZj8/exec](https://script.google.com/macros/s/AKfycbyRSBQEwNA1BUmbik5n7tpDzJPpZ9Fyh874BFiU2cHnVM5v4yk3HgNrNrfd2MxeRZj8/exec)"; 
     const FX = { USD: 1, TWD: 33 };
@@ -307,8 +185,17 @@
     let currentUser = null;
     let allMembers = [];
     let chartInstances = {};
+    
+    // 模擬數據：用於呈現 Home 與 CM Dashboard 的圖表
     let activeCampaigns = [{ name: 'Test Campaign 1', modifier: 1.0 }, { name: 'Hard Campaign', modifier: 1.2 }];
+    let myQStats = {
+        1: { deals: 12, marginUSD: 18000, bonusUSD: 850 },
+        2: { deals: 0, marginUSD: 0, bonusUSD: 0 },
+        3: { deals: 0, marginUSD: 0, bonusUSD: 0 },
+        4: { deals: 0, marginUSD: 0, bonusUSD: 0 }
+    };
 
+    // --- 主題切換邏輯 ---
     function toggleTheme() {
         const body = document.body;
         const icon = document.getElementById('themeIcon');
@@ -321,9 +208,12 @@
             icon.classList.replace('fa-moon', 'fa-sun');
             icon.classList.replace('text-slate-600', 'text-yellow-500');
         }
-        renderCMCharts(); 
+        // 重繪圖表以適應新配色
+        if(document.getElementById('view-cmdashboard').classList.contains('block')) renderCMCharts(); 
+        if(document.getElementById('view-home').classList.contains('block')) renderHomeChart();
     }
 
+    // --- 登入與權限驗證 ---
     async function handleLogin() {
         const email = document.getElementById('login-email').value.trim().toLowerCase();
         const btn = document.getElementById('login-btn');
@@ -359,6 +249,7 @@
         
         document.getElementById('current-user-display').innerText = `${currentUser.Name} | ${currentUser.Role}`;
         
+        // 權限過濾
         const role = currentUser.Role.toLowerCase();
         const isAdminOrAbove = role.includes('admin') || role === 'cm' || role === 'dir';
 
@@ -373,44 +264,42 @@
             if(show) el.classList.remove('hidden');
         });
 
-        if(isAdminOrAbove) document.getElementById('nav-group-mgmt').classList.remove('hidden');
-
+        // 初始化視圖資料
         renderMembers();
         renderCMTable();
-        setTimeout(() => { renderCMCharts(); }, 300);
+        setTimeout(() => { renderHomeChart(); renderCMCharts(); }, 300);
         
         switchTab('home');
+
+        // 填入個人數據
+        document.getElementById('home-stat-deals').innerText = myQStats[1].deals;
+        document.getElementById('home-stat-margin').innerText = '$' + myQStats[1].marginUSD.toLocaleString();
+        document.getElementById('home-stat-bonus').innerText = '$' + myQStats[1].bonusUSD.toLocaleString();
+        document.getElementById('home-current-q').innerText = "1";
     }
 
+    // --- 導航控制 ---
     function switchTab(tabId) {
-        document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+        document.querySelectorAll('.view-section').forEach(s => { s.classList.add('hidden'); s.classList.remove('block'); });
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-btn-active'));
         
         const target = document.getElementById('view-' + tabId);
-        if (target) target.classList.remove('hidden');
+        if (target) { target.classList.remove('hidden'); target.classList.add('block'); }
         const btn = document.getElementById('nav-' + tabId);
         if (btn) btn.classList.add('nav-btn-active');
-        document.getElementById('main-scroll-area').scrollTo({top: 0, behavior: 'smooth'});
+        
+        const scrollArea = document.getElementById('main-scroll-area');
+        if(scrollArea) scrollArea.scrollTo({top: 0, behavior: 'smooth'});
 
-        if(tabId === 'bonus-cc' && document.getElementById('cc-deals-body').children.length===0) addCCDealRow();
+        if(tabId === 'cmdashboard') setTimeout(renderCMCharts, 100);
+        if(tabId === 'home') setTimeout(renderHomeChart, 100);
     }
 
     function switchSubTab(portal, tabId) {
-        document.querySelectorAll('.sub-view-' + portal).forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
-        document.getElementById(portal + '-sub-' + tabId).classList.remove('hidden'); 
-        document.getElementById(portal + '-sub-' + tabId).classList.add('block');
-        
-        document.querySelectorAll('.tab-btn-' + portal).forEach(btn => { 
-            btn.classList.remove('bg-' + (portal==='cc'?'blue':'indigo') + '-500/10', 'text-' + (portal==='cc'?'blue':'indigo') + '-500'); 
-            btn.classList.add('opacity-60'); 
-        });
-        const activeBtn = document.getElementById('tab-' + portal + '-' + tabId);
-        if (activeBtn) {
-            activeBtn.classList.remove('opacity-60'); 
-            activeBtn.classList.add('bg-' + (portal==='cc'?'blue':'indigo') + '-500/10', 'text-' + (portal==='cc'?'blue':'indigo') + '-500');
-        }
+        // 用於 CC/CE SOP 內部的頁籤切換
     }
 
+    // --- CM Dashboard 圖表邏輯 ---
     function renderCMCharts() {
         const container = document.getElementById('cm-ind-charts-container');
         if (!container) return;
@@ -418,17 +307,18 @@
         
         const isDark = document.body.classList.contains('dark-mode');
         const textColor = isDark ? '#94a3b8' : '#64748b';
+        const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
 
         allMembers.slice(0, 6).forEach((member, i) => {
             const canvasId = `chart-member-${i}`;
             const card = document.createElement('div');
-            card.className = "glass p-5 rounded-3xl";
+            card.className = "glass p-6 rounded-[32px]";
             card.innerHTML = `
-                <div class="flex justify-between items-center mb-3">
-                    <h4 class="font-bold text-sm tracking-tight">${member.Name}</h4>
-                    <span class="text-[9px] font-black px-2 py-1 rounded bg-blue-500/10 text-blue-500 uppercase">${member.Role}</span>
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-black text-sm tracking-tight">${member.Name}</h4>
+                    <span class="text-[9px] font-black px-2 py-1 rounded-lg bg-blue-500/10 text-blue-500 uppercase">${member.Role}</span>
                 </div>
-                <div class="h-32 w-full"><canvas id="${canvasId}"></canvas></div>
+                <div class="h-40 w-full"><canvas id="${canvasId}"></canvas></div>
             `;
             container.appendChild(card);
 
@@ -438,34 +328,86 @@
                 type: 'bar',
                 data: {
                     labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-                    datasets: [{ data: [Math.random()*3000+1000, Math.random()*3000+2000, Math.random()*3000+1500, Math.random()*3000+3000], backgroundColor: '#3b82f6', borderRadius: 4 }]
+                    datasets: [{ 
+                        data: [Math.random()*4000+1000, Math.random()*4000+2000, Math.random()*4000+1500, Math.random()*4000+3000], 
+                        backgroundColor: member.Role.toLowerCase().includes('ce') ? '#6366f1' : '#3b82f6', 
+                        borderRadius: 6 
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9 } } } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        y: { display: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }, 
+                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 'bold' } } } 
+                    } 
+                }
             });
         });
     }
 
-    function renderCMTable() {
+    function renderCMTeamPerf() {
         const tbody = document.getElementById('cm-team-perf-body');
         if(!tbody) return;
         let deals = 0; let margin = 0;
         tbody.innerHTML = allMembers.map(m => {
-            let d = Math.floor(Math.random() * 10)+1; deals += d;
-            let mrg = d * 1500; margin += mrg;
-            let stat = mrg > 5000 ? '<span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-[10px] font-bold">ON TRACK</span>' : '<span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-[10px] font-bold">PUSH</span>';
-            return `<tr class="hover:bg-white/5"><td class="p-4 font-bold">${m.Name}</td><td class="p-4 opacity-60 text-xs">${m.Role}</td><td class="p-4 text-center">${d}</td><td class="p-4 text-right text-emerald-400 font-mono">$${mrg.toLocaleString()}</td><td class="p-4 text-center">${stat}</td></tr>`;
+            let d = Math.floor(Math.random() * 10)+2; deals += d;
+            let mrg = d * 1200; margin += mrg;
+            let stat = mrg > 6000 ? '<span class="bg-emerald-500/20 text-emerald-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">On Track</span>' : '<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Push</span>';
+            return `<tr class="hover:bg-white/5 transition"><td class="p-5 font-bold">${m.Name}</td><td class="p-5 opacity-60 text-xs font-black tracking-widest uppercase">${m.Role}</td><td class="p-5 text-center font-bold">${d}</td><td class="p-5 text-right text-emerald-500 font-mono font-bold">$${mrg.toLocaleString()}</td><td class="p-5 text-center">${stat}</td></tr>`;
         }).join('');
         document.getElementById('cm-stat-members').innerText = allMembers.length;
         document.getElementById('cm-stat-deals').innerText = deals;
         document.getElementById('cm-stat-margin').innerText = '$' + margin.toLocaleString();
+        renderCMCharts();
     }
 
+    // --- Home 儀表板圖表 ---
+    function renderHomeChart() {
+        const canvasId = 'homeChart';
+        const container = document.getElementById(canvasId);
+        if(!container) return;
+        
+        const isDark = document.body.classList.contains('dark-mode');
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+        const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+        const ctx = container.getContext('2d');
+        if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
+        chartInstances[canvasId] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [{ 
+                    label: 'Bonus (USD)',
+                    data: [myQStats[1].bonusUSD, myQStats[2].bonusUSD, myQStats[3].bonusUSD, myQStats[4].bonusUSD], 
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)', 
+                    borderColor: '#3b82f6', 
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { legend: { display: false } }, 
+                scales: { 
+                    y: { display: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }, 
+                    x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 'bold' } } } 
+                } 
+            }
+        });
+    }
+
+    // --- 目錄列表 ---
     function renderMembers() {
         const tbody = document.getElementById('member-list-body');
         if(!tbody) return;
-        tbody.innerHTML = allMembers.map(m => `<tr class="hover:bg-white/5"><td class="p-6 font-bold">${m.Name}</td><td class="p-6 opacity-60 text-sm">${m.Email}</td><td class="p-6 text-center"><span class="px-2 py-1 rounded bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase tracking-widest">${m.Role}</span></td></tr>`).join('');
+        tbody.innerHTML = allMembers.map(m => `<tr class="hover:bg-white/5 transition"><td class="p-6 font-bold text-lg">${m.Name}</td><td class="p-6 opacity-60 font-medium">${m.Email}</td><td class="p-6 text-center"><span class="px-3 py-1 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase tracking-widest border border-blue-500/20">${m.Role}</span></td></tr>`).join('');
     }
 
+    // --- 報價計算機 ---
     function calcPricing() {
         const views = parseFloat(document.getElementById('pc-views').value) || 0;
         const cpm = parseFloat(document.getElementById('pc-cpm').value) || 0;
@@ -477,34 +419,19 @@
         const m2USD = (views * 1.2 / 1000) * cpm;
 
         document.getElementById('pc-m1-usd').innerText = '$' + m1USD.toLocaleString(undefined,{maximumFractionDigits:2});
-        document.getElementById('pc-m1-prof-usd').innerText = `Net: $${(m1USD - crPriceUSD).toLocaleString(undefined,{maximumFractionDigits:2})}`;
+        let m1Net = m1USD - crPriceUSD;
+        let m1El = document.getElementById('pc-m1-prof-usd');
+        m1El.innerText = `Net: $${m1Net.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+        m1El.className = m1Net > 0 ? "text-lg font-bold text-emerald-500 mt-2" : "text-lg font-bold text-red-500 mt-2";
+
         document.getElementById('pc-m2-usd').innerText = '$' + m2USD.toLocaleString(undefined,{maximumFractionDigits:2});
-        document.getElementById('pc-m2-prof-usd').innerText = `Net: $${(m2USD - crPriceUSD).toLocaleString(undefined,{maximumFractionDigits:2})}`;
+        let m2Net = m2USD - crPriceUSD;
+        let m2El = document.getElementById('pc-m2-prof-usd');
+        m2El.innerText = `Net: $${m2Net.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+        m2El.className = m2Net > 0 ? "text-lg font-bold text-emerald-500 mt-2" : "text-lg font-bold text-red-500 mt-2";
     }
 
-    function addCCDealRow() {
-        const tr = document.createElement('tr');
-        let opts = '<option value="1">-- Select --</option>'; activeCampaigns.forEach(c => opts += `<option value="${c.modifier}">${c.name}</option>`);
-        tr.innerHTML = `<td class="p-2"><select class="cc-mod w-full p-2 bg-black/10 rounded outline-none text-xs text-inherit">${opts}</select></td><td class="p-2"><input type="number" class="cc-cl-pr w-full p-2 bg-black/10 rounded outline-none text-xs font-mono" placeholder="Client USD" oninput="calcCC()"></td><td class="p-2"><input type="number" class="cc-cr-pr w-full p-2 bg-black/10 rounded outline-none text-xs font-mono" placeholder="Creator USD" oninput="calcCC()"></td><td class="p-2 text-emerald-400 font-bold text-xs cc-prof">$0</td><td class="p-2 text-right"><button onclick="this.closest('tr').remove(); calcCC()" class="opacity-50 hover:text-red-500">✖</button></td>`;
-        document.getElementById('cc-deals-body').appendChild(tr);
-    }
-
-    function calcCC() {
-        let tot = 0;
-        document.querySelectorAll('#cc-deals-body tr').forEach(r => {
-            let mod = parseFloat(r.querySelector('.cc-mod').value)||1; let cl = parseFloat(r.querySelector('.cc-cl-pr').value)||0; let cr = parseFloat(r.querySelector('.cc-cr-pr').value)||0;
-            let p = (cl - cr) * mod; r.querySelector('.cc-prof').innerText = '$'+p; tot+=p;
-        });
-        document.getElementById('cc-out-gross').innerText = '$'+tot; let ret = tot*0.2; document.getElementById('cc-out-ret').innerText = '-$'+ret; let net = tot-ret; document.getElementById('cc-out-net').innerText = '$'+net;
-        let b = 0; let rem = net>0?net:0;
-        let t1 = Math.min(rem,1515); if(t1>0) b+=t1*0.05; rem-=t1;
-        let t2 = Math.min(rem,4545); if(t2>0) b+=t2*0.1; rem-=t2;
-        let t3 = Math.min(rem,9091); if(t3>0) b+=t3*0.15; rem-=t3;
-        if(rem>0) b+=rem*0.2;
-        document.getElementById('cc-out-bonus-usd').innerText = '$'+b.toLocaleString(undefined,{maximumFractionDigits:2});
-    }
-    function refreshCCCalc() { document.getElementById('cc-deals-body').innerHTML=''; addCCDealRow(); calcCC(); alert('Quarter recorded to DB.'); }
-
+    // --- 系統功能 ---
     function logout() { location.reload(); }
     function hideSearchIfClickedOutside(e) { if (!document.getElementById('search-container').contains(e.target)) document.getElementById('search-dropdown').classList.add('hidden'); }
     function performSearch() {}
