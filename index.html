@@ -31,11 +31,14 @@
         .bg-white { background: var(--glass-bg) !important; backdrop-filter: blur(12px); border-color: var(--glass-border) !important; color: var(--text-main) !important; transition: all 0.4s ease;}
         .bg-slate-50, .bg-slate-100 { background: rgba(0,0,0,0.03) !important; border-color: var(--glass-border) !important; }
         
-        /* 終極黑夜模式修復：確保底色不刺眼，且文字強制反白 */
+        /* 終極黑夜模式修復：涵蓋所有透明度色塊，強制反白 */
         .dark-mode .bg-slate-50, .dark-mode .bg-slate-100,
         .dark-mode .bg-blue-50, .dark-mode .bg-indigo-50,
         .dark-mode .bg-emerald-50, .dark-mode .bg-red-50,
-        .dark-mode .bg-orange-50, .dark-mode .bg-yellow-50 { 
+        .dark-mode .bg-orange-50, .dark-mode .bg-yellow-50,
+        .dark-mode .bg-blue-500\/5, .dark-mode .bg-blue-500\/10,
+        .dark-mode .bg-orange-500\/10, .dark-mode .bg-emerald-500\/10, 
+        .dark-mode .bg-slate-500\/5 { 
             background-color: rgba(30, 41, 59, 0.8) !important; 
             border-color: rgba(255,255,255,0.1) !important; 
         }
@@ -44,7 +47,6 @@
         .dark-mode .text-blue-500, .dark-mode .text-blue-600, .dark-mode .text-blue-700 { color: #60a5fa !important; }
         .dark-mode .text-indigo-700, .dark-mode .text-indigo-800, .dark-mode .text-indigo-900 { color: #818cf8 !important; }
         
-        /* 修復 Dropdown 選單背景字體問題 */
         .dark-mode input, .dark-mode select, .dark-mode textarea { 
             background-color: #0f172a !important; 
             color: #f8fafc !important; 
@@ -123,7 +125,7 @@
                 <button data-roles="agencyadmin" onclick="switchTab('admin-dashboard')" id="nav-admin-dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-red-300 border border-red-900/30 bg-red-900/10"><i class="fas fa-gear w-5 text-center"></i><span>Admin Dashboard</span></button>
                 
                 <span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-4 mb-1 ml-2 hidden">Knowledge Base</span>
-                <button data-roles="cc,ce,cm,dir,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-house w-5 text-center"></i><span>Home</span></button>
+                <button data-roles="cc,ce,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-house w-5 text-center"></i><span>Home</span></button>
                 <button data-roles="cc,cm,dir" onclick="switchTab('cc')" id="nav-cc" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-bullseye w-5 text-center"></i><span>CC Portal</span></button>
                 <button data-roles="ce,cm,dir" onclick="switchTab('ce')" id="nav-ce" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-shield-alt w-5 text-center"></i><span>CE Portal</span></button>
                 
@@ -131,8 +133,6 @@
                 <button data-roles="cc,ce,cm,dir" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-calculator w-5 text-center"></i><span>Pricing Engine</span></button>
                 <button data-roles="cc,cm,dir" onclick="switchTab('bonus-cc')" id="nav-bonus-cc" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-emerald-400"><i class="fas fa-coins w-5 text-center"></i><span>CC Bonus Calc</span></button>
                 <button data-roles="ce,cm,dir" onclick="switchTab('bonus-ce')" id="nav-bonus-ce" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-emerald-400"><i class="fas fa-hand-holding-usd w-5 text-center"></i><span>CE Bonus Calc</span></button>
-                <button data-roles="cc,cm,dir" onclick="switchTab('example-cc')" id="nav-example-cc" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-chart-pie w-5 text-center"></i><span>CC Bonus Logic</span></button>
-                <button data-roles="ce,cm,dir" onclick="switchTab('example-ce')" id="nav-example-ce" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-chart-line w-5 text-center"></i><span>CE Bonus Logic</span></button>
                 <button data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-file-signature w-5 text-center"></i><span>SOP Test</span></button>
                 
                 <span data-roles="cc,ce" class="block text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mt-4 mb-1 ml-2 hidden">My Performance</span>
