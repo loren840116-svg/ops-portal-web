@@ -337,7 +337,7 @@
             });
 
             renderMembers();
-            renderCMTable();
+            renderCMTeamPerf();
             setTimeout(() => { renderHomeChart(); renderCMCharts(); }, 300);
             
             switchTab('home');
@@ -423,9 +423,9 @@
                 let stat = mrg > 6000 ? '<span class="bg-emerald-500/20 text-emerald-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">On Track</span>' : '<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Push</span>';
                 return `<tr class="hover:bg-white/5 transition"><td class="p-5 font-bold">${m.Name}</td><td class="p-5 opacity-60 text-xs font-black tracking-widest uppercase">${m.Role}</td><td class="p-5 text-center font-bold">${d}</td><td class="p-5 text-right text-emerald-500 font-mono font-bold">$${mrg.toLocaleString()}</td><td class="p-5 text-center">${stat}</td></tr>`;
             }).join('');
-            document.getElementById('cm-stat-members').innerText = allMembers.length;
-            document.getElementById('cm-stat-deals').innerText = deals;
-            document.getElementById('cm-stat-margin').innerText = '$' + margin.toLocaleString();
+            const memEl = document.getElementById('cm-stat-members'); if(memEl) memEl.innerText = allMembers.length;
+            const dealEl = document.getElementById('cm-stat-deals'); if(dealEl) dealEl.innerText = deals;
+            const marEl = document.getElementById('cm-stat-margin'); if(marEl) marEl.innerText = '$' + margin.toLocaleString();
             renderCMCharts();
         }
 
