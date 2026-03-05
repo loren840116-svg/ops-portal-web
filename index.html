@@ -28,21 +28,33 @@
 
         body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.4s ease; min-height: 100vh; }
         
-        /* 玻璃質感與顏色適應 */
         .bg-white { background: var(--glass-bg) !important; backdrop-filter: blur(12px); border-color: var(--glass-border) !important; color: var(--text-main) !important; transition: all 0.4s ease;}
         .bg-slate-50, .bg-slate-100 { background: rgba(0,0,0,0.03) !important; border-color: var(--glass-border) !important; }
         
-        .dark-mode .bg-slate-50, .dark-mode .bg-slate-100 { background: rgba(255,255,255,0.05) !important; }
-        .dark-mode .text-slate-600, .dark-mode .text-slate-700, .dark-mode .text-slate-800, .dark-mode .text-slate-900 { color: #f8fafc !important; }
-        .dark-mode .text-blue-700, .dark-mode .text-blue-800, .dark-mode .text-blue-900 { color: #93c5fd !important; }
-        .dark-mode .text-indigo-700, .dark-mode .text-indigo-800, .dark-mode .text-indigo-900 { color: #a5b4fc !important; }
-        .dark-mode .text-emerald-700, .dark-mode .text-emerald-800, .dark-mode .text-emerald-900 { color: #6ee7b7 !important; }
-        .dark-mode .text-red-700, .dark-mode .text-red-800, .dark-mode .text-red-900 { color: #fca5a5 !important; }
-        .dark-mode .text-orange-700, .dark-mode .text-orange-800, .dark-mode .text-orange-900 { color: #fdba74 !important; }
-        .dark-mode .border-slate-200, .dark-mode .border-slate-300 { border-color: rgba(255,255,255,0.1) !important; }
-        .dark-mode input, .dark-mode select, .dark-mode textarea { background-color: rgba(15,23,42,0.5) !important; color: white !important; border-color: rgba(255,255,255,0.2) !important; }
+        /* 終極黑夜模式修復：確保底色不刺眼，且文字強制反白 */
+        .dark-mode .bg-slate-50, .dark-mode .bg-slate-100,
+        .dark-mode .bg-blue-50, .dark-mode .bg-indigo-50,
+        .dark-mode .bg-emerald-50, .dark-mode .bg-red-50,
+        .dark-mode .bg-orange-50, .dark-mode .bg-yellow-50 { 
+            background-color: rgba(30, 41, 59, 0.8) !important; 
+            border-color: rgba(255,255,255,0.1) !important; 
+        }
+        
+        .dark-mode .text-slate-600, .dark-mode .text-slate-700, .dark-mode .text-slate-800, .dark-mode .text-slate-900 { color: #f1f5f9 !important; }
+        .dark-mode .text-blue-500, .dark-mode .text-blue-600, .dark-mode .text-blue-700 { color: #60a5fa !important; }
+        .dark-mode .text-indigo-700, .dark-mode .text-indigo-800, .dark-mode .text-indigo-900 { color: #818cf8 !important; }
+        
+        /* 修復 Dropdown 選單背景字體問題 */
+        .dark-mode input, .dark-mode select, .dark-mode textarea { 
+            background-color: #0f172a !important; 
+            color: #f8fafc !important; 
+            border-color: rgba(255,255,255,0.2) !important; 
+        }
+        .dark-mode select option {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+        }
 
-        /* 元件樣式 */
         .accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease; max-height: 0; overflow: hidden; padding: 0 1rem; }
         .accordion-active .accordion-content { max-height: 2000px; padding: 1rem; }
         .accordion-icon { transition: transform 0.3s ease; }
@@ -129,9 +141,9 @@
 
                 <span data-roles="cm,dir,agencyadmin" class="block text-[10px] font-black text-yellow-500 uppercase tracking-[0.2em] mt-4 mb-1 ml-2 hidden" id="nav-cm-header">Management</span>
                 <button data-roles="cm,dir,agencyadmin" onclick="switchTab('cmdashboard')" id="nav-cmdashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10"><i class="fas fa-chart-pie w-5 text-center"></i><span>Team Dashboard</span></button>
-                <button data-roles="cm,dir,agencyadmin" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10"><i class="fas fa-folder-tree w-5 text-center"></i><span>Campaigns</span></button>
+                <button data-roles="cm,dir,agencyadmin" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10"><i class="fas fa-folder-tree w-5 text-center"></i><span>Active Campaigns</span></button>
                 <button data-roles="cm,dir,agencyadmin" onclick="switchTab('member-list')" id="nav-member-list" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10"><i class="fas fa-users-gear w-5 text-center"></i><span>Directory</span></button>
-                <button data-roles="cm,dir,agencyadmin" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10"><i class="fas fa-scale-balanced w-5 text-center"></i><span>Assessments</span></button>
+                <button data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10"><i class="fas fa-scale-balanced w-5 text-center"></i><span>Staff Assessment</span></button>
                 <button data-roles="cm,dir" onclick="switchTab('perf-archive')" id="nav-perf-archive" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10"><i class="fas fa-box-archive w-5 text-center"></i><span>Perf. Archive</span></button>
 
                 <span data-roles="dir" class="block text-[10px] font-black text-purple-400 uppercase tracking-[0.2em] mt-4 mb-1 ml-2 hidden" id="nav-dir-header">Director Ops</span>
@@ -351,21 +363,21 @@
                         <table class="w-full text-left text-sm text-slate-700">
                             <thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4 w-16 text-center border-b border-slate-700">Tick</th><th class="p-4 w-56 border-b border-slate-700">Category</th><th class="p-4 border-b border-slate-700">Assessment Criteria (1 Pt Each)</th></tr></thead>
                             <tbody class="divide-y divide-slate-100">
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4"><strong>Zero-Error Record:</strong> Flawless execution on Trello CRM updates and contract clauses.</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4"><strong>Gatekeeping:</strong> Strictly enforces the "Hard Gate" rule (No contract = No product).</td></tr>
-                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Financial Acumen</td><td class="p-4"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr>
-                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Financial Acumen</td><td class="p-4"><strong>Margin Protection:</strong> Habitually uses the Pricing Calculator to protect Target Margin.</td></tr>
-                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800 text-blue-700">Financial Acumen</td><td class="p-4"><strong>Value Maximization:</strong> Successfully negotiates additional deliverables (e.g., extended rights, extra Shorts) without increasing budget when creators refuse rate drops.</td></tr>
-                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Financial Acumen</td><td class="p-4"><strong>Error Recovery:</strong> Knows exact protocol for margin errors (e.g., quoting creator price).</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Strategy & Risk</td><td class="p-4"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Strategy & Risk</td><td class="p-4"><strong>Red Flag Detection:</strong> Identifies critical red flags independently (e.g., bots, brand safety).</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Strategy & Risk</td><td class="p-4"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
-                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Client Mgmt.</td><td class="p-4"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
-                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Client Mgmt.</td><td class="p-4"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
-                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Client Mgmt.</td><td class="p-4"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Leadership</td><td class="p-4"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4 text-slate-700"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4 text-slate-700"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4 text-slate-700"><strong>Zero-Error Record:</strong> Flawless execution on Trello CRM updates and contract clauses.</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Execution Mastery</td><td class="p-4 text-slate-700"><strong>Gatekeeping:</strong> Strictly enforces the "Hard Gate" rule (No contract = No product).</td></tr>
+                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-blue-700">Financial Acumen</td><td class="p-4 text-slate-700"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr>
+                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-blue-700">Financial Acumen</td><td class="p-4 text-slate-700"><strong>Margin Protection:</strong> Habitually uses the Pricing Calculator to protect Target Margin.</td></tr>
+                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-blue-700">Financial Acumen</td><td class="p-4 text-slate-700"><strong>Value Maximization:</strong> Successfully negotiates additional deliverables without increasing budget.</td></tr>
+                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-blue-700">Financial Acumen</td><td class="p-4 text-slate-700"><strong>Error Recovery:</strong> Knows exact protocol for margin errors (e.g., quoting creator price).</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Strategy & Risk</td><td class="p-4 text-slate-700"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Strategy & Risk</td><td class="p-4 text-slate-700"><strong>Red Flag Detection:</strong> Identifies critical red flags independently (e.g., bots, brand safety).</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Strategy & Risk</td><td class="p-4 text-slate-700"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
+                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Client Mgmt.</td><td class="p-4 text-slate-700"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
+                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Client Mgmt.</td><td class="p-4 text-slate-700"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
+                                <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Client Mgmt.</td><td class="p-4 text-slate-700"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
+                                <tr class="hover:bg-slate-50"><td class="p-4 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-4 font-bold text-slate-800">Leadership</td><td class="p-4 text-slate-700"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -467,383 +479,103 @@
                     </div>
                 </div>
             </div>
-            <div id="view-calculator" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4">
-                    <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Pricing Engine & FX</h2>
-                    <p class="text-lg text-slate-500 mt-1">Smart deal modeling, counteroffers, and multi-currency support.</p>
-                    <p class="text-red-500 text-xs font-bold mt-2">⚠️ The exact numbers may vary depending on the monthly exchange rate. The calculation results are for reference only.</p>
-                </header>
+            <div id="view-watchlist" class="view-section hidden max-w-5xl mx-auto pb-32 animate-fade-in">
+                <header class="mb-10"><h2 class="text-4xl font-black tracking-tighter text-orange-500">Creator Watchlist</h2><p class="opacity-50 mt-2 font-bold">Search creators to verify past strikes or blacklist status before outreach.</p></header>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border-t-8 border-orange-500 mb-8">
+                    <div class="flex space-x-4"><input type="text" id="watchlist-search" placeholder="Enter Channel ID or Name..." class="flex-1 p-4 rounded-xl border focus:ring-2 focus:ring-orange-500 outline-none font-bold text-lg"><button onclick="searchWatchlist()" class="bg-orange-500 hover:bg-orange-600 text-white font-black px-8 rounded-xl shadow-lg transition tracking-widest uppercase">Check</button></div>
+                    <div id="watchlist-result" class="mt-6 hidden p-6 rounded-2xl border font-bold text-lg text-center"></div>
+                </div>
+                <div class="bg-slate-500/5 p-6 rounded-2xl"><h3 class="font-black opacity-60 uppercase tracking-widest text-xs mb-4">Internal Policy</h3><p class="text-sm opacity-80 font-medium">Do not contract creators on the RED watchlist. Proceed with high caution and CM approval for YELLOW creators.</p></div>
+            </div>
 
+            <div id="view-calculator" class="view-section hidden max-w-6xl mx-auto pb-32 animate-fade-in">
+                <header class="mb-10 border-b border-slate-500/10 pb-6"><h2 class="text-4xl font-black tracking-tighter">Pricing Engine</h2><p class="opacity-50 mt-2 font-bold italic">Smart deal modeling. *FX Rates applied.</p></header>
                 <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
                     <div class="xl:col-span-4 space-y-6">
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                            <div class="bg-slate-800 p-4"><h3 class="font-bold text-white flex items-center"><span class="text-xl mr-2">🎛️</span> Deal Parameters</h3></div>
-                            <div class="p-5 space-y-6">
-                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center"><span class="mr-1">👤</span> Creator Data</h4>
-                                    <div class="space-y-4">
-                                        <div><label class="block text-sm font-bold text-slate-700 mb-1">Avg Views (20v)</label><div class="relative"><span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-sm">👁️</span><input type="number" id="pc-views" oninput="calcPricing()" placeholder="50,000" class="w-full pl-9 p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold"></div></div>
-                                        <div>
-                                            <label class="block text-sm font-bold text-slate-700 mb-1">Creator Asking Price</label>
-                                            <div class="flex space-x-2">
-                                                <select id="pc-cr-cur" onchange="calcPricing()" class="p-2.5 border border-slate-300 rounded-lg outline-none font-bold text-slate-600"><option value="USD">USD</option><option value="TWD" selected>TWD</option><option value="JPY">JPY</option><option value="KRW">KRW</option></select>
-                                                <input type="number" id="pc-cr-price" oninput="calcPricing()" placeholder="2,500" class="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold">
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="bg-white p-8 rounded-[32px] shadow-sm space-y-6 border border-slate-500/10">
+                            <div><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Avg Views (20v)</label><input type="number" id="pc-views" oninput="calcPricing()" placeholder="50000" class="w-full border rounded-xl p-4 mt-2 outline-none focus:ring-2 focus:ring-blue-500 font-bold"></div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase tracking-widest opacity-50">Creator Asking</label>
+                                <div class="flex space-x-2 mt-2">
+                                    <select id="pc-cr-cur" onchange="calcPricing()" class="border rounded-xl p-4 outline-none text-sm font-black"><option value="USD">USD</option><option value="TWD" selected>TWD</option></select>
+                                    <input type="number" id="pc-cr-price" oninput="calcPricing()" placeholder="30000" class="w-full border rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500 font-bold">
                                 </div>
-                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                                    <h4 class="text-xs font-bold text-blue-500 uppercase tracking-wider mb-3 flex items-center"><span class="mr-1">🏢</span> Client Deal</h4>
-                                    <div><label class="block text-sm font-bold text-slate-700 mb-1">Target CPM (USD)</label><div class="relative"><span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 font-bold">$</span><input type="number" id="pc-cpm" oninput="calcPricing()" placeholder="20" class="w-full pl-8 p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold"></div></div>
-                                </div>
-                                <button onclick="clearPricing()" class="w-full py-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition bg-slate-200 rounded-lg hover:bg-slate-300">Reset Inputs</button>
                             </div>
+                            <div class="p-4 bg-blue-500/5 rounded-xl border border-blue-500/10"><label class="text-[10px] font-black uppercase tracking-widest text-blue-500">Target CPM (USD)</label><input type="number" id="pc-cpm" oninput="calcPricing()" placeholder="20" class="w-full bg-white border border-blue-500/20 rounded-xl p-4 mt-2 outline-none focus:ring-2 focus:ring-blue-500 font-bold"></div>
                         </div>
                     </div>
-
                     <div class="xl:col-span-8 space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative group hover:shadow-md transition">
-                                <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-bl-lg">MODEL 1</div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-1">Flat Fee</h3><p class="text-xs text-slate-500 mb-4 pb-3 border-b border-slate-100">Based strictly on target CPM</p>
-                                <div class="flex justify-between items-end mb-1"><span class="text-sm font-semibold text-slate-500">Target Deal Value (USD)</span><span id="pc-m1-usd" class="text-2xl font-extrabold text-slate-800">$0.00</span></div>
-                                <div class="flex justify-between items-end mb-4"><span class="text-xs font-semibold text-slate-400">Est. Target Value (TWD)</span><span id="pc-m1-twd" class="text-sm font-bold text-slate-400">NT$0</span></div>
-                                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100"><span class="text-sm font-bold text-slate-600">Net Profit (USD)</span><span id="pc-m1-prof-usd" class="text-xl font-bold text-slate-400">$0.00</span></div>
+                            <div class="bg-white p-8 rounded-[32px] shadow-sm border-t-8 border-t-blue-500 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-bl-xl uppercase tracking-widest">Model 1</div>
+                                <span class="text-xs font-black uppercase opacity-40 tracking-widest">Flat Fee</span>
+                                <div id="pc-m1-usd" class="text-5xl font-black mt-4">$0.00</div>
+                                <div id="pc-m1-prof-usd" class="text-xl font-black text-slate-400 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full">Net: $0</div>
                             </div>
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative group hover:shadow-md transition border-t-4 border-t-purple-500">
-                                <div class="absolute top-0 right-0 bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-bl-lg">MODEL 2</div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-1">View Guarantee</h3><p class="text-xs text-slate-500 mb-4 pb-3 border-b border-slate-100">Target: <span id="m2Views" class="font-bold text-purple-600">0</span> views (Avg x 1.2)</p>
-                                <div class="flex justify-between items-end mb-1"><span class="text-sm font-semibold text-slate-500">Target Deal Value (USD)</span><span id="pc-m2-usd" class="text-2xl font-extrabold text-slate-800">$0.00</span></div>
-                                <div class="flex justify-between items-end mb-4"><span class="text-xs font-semibold text-slate-400">Est. Target Value (TWD)</span><span id="pc-m2-twd" class="text-sm font-bold text-slate-400">NT$0</span></div>
-                                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100"><span class="text-sm font-bold text-slate-600">Net Profit (USD)</span><span id="pc-m2-prof-usd" class="text-xl font-bold text-slate-400">$0.00</span></div>
+                            <div class="bg-white p-8 rounded-[32px] shadow-sm border-t-8 border-t-purple-500 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 bg-purple-500 text-white text-[9px] font-black px-3 py-1 rounded-bl-xl uppercase tracking-widest">Model 2</div>
+                                <span class="text-xs font-black uppercase opacity-40 tracking-widest">View Guarantee</span>
+                                <div id="pc-m2-usd" class="text-5xl font-black mt-4">$0.00</div>
+                                <div id="pc-m2-prof-usd" class="text-xl font-black text-slate-400 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full">Net: $0</div>
                             </div>
                         </div>
-
-                        <div class="mt-6 p-5 bg-orange-50 rounded-2xl border border-orange-200 shadow-sm">
-                            <h4 class="text-sm font-extrabold text-orange-900 uppercase tracking-widest mb-3 border-b border-orange-200/50 pb-2">🎯 Suggested Counteroffers (Flat Fee Basis)</h4>
-                            <ul class="text-sm space-y-2 text-orange-900">
-                                <li class="flex justify-between items-center bg-white p-3 rounded-lg border border-orange-100 shadow-sm"><span>Aggressive (-35%):</span><span id="pc-co-35" class="font-bold text-lg text-orange-600">$0.00</span></li>
-                                <li class="flex justify-between items-center bg-white p-3 rounded-lg border border-orange-100 shadow-sm"><span>Moderate (-25%):</span><span id="pc-co-25" class="font-bold text-lg text-orange-600">$0.00</span></li>
-                                <li class="flex justify-between items-center bg-white p-3 rounded-lg border border-orange-100 shadow-sm"><span>Safe (-20%):</span><span id="pc-co-20" class="font-bold text-lg text-orange-600">$0.00</span></li>
-                            </ul>
+                        <div class="bg-orange-500/10 p-6 rounded-3xl border border-orange-500/20 flex justify-between items-center">
+                            <span class="text-sm font-black text-orange-500 uppercase tracking-widest">Counteroffers (M1)</span>
+                            <div class="space-x-4"><span class="font-bold text-sm bg-white px-3 py-1 rounded-lg text-orange-500 shadow-sm border border-orange-500/20">-20%: <span id="pc-co-20">$0</span></span><span class="font-bold text-sm bg-white px-3 py-1 rounded-lg text-orange-500 shadow-sm border border-orange-500/20">-35%: <span id="pc-co-35">$0</span></span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="view-bonus-cc" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">CC Bonus Calculator (Quarterly)</h2>
-                        <p class="text-slate-500 mt-1">Calculate your total performance bonus based on profit margins and campaign difficulty.</p>
-                        <p class="text-red-500 text-xs font-bold mt-1">⚠️ The exact numbers may vary depending on the monthly exchange rate. The calculation results are for reference only.</p>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <span class="text-xs text-slate-400 font-bold mb-1">Manually refresh every quarter</span>
-                        <button onclick="refreshCCCalc()" class="text-sm font-bold bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-lg transition shadow-sm border border-slate-300">🔄 Refresh</button>
-                    </div>
-                </header>
-
+            <div id="view-bonus-cc" class="view-section hidden max-w-6xl mx-auto pb-32 animate-fade-in">
+                <header class="mb-10 flex justify-between items-end"><div><h2 class="text-4xl font-black tracking-tighter">CC Bonus Engine</h2><p class="opacity-50 mt-2 font-bold">Quarterly aggregation.</p></div><div class="flex space-x-3"><button onclick="archiveToDatabase('CC')" id="btn-archive-cloud" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-black shadow-sm transition">☁️ Save & Archive</button></div></header>
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <div class="lg:col-span-3 space-y-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bold text-slate-800 text-lg">📝 Deal Registry</h3>
-                                <button onclick="addCCDealRow()" class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold px-3 py-1.5 rounded transition">+ Add Deal</button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-600 min-w-[800px]">
-                                    <thead class="bg-slate-50 border-b border-slate-200">
-                                        <tr><th class="p-3 font-bold w-1/4">Campaign</th><th class="p-3 font-bold w-1/5">Creator Name</th><th class="p-3 font-bold">Client Price</th><th class="p-3 font-bold">Creator Price</th><th class="p-3 font-bold text-right">Mod. Profit (USD)</th><th class="p-3"></th></tr>
-                                    </thead>
-                                    <tbody id="cc-deals-body" class="divide-y divide-slate-100">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-1 space-y-4">
-                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Base Salary</label>
-                            <input type="number" id="cc-base-salary" oninput="calculateCCBonus()" placeholder="My base salary." class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none font-bold text-slate-600">
-                        </div>
-                        
-                        <div class="bg-slate-800 text-white p-6 rounded-2xl shadow-lg border border-slate-700">
-                            <h3 class="text-sm font-bold text-emerald-300 uppercase tracking-widest mb-4 border-b border-slate-600 pb-2">CC Bonus Breakdown</h3>
-                            <div class="space-y-2 text-sm mb-4">
-                                <div class="flex justify-between"><span class="text-slate-400">Total Mod Profit:</span><span id="cc-out-gross" class="font-bold">$0</span></div>
-                                <div class="flex justify-between text-red-400"><span>Less Retention (20%):</span><span id="cc-out-ret">-$0</span></div>
-                                <div class="flex justify-between font-bold border-t border-slate-600 pt-2"><span class="text-slate-300">Net Base (USD):</span><span id="cc-out-net" class="text-emerald-400">$0</span></div>
-                            </div>
-                            <div class="space-y-1 text-xs text-slate-400 mb-6" id="cc-tiers"></div>
-
-                            <div class="border-t border-slate-600 pt-4 mb-2">
-                                <span class="block text-xs text-slate-400 uppercase tracking-widest">Final Bonus (USD)</span>
-                                <div id="cc-out-bonus-usd" class="text-2xl font-black text-white mt-1">$0.00</div>
-                            </div>
-                            <div class="bg-emerald-900/50 p-3 rounded-lg border border-emerald-700 mt-4">
-                                <span class="block text-xs text-emerald-200 uppercase tracking-widest">Est. Bonus (TWD)</span>
-                                <div id="cc-out-bonus-twd" class="text-xl font-bold text-emerald-400 mt-1 mb-2">NT$0</div>
-                                <span class="block text-[10px] text-emerald-100 uppercase tracking-widest border-t border-emerald-700/50 pt-2">Third Month Pay (Base + Bonus)</span>
-                                <div id="cc-out-third-month" class="text-lg font-bold text-white mt-1">NT$0</div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="lg:col-span-3 bg-white p-8 rounded-[32px] shadow-sm"><div class="flex justify-between items-center mb-6 border-b pb-4"><h3 class="font-black text-lg uppercase tracking-widest opacity-80">Deal Pipeline</h3><button onclick="addCCDealRow()" class="bg-emerald-500/10 text-emerald-500 font-black uppercase text-[10px] tracking-widest px-4 py-2 rounded-lg hover:bg-emerald-500/20">+ Add Deal</button></div><div class="overflow-x-auto"><table class="w-full text-left text-sm min-w-[800px]"><thead class="opacity-50 text-[10px] uppercase font-black tracking-widest"><tr><th class="pb-4">Modifier</th><th class="pb-4">Campaign</th><th class="pb-4">Creator</th><th class="pb-4">Client Price</th><th class="pb-4">Creator Price</th><th class="pb-4 text-right">Mod. Profit</th><th class="pb-4"></th></tr></thead><tbody id="cc-deals-body" class="space-y-2"></tbody></table></div></div>
+                    <div class="lg:col-span-1 space-y-6"><div class="bg-white p-6 rounded-3xl shadow-sm"><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Base Salary</label><input type="number" id="cc-base-salary" oninput="calculateCCBonus()" placeholder="35000" class="w-full bg-slate-50 border rounded-xl p-3 mt-2 outline-none font-bold text-slate-700"></div><div class="bg-emerald-500/10 p-8 rounded-[32px] border border-emerald-500/20 shadow-inner"><h3 class="text-xs font-black text-emerald-600 uppercase tracking-widest mb-6 border-b border-emerald-500/20 pb-2">Aggregation (Live Deals)</h3><div class="space-y-3 text-sm font-bold opacity-80 mb-6"><div class="flex justify-between"><span>Gross:</span><span id="cc-out-gross">$0</span></div><div class="flex justify-between text-red-500"><span>Ret (20%):</span><span id="cc-out-ret">-$0</span></div><div class="flex justify-between text-emerald-600 text-lg border-t border-emerald-500/20 pt-3"><span>Net:</span><span id="cc-out-net">$0</span></div></div><div id="cc-tiers" class="text-[10px] font-black opacity-60 mb-6 space-y-2"></div><span class="block text-[10px] text-emerald-600 uppercase tracking-widest font-black">Final Bonus (USD)</span><div id="cc-out-bonus-usd" class="text-4xl font-black text-emerald-600 mt-2 mb-6">$0.00</div><div class="bg-white p-4 rounded-2xl shadow-sm"><span class="block text-[10px] uppercase tracking-widest opacity-50 font-black">Bonus (TWD)</span><div id="cc-out-bonus-twd" class="text-xl font-black mt-1 text-slate-700">NT$0</div></div></div></div>
                 </div>
             </div>
 
-            <div id="view-bonus-ce" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">CE Bonus Calculator (Quarterly)</h2>
-                        <p class="text-slate-500 mt-1">Calculate bonus based on Net Revenue (USD) scaling tiers, plus your CC bonus.</p>
-                        <p class="text-red-500 text-xs font-bold mt-1">⚠️ The exact numbers may vary depending on the monthly exchange rate. The calculation results are for reference only.</p>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <span class="text-xs text-slate-400 font-bold mb-1">Manually refresh every quarter</span>
-                        <button onclick="refreshCECalc()" class="text-sm font-bold bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-lg transition shadow-sm border border-slate-300">🔄 Refresh</button>
-                    </div>
-                </header>
-
+            <div id="view-bonus-ce" class="view-section hidden max-w-6xl mx-auto pb-32 animate-fade-in">
+                <header class="mb-10 flex justify-between items-end"><div><h2 class="text-4xl font-black tracking-tighter">CE Bonus Engine</h2><p class="opacity-50 mt-2 font-bold">Revenue scaling.</p></div><div class="flex space-x-3"><button onclick="archiveToDatabase('CE')" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-black shadow-sm transition">☁️ Save & Archive</button></div></header>
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <div class="lg:col-span-3 space-y-8">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-indigo-500">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bold text-slate-800 text-lg">📊 CE Campaigns (Revenue Generator)</h3>
-                                <button onclick="addCEDealRow()" class="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold px-3 py-1.5 rounded transition">+ Add Campaign</button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-600 mb-2">
-                                    <thead class="bg-slate-50 border-b border-slate-200">
-                                        <tr><th class="p-3 font-bold w-1/2">Campaign Name</th><th class="p-3 font-bold">Client Revenue</th><th class="p-3"></th></tr>
-                                    </thead>
-                                    <tbody id="ce-deals-body" class="divide-y divide-slate-100"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex items-center justify-between">
-                            <div>
-                                <h3 class="font-bold text-slate-600 mb-1 text-sm uppercase tracking-widest">Linked CC Bonus Calculator</h3>
-                                <p class="text-xs text-slate-500">Fill out your CC deals in the CC tab. The resulting CC Bonus will automatically sum into your Grand Total here.</p>
-                            </div>
-                            <button onclick="switchTab('bonus-cc')" class="text-sm bg-white border border-slate-300 shadow-sm px-4 py-2 rounded-lg font-bold hover:bg-slate-100 transition whitespace-nowrap">Open CC Form &rarr;</button>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-1 space-y-4">
-                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Base Salary</label>
-                            <input type="number" id="ce-base-salary" oninput="calculateCEBonus()" placeholder="My base salary." class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-slate-600">
-                        </div>
-                        
-                        <div class="bg-slate-800 text-white p-6 rounded-2xl shadow-lg border border-slate-700">
-                            <h3 class="text-sm font-bold text-indigo-300 uppercase tracking-widest mb-4 border-b border-slate-600 pb-2">Bonus Aggregator</h3>
-                            <div class="space-y-2 text-sm mb-4">
-                                <div class="flex justify-between"><span class="text-slate-400">CE Total Rev:</span><span id="ce-out-gross" class="font-bold">$0</span></div>
-                                <div class="flex justify-between font-bold border-t border-slate-600 pt-2"><span class="text-slate-300">CE Net (80%):</span><span id="ce-out-net" class="text-indigo-400">$0</span></div>
-                            </div>
-                            <div class="space-y-1 text-xs text-slate-400 mb-4" id="ce-tiers"></div>
-                            
-                            <div class="bg-slate-700 p-3 rounded mb-4 text-sm flex justify-between items-center shadow-inner">
-                                <span class="text-slate-300">CE Rev Bonus:</span><span id="ce-only-bonus-usd" class="font-bold text-white">$0</span>
-                            </div>
-                            <div class="bg-slate-700 p-3 rounded mb-6 text-sm flex justify-between items-center shadow-inner border-l-4 border-l-emerald-400">
-                                <span class="text-slate-300">Linked CC Bonus:</span><span id="ce-linked-cc-usd" class="font-bold text-emerald-400">$0</span>
-                            </div>
-
-                            <div class="border-t border-slate-500 pt-4 mb-2">
-                                <span class="block text-xs text-slate-300 uppercase tracking-widest">Grand Total (USD)</span>
-                                <div id="ce-grand-usd" class="text-3xl font-black text-white mt-1">$0.00</div>
-                            </div>
-                            <div class="bg-indigo-900/50 p-4 rounded-lg border border-indigo-700 mt-4">
-                                <span class="block text-xs text-indigo-200 uppercase tracking-widest">Est. Grand Total (TWD)</span>
-                                <div id="ce-grand-twd" class="text-2xl font-bold text-indigo-400 mt-1 mb-2">NT$0</div>
-                                <span class="block text-[10px] text-indigo-100 uppercase tracking-widest border-t border-indigo-700/50 pt-2">Third Month Pay (Base + Bonus)</span>
-                                <div id="ce-out-third-month" class="text-lg font-bold text-white mt-1">NT$0</div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="lg:col-span-3 space-y-8"><div class="bg-white p-8 rounded-[32px] shadow-sm border-l-8 border-indigo-500"><div class="flex justify-between items-center mb-6 border-b pb-4"><h3 class="font-black text-lg uppercase tracking-widest opacity-80">Campaign Revenue Pipeline</h3><button onclick="addCEDealRow()" class="bg-indigo-500/10 text-indigo-500 font-black uppercase text-[10px] tracking-widest px-4 py-2 rounded-lg hover:bg-indigo-500/20">+ Add</button></div><table class="w-full text-left text-sm"><thead class="opacity-50 text-[10px] uppercase font-black tracking-widest"><tr><th class="pb-4 w-1/2">Campaign Name</th><th class="pb-4">Client Revenue (USD/TWD)</th><th></th></tr></thead><tbody id="ce-deals-body"></tbody></table></div><div class="bg-white p-6 rounded-2xl flex items-center justify-between border border-emerald-500/20"><div class="flex items-center"><i class="fas fa-link text-emerald-500 text-xl mr-4"></i><div><h3 class="font-black text-sm uppercase tracking-widest opacity-80">Linked CC Engine</h3><p class="text-xs opacity-50 font-bold">CC Bonus automatically syncs to grand total.</p></div></div><button onclick="switchTab('bonus-cc')" class="text-xs font-black bg-slate-100 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-200 transition">View CC ➔</button></div></div>
+                    <div class="lg:col-span-1 space-y-6"><div class="bg-white p-6 rounded-3xl shadow-sm"><label class="text-[10px] font-black uppercase tracking-widest opacity-50">Base Salary</label><input type="number" id="ce-base-salary" oninput="calculateCEBonus()" placeholder="45000" class="w-full bg-slate-50 border rounded-xl p-3 mt-2 outline-none font-bold text-slate-700"></div><div class="bg-indigo-500/10 p-8 rounded-[32px] border border-indigo-500/20 shadow-inner"><div class="space-y-3 text-sm font-bold opacity-80 mb-6"><div class="flex justify-between"><span>Live CE Rev:</span><span id="ce-out-gross">$0</span></div><div class="flex justify-between text-indigo-600 text-lg border-t border-indigo-500/20 pt-3"><span>Net(80%):</span><span id="ce-out-net">$0</span></div></div><div class="bg-white p-3 rounded-xl flex justify-between font-black text-xs mb-3 text-slate-700"><span>CE Bonus:</span><span id="ce-only-bonus-usd" class="text-indigo-500">$0</span></div><div class="bg-white p-3 rounded-xl flex justify-between font-black text-xs mb-6 border-l-4 border-emerald-500 text-slate-700"><span>CC Sync:</span><span id="ce-linked-cc-usd" class="text-emerald-500">$0</span></div><span class="block text-[10px] text-indigo-600 uppercase tracking-widest font-black">Grand Total (USD)</span><div id="ce-grand-usd" class="text-4xl font-black text-indigo-600 mt-2 mb-6">$0.00</div><div class="bg-white p-4 rounded-2xl shadow-sm"><span class="block text-[10px] uppercase tracking-widest opacity-50 font-black">Est. Total (TWD)</span><div id="ce-grand-twd" class="text-xl font-black mt-1 text-slate-700">NT$0</div></div></div></div>
                 </div>
             </div>
 
-            <div id="view-example-cc" class="view-section hidden max-w-4xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">CC Bonus Logic & Examples</h2></header>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-800 border-l-4 border-emerald-500 pl-3 mb-2">Tier Structure (Applied to Net Profit USD equivalent)</h3>
-                        <p class="text-sm text-slate-600 mb-2">Internal logic standardizes to USD based on the $1 = NT$33 ratio.</p>
-                        <ul class="list-disc pl-8 space-y-1 text-sm text-slate-600">
-                            <li>NT$0 - NT$50,000 : <strong>5%</strong></li>
-                            <li>NT$50,001 - NT$200,000 : <strong>10%</strong></li>
-                            <li>NT$200,001 - NT$500,000 : <strong>15%</strong></li>
-                            <li>> NT$500,000 : <strong>20%</strong></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-800 border-l-4 border-blue-500 pl-3 mb-2">Campaign Modifiers (Applied to Gross Profit)</h3>
-                        <p class="text-sm text-slate-600 mb-2">We reward work on hard campaigns and recognize less work done on easy ones.</p>
-                        <ul class="list-disc pl-8 space-y-1 text-sm text-slate-600"><li>Easy: <strong>0.8x</strong></li><li>Normal: <strong>1.0x</strong></li><li>Hard: <strong>1.2x</strong></li></ul>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-example-ce" class="view-section hidden max-w-4xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">CE Bonus Logic & Examples</h2></header>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-800 border-l-4 border-indigo-500 pl-3 mb-2">CE Revenue Brackets (Net USD)</h3>
-                        <p class="text-sm text-slate-600 mb-2">Smaller campaigns rewarded better. As campaigns scale, rewards curb down.</p>
-                        <table class="w-full text-left text-sm text-slate-600 border mt-3"><thead class="bg-slate-100"><tr><th class="p-2 border">CE Rev Min (USD)</th><th class="p-2 border">CE Rev Max</th><th class="p-2 border">CE Rate</th></tr></thead><tbody><tr><td class="p-2 border">0</td><td class="p-2 border">15,000</td><td class="p-2 border font-bold">3.00%</td></tr><tr><td class="p-2 border">15,001</td><td class="p-2 border">50,000</td><td class="p-2 border font-bold">2.00%</td></tr><tr><td class="p-2 border">50,001</td><td class="p-2 border">99,999,999</td><td class="p-2 border font-bold">1.00%</td></tr></tbody></table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-assessment" class="view-section hidden max-w-4xl mx-auto pb-32">
+            <div id="view-example-cc" class="view-section hidden max-w-4xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">CC Bonus Logic & Examples</h2></header><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6"><div><h3 class="font-bold text-lg text-slate-800 border-l-4 border-emerald-500 pl-3 mb-2">Tier Structure (Applied to Net Profit USD equivalent)</h3><p class="text-sm text-slate-600 mb-2">Internal logic standardizes to USD based on the $1 = NT$33 ratio.</p><ul class="list-disc pl-8 space-y-1 text-sm text-slate-600"><li>NT$0 - NT$50,000 : <strong>5%</strong></li><li>NT$50,001 - NT$200,000 : <strong>10%</strong></li><li>NT$200,001 - NT$500,000 : <strong>15%</strong></li><li>> NT$500,000 : <strong>20%</strong></li></ul></div><div><h3 class="font-bold text-lg text-slate-800 border-l-4 border-blue-500 pl-3 mb-2">Campaign Modifiers (Applied to Gross Profit)</h3><p class="text-sm text-slate-600 mb-2">We reward work on hard campaigns and recognize less work done on easy ones.</p><ul class="list-disc pl-8 space-y-1 text-sm text-slate-600"><li>Easy: <strong>0.8x</strong></li><li>Normal: <strong>1.0x</strong></li><li>Hard: <strong>1.2x</strong></li></ul></div></div></div>
+            <div id="view-example-ce" class="view-section hidden max-w-4xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">CE Bonus Logic & Examples</h2></header><div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6"><div><h3 class="font-bold text-lg text-slate-800 border-l-4 border-indigo-500 pl-3 mb-2">CE Revenue Brackets (Net USD)</h3><p class="text-sm text-slate-600 mb-2">Smaller campaigns rewarded better. As campaigns scale, rewards curb down.</p><table class="w-full text-left text-sm text-slate-600 border mt-3"><thead class="bg-slate-100"><tr><th class="p-2 border">CE Rev Min (USD)</th><th class="p-2 border">CE Rev Max</th><th class="p-2 border">CE Rate</th></tr></thead><tbody><tr><td class="p-2 border">0</td><td class="p-2 border">15,000</td><td class="p-2 border font-bold">3.00%</td></tr><tr><td class="p-2 border">15,001</td><td class="p-2 border">50,000</td><td class="p-2 border font-bold">2.00%</td></tr><tr><td class="p-2 border">50,001</td><td class="p-2 border">99,999,999</td><td class="p-2 border font-bold">1.00%</td></tr></tbody></table></div></div></div>
+            
+            <div id="view-assessment" class="view-section hidden max-w-4xl mx-auto pb-32 animate-fade-in">
                 <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">SOP Certification Test</h2><p class="text-lg text-slate-500 mt-1">Complete this assessment to log your understanding of core agency protocols.</p></header>
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-                    <div class="bg-blue-600 p-4 text-white flex justify-between items-center"><h3 class="font-bold">Test: Operational Fundamentals</h3></div>
-                    <div class="p-8 space-y-8" id="quiz-form">
-                        <div><p class="font-bold text-slate-800 mb-3 text-lg">1. What is the fundamental requirement of the "3:1 Sourcing Rule"?</p><select id="q1-ans" class="w-full p-3 border border-slate-300 rounded-lg outline-none"><option value="">Select an answer...</option><option value="A">Source 3 creators for every 1 slot available.</option><option value="B">Source 15 potential candidates if the client needs 5 slots.</option></select></div>
-                        <div><p class="font-bold text-slate-800 mb-3 text-lg">2. If a client is ghosting a video draft review for more than 1 week, what is the protocol?</p><select id="q2-ans" class="w-full p-3 border border-slate-300 rounded-lg outline-none"><option value="">Select an answer...</option><option value="A">Cancel the campaign immediately.</option><option value="B">Escalate to the Campaign Manager (CM) immediately.</option></select></div>
-                        <div class="pt-6 border-t border-slate-200 flex justify-end"><button onclick="submitQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition shadow-md">Submit Assessment</button></div>
-                    </div>
-                    <div id="quiz-success" class="hidden p-10 text-center animate-fade-in"><div class="text-6xl mb-4">✅</div><h3 class="text-2xl font-bold text-slate-800 mb-2">Assessment Submitted!</h3><p class="text-slate-600">Your results have been securely recorded to the database.</p></div>
-                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8"><div class="bg-blue-600 p-4 text-white flex justify-between items-center"><h3 class="font-bold">Test: Operational Fundamentals</h3></div><div class="p-8 space-y-8" id="quiz-form"><div><p class="font-bold text-slate-800 mb-3 text-lg">1. What is the fundamental requirement of the "3:1 Sourcing Rule"?</p><select id="q1-ans" class="w-full p-3 border border-slate-300 rounded-lg outline-none text-slate-700"><option value="">Select an answer...</option><option value="A">Source 3 creators for every 1 slot available.</option><option value="B">Source 15 potential candidates if the client needs 5 slots.</option></select></div><div><p class="font-bold text-slate-800 mb-3 text-lg">2. If a client is ghosting a video draft review for more than 1 week, what is the protocol?</p><select id="q2-ans" class="w-full p-3 border border-slate-300 rounded-lg outline-none text-slate-700"><option value="">Select an answer...</option><option value="A">Cancel the campaign immediately.</option><option value="B">Escalate to the Campaign Manager (CM) immediately.</option></select></div><div class="pt-6 border-t border-slate-200 flex justify-end"><button onclick="submitQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition shadow-md">Submit Assessment</button></div></div><div id="quiz-success" class="hidden p-10 text-center animate-fade-in"><div class="text-6xl mb-4">✅</div><h3 class="text-2xl font-bold text-slate-800 mb-2">Assessment Submitted!</h3><p class="text-slate-600">Your results have been securely recorded to the database.</p></div></div>
             </div>
 
-            <div id="view-yearly-perf" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Yearly Performance Tracker</h2>
-                        <p class="text-slate-500 mt-1">Your quarterly data automatically syncs here when you hit 'Refresh' in the calculator.</p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="text-xs text-slate-400 font-bold hidden md:inline">End of year wipe</span>
-                        <button onclick="archivePerformance()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-4 py-2 rounded-lg text-sm transition shadow-sm border border-red-200">🗄️ Archive Year & Refresh</button>
-                    </div>
-                </header>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Quarterly Progress (USD Bonus)</h3>
-                        <div class="relative h-64 w-full"><canvas id="yearlyPerfChart"></canvas></div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <table class="w-full text-left text-sm text-slate-600">
-                            <thead class="bg-slate-800 text-white"><tr><th class="p-4 font-bold">Quarter</th><th class="p-4 font-bold">Deals/Camps</th><th class="p-4 font-bold text-right">Est. Bonus (USD)</th></tr></thead>
-                            <tbody id="yearly-perf-body" class="divide-y divide-slate-100">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="mb-10 space-y-4" id="my-archives-container">
-                    <h3 class="font-bold text-slate-800">🗄️ My Past Archives</h3>
-                </div>
-            </div>
-
-            <div id="view-my-assessments" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4">
-                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">My Assessments & Feedback</h2>
-                    <p class="text-slate-500 mt-1">View CM approvals and feedback regarding your promotions, raises, or CE conversions.</p>
-                </header>
-                <div id="my-assessment-list" class="space-y-4"></div>
-            </div>
-
-            <div id="view-active-campaigns" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Active Campaign Registry</h2><p class="text-slate-500 mt-1">Manage global campaigns. Modifiers set here automatically apply to the CC Bonus calculators.</p></header>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-blue-500">
-                    <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">➕ Add New Campaign</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                        <div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Campaign Name</label><input type="text" id="add-camp-name" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Brand X Q3"></div>
-                        <div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Type</label><select id="add-camp-type" class="w-full p-2 border border-slate-300 rounded-lg outline-none"><option value="New">New</option><option value="Old">Old</option></select></div>
-                        <div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Difficulty Modifier</label><select id="add-camp-diff" class="w-full p-2 border border-slate-300 rounded-lg outline-none"><option value="0.8">Easy (0.8x)</option><option value="1.0" selected>Normal (1.0x)</option><option value="1.2">Hard (1.2x)</option></select></div>
-                        <button onclick="addCampaign()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition shadow-md">Add Campaign</button>
-                    </div>
-                </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4">Campaign Name</th><th class="p-4 w-24">Type</th><th class="p-4 w-32">Difficulty Mod</th><th class="p-4 w-24 text-right">Action</th></tr></thead><tbody id="campaign-list-body" class="divide-y divide-slate-100"></tbody></table></div>
-            </div>
-
-            <div id="view-member-list" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Team Member Directory</h2></header>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-emerald-500">
-                    <h3 class="font-bold text-slate-800 mb-4 border-b pb-2" id="mem-action-title">➕ Add New Member</h3>
-                    <div class="flex space-x-4">
-                        <input type="text" id="mem-name" placeholder="Member Name" class="w-1/4 p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <input type="text" id="mem-title" placeholder="Title (e.g. CC)" class="w-1/4 p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <input type="text" id="mem-cm" placeholder="Assigned CM" class="w-1/4 p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
-                        <button onclick="saveMember()" id="mem-btn-save" class="w-1/4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition shadow-md">Add Member</button>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-100 border-b border-slate-200"><tr><th class="p-4 font-bold text-slate-800">Name</th><th class="p-4 font-bold text-slate-800">Title</th><th class="p-4 font-bold text-slate-800">Assigned CM</th><th class="p-4 font-bold text-slate-800 text-right">Action</th></tr></thead><tbody id="member-list-body" class="divide-y divide-slate-100"></tbody></table></div>
-            </div>
-
-            <div id="view-cm-assessment" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Conversion / Promotion Assessment</h2><p class="text-slate-500 mt-1">Submit official management reviews for team members. This will be visible to them and archived.</p></header>
-                
-                <div id="cm-assessment-form-container" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-yellow-500 space-y-6">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Select Member</label><select id="assess-mem" class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 bg-slate-50"></select></div>
-                        <div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Request Type</label><select id="assess-type" onchange="toggleAssessmentChecklist()" class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 bg-slate-50"><option value="Promotion">Promotion</option><option value="Salary Raise">Salary Raise</option><option value="CE Conversion">CE Conversion</option><option value="CM Conversion">CM Conversion</option></select></div>
-                    </div>
-                    
-                    <div id="assess-checklist-container"></div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">CM Recommendation</label>
-                        <select id="assess-status" class="w-full p-3 border border-slate-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-yellow-500">
-                            <option value="Approved">✅ Recommended for Approval</option>
-                            <option value="To be decided" selected>⏳ Need More Observation</option>
-                            <option value="Rejected">❌ Denied</option>
-                        </select>
-                    </div>
-                    <div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">CM Feedback / Reason</label><textarea id="assess-fb" class="w-full p-4 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 text-sm" rows="4" placeholder="Provide detailed, constructive feedback..."></textarea></div>
-                    <div class="pt-4 border-t border-slate-100 flex justify-end"><button onclick="submitAssessmentToDir()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-md">Submit to Director for Approval</button></div>
-                </div>
-
-                <div id="dir-assessment-queue-container" class="hidden mt-12">
-                    <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-yellow-100 text-yellow-600 p-1.5 rounded mr-2 text-sm">⏳</span> Pending Director Approvals</h3>
-                    <div id="dir-pending-list" class="space-y-4 mb-12">
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-perf-archive" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Global Performance Archive</h2></header>
-                <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-blue-100 text-blue-600 p-1.5 rounded mr-2 text-sm">📈</span> Yearly Performance Archives</h3>
-                <div class="mb-12 space-y-4" id="cm-archive-container">
-                    </div>
-
-                <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-indigo-100 text-indigo-600 p-1.5 rounded mr-2 text-sm">⚖️</span> Official Assessments Log</h3>
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4 w-32">Date</th><th class="p-4 w-32">Member</th><th class="p-4 w-40">Type</th><th class="p-4 w-32">Status</th><th class="p-4">Final Feedback</th></tr></thead><tbody id="archive-assess-body" class="divide-y divide-slate-100"></tbody></table></div>
-            </div>
-
-            <div id="view-dir-evaluation" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight text-purple-900">Director: CM Evaluation Center</h2></header>
-                <div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl shadow-sm border border-purple-200">
-                    <h3 class="font-bold text-purple-900 mb-6 text-xl">Submit Manager Evaluation</h3>
-                    <div class="space-y-6">
-                        <div><label class="block text-xs font-bold text-purple-700 mb-1 uppercase tracking-widest">Target CM Name</label><input type="text" class="w-full p-3 border border-purple-200 rounded-lg outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g. Jason"></div>
-                        <div><label class="block text-xs font-bold text-purple-700 mb-1 uppercase tracking-widest">Evaluation Period & KPI Notes</label><textarea class="w-full p-4 border border-purple-200 rounded-lg outline-none focus:ring-2 focus:ring-purple-500" rows="6" placeholder="Document leadership performance, margin maintenance, and team health..."></textarea></div>
-                        <div class="flex justify-end pt-4"><button onclick="alert('CM Evaluation Secured & Saved to DB.')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-md">Save Official Record</button></div>
-                    </div>
-                </div>
-            </div>
+            <div id="view-yearly-perf" class="view-section hidden max-w-5xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end"><div><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Yearly Performance Tracker</h2><p class="text-slate-500 mt-1">Your quarterly data automatically syncs here when you hit 'Refresh' in the calculator.</p></div><div class="flex items-center space-x-3"><span class="text-xs text-slate-400 font-bold hidden md:inline">End of year wipe</span><button onclick="archivePerformance()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-4 py-2 rounded-lg text-sm transition shadow-sm border border-red-200">🗄️ Archive Year & Refresh</button></div></header><div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8"><div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Quarterly Progress (USD Bonus)</h3><div class="relative h-64 w-full"><canvas id="yearlyPerfChart"></canvas></div></div><div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white"><tr><th class="p-4 font-bold">Quarter</th><th class="p-4 font-bold">Deals/Camps</th><th class="p-4 font-bold text-right">Est. Bonus (USD)</th></tr></thead><tbody id="yearly-perf-body" class="divide-y divide-slate-100"></tbody></table></div></div><div class="mb-10 space-y-4" id="my-archives-container"><h3 class="font-bold text-slate-800">🗄️ My Past Archives</h3></div></div>
+            
+            <div id="view-my-assessments" class="view-section hidden max-w-5xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">My Assessments & Feedback</h2><p class="text-slate-500 mt-1">View CM approvals and feedback regarding your promotions, raises, or CE conversions.</p></header><div id="my-assessment-list" class="space-y-4"></div></div>
+            
+            <div id="view-active-campaigns" class="view-section hidden max-w-5xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Active Campaign Registry</h2><p class="text-slate-500 mt-1">Manage global campaigns. Modifiers set here automatically apply to the CC Bonus calculators.</p></header><div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-blue-500"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2">➕ Add New Campaign</h3><div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Campaign Name</label><input type="text" id="add-camp-name" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-slate-700" placeholder="e.g. Brand X Q3"></div><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Type</label><select id="add-camp-type" class="w-full p-2 border border-slate-300 rounded-lg outline-none text-slate-700"><option value="New">New</option><option value="Old">Old</option></select></div><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Difficulty Modifier</label><select id="add-camp-diff" class="w-full p-2 border border-slate-300 rounded-lg outline-none text-slate-700"><option value="0.8">Easy (0.8x)</option><option value="1.0" selected>Normal (1.0x)</option><option value="1.2">Hard (1.2x)</option></select></div><button onclick="addCampaign()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition shadow-md">Add Campaign</button></div></div><div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4">Campaign Name</th><th class="p-4 w-24">Type</th><th class="p-4 w-32">Difficulty Mod</th><th class="p-4 w-24 text-right">Action</th></tr></thead><tbody id="campaign-list-body" class="divide-y divide-slate-100"></tbody></table></div></div>
+            
+            <div id="view-member-list" class="view-section hidden max-w-5xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Team Member Directory</h2></header><div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-emerald-500"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2" id="mem-action-title">➕ Add New Member</h3><div class="flex space-x-4"><input type="text" id="mem-name" placeholder="Member Name" class="w-1/4 p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-slate-700"><input type="text" id="mem-title" placeholder="Title (e.g. CC)" class="w-1/4 p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-slate-700"><input type="text" id="mem-cm" placeholder="Assigned CM" class="w-1/4 p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-slate-700"><button onclick="saveMember()" id="mem-btn-save" class="w-1/4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition shadow-md">Add Member</button></div></div><div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-100 border-b border-slate-200"><tr><th class="p-4 font-bold text-slate-800">Name</th><th class="p-4 font-bold text-slate-800">Title</th><th class="p-4 font-bold text-slate-800">Assigned CM</th><th class="p-4 font-bold text-slate-800 text-right">Action</th></tr></thead><tbody id="member-list-body" class="divide-y divide-slate-100"></tbody></table></div></div>
+            
+            <div id="view-cm-assessment" class="view-section hidden max-w-5xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Conversion / Promotion Assessment</h2><p class="text-slate-500 mt-1">Submit official management reviews for team members. This will be visible to them and archived.</p></header><div id="cm-assessment-form-container" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-yellow-500 space-y-6"><div class="grid grid-cols-2 gap-6"><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Select Member</label><select id="assess-mem" onchange="updateAssessmentOptions()" class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 bg-slate-50 text-slate-700"></select></div><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Request Type</label><select id="assess-type" onchange="toggleAssessmentChecklist()" class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 bg-slate-50 text-slate-700"><option value="Promotion">Promotion</option><option value="Salary Raise">Salary Raise</option></select></div></div><div id="assess-checklist-container"></div><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">CM Recommendation</label><select id="assess-status" class="w-full p-3 border border-slate-300 rounded-lg font-bold outline-none focus:ring-2 focus:ring-yellow-500 text-slate-700"><option value="Approved">✅ Recommended for Approval</option><option value="To be decided" selected>⏳ Need More Observation</option><option value="Rejected">❌ Denied</option></select></div><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">CM Feedback / Reason</label><textarea id="assess-fb" class="w-full p-4 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-yellow-500 text-sm text-slate-700" rows="4" placeholder="Provide detailed, constructive feedback..."></textarea></div><div class="pt-4 border-t border-slate-100 flex justify-end"><button onclick="submitAssessmentToDir()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-md">Submit to Director for Approval</button></div></div><div id="dir-assessment-queue-container" class="hidden mt-12"><h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-yellow-100 text-yellow-600 p-1.5 rounded mr-2 text-sm">⏳</span> Pending Director Approvals</h3><div id="dir-pending-list" class="space-y-4 mb-12"></div></div></div>
+            
+            <div id="view-perf-archive" class="view-section hidden max-w-6xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Global Performance Archive</h2></header><h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-blue-100 text-blue-600 p-1.5 rounded mr-2 text-sm">📈</span> Yearly Performance Archives</h3><div class="mb-12 space-y-4" id="cm-archive-container"></div><h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-indigo-100 text-indigo-600 p-1.5 rounded mr-2 text-sm">⚖️</span> Official Assessments Log</h3><div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4 w-32">Date</th><th class="p-4 w-32">Member</th><th class="p-4 w-40">Type</th><th class="p-4 w-32">Status</th><th class="p-4">Final Feedback</th></tr></thead><tbody id="archive-assess-body" class="divide-y divide-slate-100"></tbody></table></div></div>
+            
+            <div id="view-dir-evaluation" class="view-section hidden max-w-5xl mx-auto pb-32 animate-fade-in"><header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight text-purple-900">Director: CM Evaluation Center</h2></header><div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl shadow-sm border border-purple-200"><h3 class="font-bold text-purple-900 mb-6 text-xl">Submit Manager Evaluation</h3><div class="space-y-6"><div><label class="block text-xs font-bold text-purple-700 mb-1 uppercase tracking-widest">Target CM Name</label><input type="text" class="w-full p-3 border border-purple-200 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 text-slate-700" placeholder="e.g. Jason"></div><div><label class="block text-xs font-bold text-purple-700 mb-1 uppercase tracking-widest">Evaluation Period & KPI Notes</label><textarea class="w-full p-4 border border-purple-200 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 text-slate-700" rows="6" placeholder="Document leadership performance, margin maintenance, and team health..."></textarea></div><div class="flex justify-end pt-4"><button onclick="alert('CM Evaluation Secured & Saved to DB.')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-md">Save Official Record</button></div></div></div></div>
 
         </main>
     </div>
 
     <script>
-        // --- 1. GLOBAL STATE & MOCK DATABASES ---
         const API_URL = "https://script.google.com/macros/s/AKfycbyoOqH2XqAytf91NEaNJZePbl3It3gbC4R-dmwUHAca2xcBIls7Es8IlgEaMasaAQtR/exec"; 
         
         let currentUserRole = null; 
         let currentUserName = '';
         let currentUser = null;
-        let allMembers = []; // 從 Google Sheet 抓來的完整資料
-        let members = []; // 為了相容舊版邏輯的陣列
+        let allMembers = []; 
+        let members = []; 
 
         const FX = { USD: 1, TWD: 33, JPY: 150, KRW: 1330 };
         let globalCCTotalBonusUSD = 0; 
@@ -876,7 +608,6 @@
             { id: 100, date: '2026-02-15', member: 'Yogi', type: 'Promotion', status: 'Approved', cmFb: 'Excellent work.', dirFb: 'Agreed. Proceed with promotion.' }
         ];
 
-        // --- 主題切換邏輯 ---
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('themeIcon');
@@ -893,7 +624,6 @@
             if(document.getElementById('view-home').classList.contains('block')) { renderHomeChart(); }
         }
 
-        // --- 2. LOGIN LOGIC (Google API Version + Fallback) ---
         async function handleLogin() {
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             const btn = document.getElementById('login-btn');
@@ -909,7 +639,6 @@
                 const response = await fetch(`${API_URL}?action=getMembers`, { method: 'GET', redirect: 'follow' });
                 const text = await response.text(); 
                 
-                // 檢查 Google 是否回傳登入畫面 (Unexpected token '<')
                 if(text.trim().startsWith('<')) {
                     throw new Error("Google API 被擋，啟動備用登入模式。");
                 }
@@ -941,9 +670,7 @@
                     errorMsg.classList.remove('hidden');
                 }
             } catch (error) {
-                // ⚠️ 如果 API 被擋，強行啟動「備用模式」並賦予權限
                 console.warn(error.message);
-                
                 allMembers = [
                     {Email: email, Name: 'Test Operator', Role: 'AgencyAdmin', CM: 'None'},
                     {Email: 'cc@test.com', Name: 'Yogi', Role: 'CC', CM: 'Test Operator'}
@@ -958,7 +685,6 @@
                 
                 alert("Google API 部署權限可能不正確 (收到 HTML 登入要求)。\n已啟動備用離線模式，為您自動賦予 Admin 權限進入系統測試。");
                 enterPortal();
-                
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Verify & Launch";
@@ -1005,7 +731,6 @@
 
         function logout() { location.reload(); }
 
-        // --- 3. NAVIGATION LOGIC ---
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(sec => { sec.classList.remove('block'); sec.classList.add('hidden'); });
             const target = document.getElementById('view-' + tabId);
@@ -1137,7 +862,6 @@
             }, 100);
         }
 
-        // --- NEW CM DASHBOARD TEAM PERFORMANCE ---
         function renderCMTeamPerf() {
             const tbody = document.getElementById('cm-team-perf-body');
             if(!tbody) return;
@@ -1173,6 +897,27 @@
             renderCMIndividualCharts();
         }
 
+        // --- WATCHLIST TOOL ---
+        function searchWatchlist() {
+            let input = document.getElementById('watchlist-search').value.trim().toLowerCase();
+            let resultDiv = document.getElementById('watchlist-result');
+            resultDiv.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-emerald-100', 'text-emerald-700', 'bg-yellow-100', 'text-yellow-700');
+            
+            if(!input) { resultDiv.classList.add('hidden'); return; }
+
+            // Mock Data Logic
+            if(input.includes('bad') || input.includes('scam')) {
+                resultDiv.classList.add('bg-red-100', 'text-red-700', 'border-red-300');
+                resultDiv.innerHTML = '🚫 <strong>RED FLAG:</strong> Do NOT contract this creator. Previously failed deliverables.';
+            } else if (input.includes('warn') || input.includes('late')) {
+                resultDiv.classList.add('bg-yellow-100', 'text-yellow-700', 'border-yellow-300');
+                resultDiv.innerHTML = '⚠️ <strong>YELLOW FLAG:</strong> Known for late deliveries. Proceed with CM Approval.';
+            } else {
+                resultDiv.classList.add('bg-emerald-100', 'text-emerald-700', 'border-emerald-300');
+                resultDiv.innerHTML = '✅ <strong>CLEAN:</strong> No past strikes found in DB. Safe to proceed.';
+            }
+        }
+
         // --- 4. PRICING CALCULATOR (MULTI-CURRENCY) ---
         function clearPricing() { document.getElementById('pc-views').value=''; document.getElementById('pc-cr-price').value=''; document.getElementById('pc-cpm').value=''; calcPricing(); }
         function fmtUSD(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
@@ -1194,7 +939,7 @@
             document.getElementById('pc-m1-twd').innerText = fmtTWD(m1USD * FX.TWD);
             let m1Prof = m1USD - crPriceUSD;
             document.getElementById('pc-m1-prof-usd').innerText = fmtUSD(m1Prof);
-            document.getElementById('pc-m1-prof-usd').className = m1Prof > 0 ? "text-xl font-bold text-emerald-500" : "text-xl font-bold text-red-500";
+            document.getElementById('pc-m1-prof-usd').className = m1Prof > 0 ? "text-xl font-bold text-emerald-500 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full" : "text-xl font-bold text-red-500 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full";
 
             document.getElementById('pc-co-35').innerText = fmtUSD(m1USD * 0.65);
             document.getElementById('pc-co-25').innerText = fmtUSD(m1USD * 0.75);
@@ -1204,60 +949,28 @@
             document.getElementById('pc-m2-twd').innerText = fmtTWD(m2USD * FX.TWD);
             let m2Prof = m2USD - crPriceUSD;
             document.getElementById('pc-m2-prof-usd').innerText = fmtUSD(m2Prof);
-            document.getElementById('pc-m2-prof-usd').className = m2Prof > 0 ? "text-xl font-bold text-emerald-500" : "text-xl font-bold text-red-500";
+            document.getElementById('pc-m2-prof-usd').className = m2Prof > 0 ? "text-xl font-bold text-emerald-500 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full" : "text-xl font-bold text-red-500 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full";
         }
 
-        // --- 5. CC BONUS CALCULATOR & REFRESH ---
+        // --- 5. CC BONUS CALCULATOR & MODIFIER LOGIC ---
         function getCampOptions() { 
             let html = '<option value="1">-- Select --</option>'; 
-            activeCampaigns.forEach(c => html += `<option value="${c.modifier}">${c.name}</option>`); 
+            activeCampaigns.forEach(c => html += `<option value="${c.modifier}">${c.name} (${c.modifier}x)</option>`); 
             return html; 
         }
         function getCurOptions() { 
             return `<option value="USD">USD</option><option value="TWD" selected>TWD</option><option value="JPY">JPY</option><option value="KRW">KRW</option>`; 
         }
-
-        function refreshCCCalc() { 
-            let totalBonusStr = document.getElementById('cc-out-bonus-usd').innerText.replace(/[$,]/g,'');
-            let totalMarginStr = document.getElementById('cc-out-net').innerText.replace(/[$,]/g,'');
-            let totalBonus = parseFloat(totalBonusStr) || 0;
-            let totalMargin = parseFloat(totalMarginStr) || 0;
-            let rowCount = document.querySelectorAll('#cc-deals-body tr').length;
-            
-            if (rowCount > 0 && totalBonus > 0) {
-                if(currentQuarter <= 4) {
-                    myQStats[currentQuarter].deals += rowCount;
-                    myQStats[currentQuarter].marginUSD += totalMargin;
-                    myQStats[currentQuarter].bonusUSD += totalBonus;
-                    
-                    document.getElementById('home-stat-deals').innerText = myQStats[currentQuarter].deals;
-                    document.getElementById('home-stat-margin').innerText = fmtUSD(myQStats[currentQuarter].marginUSD);
-                    document.getElementById('home-stat-bonus').innerText = fmtUSD(myQStats[currentQuarter].bonusUSD);
-                    document.getElementById('home-current-q').innerText = `Q${currentQuarter}`;
-                    renderHomeChart();
-                    
-                    currentQuarter++;
-                    if(currentQuarter > 4) alert("Quarterly limits reached. Don't forget to Archive Year in Performance tab!");
-                } else {
-                    alert("All 4 quarters filled. Please go to Yearly Performance and Archive the year first.");
-                    return;
-                }
-            }
-
-            document.getElementById('cc-deals-body').innerHTML=''; 
-            addCCDealRow(); 
-            calculateCCBonus(); 
-        }
         
         function addCCDealRow() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="p-1"><select class="cc-mod w-full p-2 border border-slate-300 rounded outline-none text-xs bg-slate-50 focus:bg-white text-slate-700">${getCampOptions()}</select></td>
-                <td class="p-1"><input type="text" placeholder="Name" class="w-full p-2 border border-slate-300 rounded outline-none text-xs focus:ring-1 focus:ring-blue-500 text-slate-700"></td>
-                <td class="p-1 flex space-x-1"><select class="cc-cl-cur border border-slate-300 rounded outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="cc-cl-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500 text-slate-700" placeholder="Client" oninput="calculateCCBonus()"></td>
-                <td class="p-1 flex space-x-1"><select class="cc-cr-cur border border-slate-300 rounded outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="cc-cr-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500 text-slate-700" placeholder="Creator" oninput="calculateCCBonus()"></td>
-                <td class="p-1 text-right font-bold text-slate-700 cc-row-prof text-xs leading-tight py-2">$0</td>
-                <td class="p-1 text-right"><button onclick="this.closest('tr').remove(); calculateCCBonus()" class="text-slate-400 hover:text-red-500 transition font-bold px-2">✖</button></td>
+                <td class="p-2"><select class="cc-mod w-full p-2 border border-slate-300 rounded outline-none text-xs bg-slate-50 text-slate-700">${getCampOptions()}</select></td>
+                <td class="p-2"><input type="text" placeholder="Name" class="w-full p-2 border border-slate-300 rounded outline-none text-xs focus:ring-1 focus:ring-blue-500 text-slate-700"></td>
+                <td class="p-2 flex space-x-1"><select class="cc-cl-cur border border-slate-300 rounded outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="cc-cl-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500 text-slate-700" placeholder="Client" oninput="calculateCCBonus()"></td>
+                <td class="p-2 flex space-x-1"><select class="cc-cr-cur border border-slate-300 rounded outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="cc-cr-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500 text-slate-700" placeholder="Creator" oninput="calculateCCBonus()"></td>
+                <td class="p-2 text-right font-bold text-slate-700 cc-row-prof text-xs leading-tight py-2">$0</td>
+                <td class="p-2 text-right"><button onclick="this.closest('tr').remove(); calculateCCBonus()" class="text-slate-400 hover:text-red-500 transition font-bold px-2">✖</button></td>
             `;
             document.getElementById('cc-deals-body').appendChild(tr);
         }
@@ -1272,10 +985,10 @@
                 let crFx = FX[row.querySelector('.cc-cr-cur').value];
                 
                 let profUSD = (clPr / clFx) - (crPr / crFx);
-                let modProfUSD = profUSD * mod;
+                let modProfUSD = profUSD * mod; // 🌟 應用加乘 Modifier
                 
                 row.querySelector('.cc-row-prof').innerText = fmtUSD(modProfUSD);
-                row.querySelector('.cc-row-prof').className = modProfUSD > 0 ? "p-1 text-right font-bold text-emerald-600 cc-row-prof text-xs leading-tight py-2" : "p-1 text-right font-bold text-slate-400 cc-row-prof text-xs leading-tight py-2";
+                row.querySelector('.cc-row-prof').className = modProfUSD > 0 ? "p-2 text-right font-bold text-emerald-600 cc-row-prof text-xs leading-tight py-2" : "p-2 text-right font-bold text-slate-400 cc-row-prof text-xs leading-tight py-2";
                 totalGrossUSD += modProfUSD;
             });
 
@@ -1305,7 +1018,84 @@
             if(['ce', 'dir'].includes(currentUserRole)) calculateCEBonus(); 
         }
 
+        // --- API SAVING FOR CC & CE ---
+        function saveCCDealsToDB() {
+            let rowCount = document.querySelectorAll('#cc-deals-body tr').length;
+            if(rowCount === 0) return alert("No deals to save.");
+            
+            let payload = {
+                sheet: "Deals",
+                data: [
+                    new Date().toLocaleDateString(),
+                    currentUserName,
+                    "CC",
+                    rowCount,
+                    document.getElementById('cc-out-gross').innerText,
+                    document.getElementById('cc-out-bonus-usd').innerText
+                ]
+            };
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload),
+                mode: "no-cors"
+            }).then(() => alert("Deals successfully pushed to Google Sheet (Deals Tab)."))
+              .catch(() => alert("Saved locally (Offline mode active)."));
+        }
+
+        function saveCEDealsToDB() {
+            let rowCount = document.querySelectorAll('#ce-deals-body tr').length;
+            if(rowCount === 0) return alert("No campaigns to save.");
+            
+            let payload = {
+                sheet: "Deals",
+                data: [
+                    new Date().toLocaleDateString(),
+                    currentUserName,
+                    "CE",
+                    rowCount,
+                    document.getElementById('ce-out-gross').innerText,
+                    document.getElementById('ce-grand-usd').innerText
+                ]
+            };
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload),
+                mode: "no-cors"
+            }).then(() => alert("Campaigns successfully pushed to Google Sheet (Deals Tab)."))
+              .catch(() => alert("Saved locally (Offline mode active)."));
+        }
+
         // --- 6. CE BONUS CALCULATOR ---
+        function refreshCCCalc() { 
+            let totalBonusStr = document.getElementById('cc-out-bonus-usd').innerText.replace(/[$,]/g,'');
+            let totalBonus = parseFloat(totalBonusStr) || 0;
+            let rowCount = document.querySelectorAll('#cc-deals-body tr').length;
+            
+            if (rowCount > 0 && totalBonus > 0) {
+                if(currentQuarter <= 4) {
+                    myQStats[currentQuarter].deals += rowCount;
+                    myQStats[currentQuarter].marginUSD += parseFloat(document.getElementById('cc-out-net').innerText.replace(/[$,]/g,''));
+                    myQStats[currentQuarter].bonusUSD += totalBonus;
+                    
+                    document.getElementById('home-stat-deals').innerText = myQStats[currentQuarter].deals;
+                    document.getElementById('home-stat-margin').innerText = fmtUSD(myQStats[currentQuarter].marginUSD);
+                    document.getElementById('home-stat-bonus').innerText = fmtUSD(myQStats[currentQuarter].bonusUSD);
+                    document.getElementById('home-current-q').innerText = `Q${currentQuarter}`;
+                    renderHomeChart();
+                    currentQuarter++;
+                    alert('Quarter Archived locally. Ensure you click "Archive Year" eventually.');
+                } else {
+                    alert("All 4 quarters filled. Please go to Yearly Performance and Archive the year first.");
+                    return;
+                }
+            }
+            document.getElementById('cc-deals-body').innerHTML=''; 
+            addCCDealRow(); 
+            calculateCCBonus(); 
+        }
+
         function refreshCECalc() { 
             let totalBonusStr = document.getElementById('ce-grand-usd').innerText.replace(/[$,]/g,'');
             let totalBonus = parseFloat(totalBonusStr) || 0;
@@ -1323,6 +1113,7 @@
                     document.getElementById('home-current-q').innerText = `Q${currentQuarter}`;
                     renderHomeChart();
                     currentQuarter++;
+                    alert('Quarter Archived locally. Ensure you click "Archive Year" eventually.');
                 } else {
                     alert("All 4 quarters filled. Please Archive the year first."); return;
                 }
@@ -1336,9 +1127,9 @@
             let options = '<option value="">-- Select Campaign --</option>';
             activeCampaigns.forEach(c => options += `<option value="${c.name}">${c.name}</option>`);
             tr.innerHTML = `
-                <td class="p-2"><select class="w-full p-2.5 border border-slate-300 rounded-lg outline-none text-xs bg-slate-50 focus:bg-white text-slate-700">${options}</select></td>
-                <td class="p-2 flex space-x-1"><select class="ce-cur border border-slate-300 rounded-lg outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="ce-rev w-full p-2.5 border border-slate-300 rounded-lg outline-none text-sm font-mono focus:ring-1 focus:ring-indigo-500 text-slate-700" placeholder="Revenue" oninput="calculateCEBonus()"></td>
-                <td class="p-2 text-right"><button onclick="this.closest('tr').remove(); calculateCEBonus()" class="text-slate-400 hover:text-red-500 transition font-bold px-2">✖</button></td>
+                <td class="p-3"><select class="w-full p-2.5 border border-slate-300 rounded-lg outline-none text-xs bg-slate-50 focus:bg-white text-slate-700">${options}</select></td>
+                <td class="p-3 flex space-x-1"><select class="ce-cur border border-slate-300 rounded-lg outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="ce-rev w-full p-2.5 border border-slate-300 rounded-lg outline-none text-sm font-mono focus:ring-1 focus:ring-indigo-500 text-slate-700" placeholder="Revenue" oninput="calculateCEBonus()"></td>
+                <td class="p-3 text-right"><button onclick="this.closest('tr').remove(); calculateCEBonus()" class="text-slate-400 hover:text-red-500 transition font-bold px-2">✖</button></td>
             `;
             document.getElementById('ce-deals-body').appendChild(tr);
         }
@@ -1371,7 +1162,26 @@
             document.getElementById('ce-out-third-month').innerText = fmtTWD(baseTWD + grandTWD);
         }
 
-        // --- 7. YEARLY PERFORMANCE & ARCHIVE (CC/CE) ---
+        // --- 7. CSV EXPORT & YEARLY ARCHIVE ---
+        function exportToCSV() {
+            let csv = "Member,Role,Emails Sent,Closed Deals,Total Deals\n";
+            document.querySelectorAll('#cm-team-perf-body tr').forEach(row => {
+                let cols = row.querySelectorAll('td');
+                if(cols.length >= 5) {
+                    csv += `${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText}\n`;
+                }
+            });
+            let blob = new Blob([csv], { type: 'text/csv' });
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'Team_Performance_Q' + currentQuarter + '.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
         function renderMyLogs() {
             const tbody = document.getElementById('yearly-perf-body'); tbody.innerHTML = '';
             for(let i=1; i<=4; i++) {
@@ -1385,6 +1195,13 @@
                 let d = new Date(); let year = d.getFullYear();
                 let bData = [myQStats[1].bonusUSD, myQStats[2].bonusUSD, myQStats[3].bonusUSD, myQStats[4].bonusUSD];
                 
+                // Push to Google Sheet
+                let payload = {
+                    sheet: "Archives",
+                    data: [ year, currentUserName, currentUserRole, myQStats[1].bonusUSD + myQStats[2].bonusUSD + myQStats[3].bonusUSD + myQStats[4].bonusUSD ]
+                };
+                fetch(API_URL, { method: "POST", body: JSON.stringify(payload), mode: "no-cors" });
+
                 let archiveId = 'arch-' + Date.now();
                 let accHTML = `
                 <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-4">
@@ -1438,6 +1255,11 @@
             let diff = parseFloat(document.getElementById('add-camp-diff').value); 
             if(name) { 
                 activeCampaigns.push({id: Date.now(), name, type, modifier: diff}); 
+                
+                // Push to DB
+                let payload = { sheet: "Campaigns", data: [Date.now(), name, type, diff] };
+                fetch(API_URL, { method: "POST", body: JSON.stringify(payload), mode: "no-cors" });
+
                 document.getElementById('add-camp-name').value=''; 
                 renderCampaignList(); 
                 if(document.getElementById('cc-deals-body').children.length > 0) refreshCCCalc();
@@ -1504,6 +1326,38 @@
             }
         }
 
+        // 🌟 核心：動態 Assessment 下拉選單邏輯
+        function updateAssessmentOptions() {
+            let memName = document.getElementById('assess-mem').value;
+            let typeSelect = document.getElementById('assess-type');
+            let currentType = typeSelect.value;
+            
+            if (!memName) return;
+            
+            let mem = members.find(m => m.name === memName);
+            let role = mem ? mem.title.toLowerCase() : '';
+            
+            let options = [
+                '<option value="Promotion">Promotion</option>',
+                '<option value="Salary Raise">Salary Raise</option>'
+            ];
+            
+            if (role.includes('cc') || role === 'coordinator') {
+                options.push('<option value="CE Conversion">CE Conversion</option>');
+                options.push('<option value="CM Conversion">CM Conversion</option>');
+            } else if (role.includes('ce') || role === 'executive') {
+                options.push('<option value="CM Conversion">CM Conversion</option>');
+            }
+            
+            typeSelect.innerHTML = options.join('');
+            
+            if (Array.from(typeSelect.options).some(opt => opt.value === currentType)) {
+                typeSelect.value = currentType;
+            }
+            
+            toggleAssessmentChecklist();
+        }
+
         function toggleAssessmentChecklist() {
             let type = document.getElementById('assess-type').value;
             let container = document.getElementById('assess-checklist-container');
@@ -1522,21 +1376,21 @@
                     <table class="w-full text-left text-sm text-slate-700 border-t border-slate-200 mt-2">
                         <thead class="bg-slate-800 text-white"><tr><th class="p-3 w-16 text-center">Tick</th><th class="p-3 w-48">Category</th><th class="p-3">Criteria required for promotion (1 Pt Each)</th></tr></thead>
                         <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Zero-Error Record:</strong> Flawless execution on Trello CRM updates and contract clauses.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Gatekeeping:</strong> Strictly enforces the "Hard Gate" rule (No contract = No product).</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Margin Protection:</strong> Habitually uses the Pricing Calculator to protect Target Margin.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Value Maximization:</strong> Successfully negotiates additional deliverables without increasing budget.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Error Recovery:</strong> Knows exact protocol for margin errors (e.g., quoting creator price).</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Red Flag Detection:</strong> Identifies critical red flags independently (e.g., bots, brand safety).</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Leadership</td><td class="p-3 text-slate-700"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Zero-Error Record:</strong> Flawless execution on Trello CRM updates and contract clauses.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Gatekeeping:</strong> Strictly enforces the "Hard Gate" rule (No contract = No product).</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Margin Protection:</strong> Habitually uses the Pricing Calculator to protect Target Margin.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Value Maximization:</strong> Successfully negotiates additional deliverables without increasing budget.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Error Recovery:</strong> Knows exact protocol for margin errors (e.g., quoting creator price).</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Red Flag Detection:</strong> Identifies critical red flags independently (e.g., bots, brand safety).</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Leadership</td><td class="p-3 text-slate-700"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
                         </tbody>
                     </table>
                 </div>`;
@@ -1572,6 +1426,10 @@
             let ds = new Date().toLocaleDateString();
             pendingAssessments.push({ id: Date.now(), date: ds, member, type, cmStatus, cmFb, cmName: currentUserName, criteriaHtml });
             
+            // Push to DB
+            let payload = { sheet: "Assessments", data: [ds, currentUserName, member, type, cmStatus, cmFb] };
+            fetch(API_URL, { method: "POST", body: JSON.stringify(payload), mode: "no-cors" });
+
             document.getElementById('assess-fb').value = '';
             document.getElementById('assess-mem').selectedIndex = 0;
             document.getElementById('assess-type').selectedIndex = 0;
@@ -1598,7 +1456,7 @@
                     <div class="space-y-3 border-t border-slate-100 pt-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Director Decision</label>
-                            <select id="dir-status-${p.id}" class="w-full p-2 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 font-bold">
+                            <select id="dir-status-${p.id}" class="w-full p-2 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 font-bold text-slate-700">
                                 <option value="Approved">✅ Approved</option>
                                 <option value="To be decided" selected>⏳ To be decided</option>
                                 <option value="Rejected">❌ Rejected</option>
@@ -1606,7 +1464,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Director Final Comment</label>
-                            <textarea id="dir-fb-${p.id}" class="w-full p-3 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 text-sm" rows="3" placeholder="Final remarks for the record..."></textarea>
+                            <textarea id="dir-fb-${p.id}" class="w-full p-3 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 text-sm text-slate-700" rows="3" placeholder="Final remarks for the record..."></textarea>
                         </div>
                         <div class="flex justify-end pt-2">
                             <button onclick="finalizeAssessment(${p.id})" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-2 rounded-lg transition shadow-md">Finalize & Archive</button>
@@ -1722,7 +1580,6 @@
 
         function submitQuiz() { document.getElementById('quiz-form').classList.add('hidden'); document.getElementById('quiz-success').classList.remove('hidden'); }
 
-        // --- 10. SOP UTILITIES ---
         function updateCC() { const cb = document.querySelectorAll('.cc-check'); let cnt = 0; cb.forEach(c => { const s = c.nextElementSibling; if(c.checked) { s.classList.add('line-through','text-slate-400'); cnt++; } else s.classList.remove('line-through','text-slate-400'); }); document.getElementById('cc-progress-text').innerText = Math.round((cnt/cb.length)*100)+'%'; document.getElementById('cc-progress-bar').style.width = Math.round((cnt/cb.length)*100)+'%'; }
         function resetCCChecklist() { if(confirm("Reset the CC Master Checklist?")) { document.querySelectorAll('.cc-check').forEach(c => c.checked=false); updateCC(); } }
 
@@ -1733,7 +1590,6 @@
         function copyContent(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>alert('Copied!')); }
         function copyCode() { navigator.clipboard.writeText(document.getElementById('uidCode').innerText).then(()=>{ let b=document.getElementById('copyBtn'); b.innerText='Copied!';b.classList.replace('bg-slate-700','bg-green-600'); setTimeout(()=>{b.innerText='Copy JS';b.classList.replace('bg-green-600','bg-slate-700');},2000)}); }
 
-        // --- 11. SEARCH ENGINE ---
         const searchIndex = [
             { title: "How to define a 'contactable' creator?", keywords: "contactable size views past works follower median", tab: "cc", subtab: "faq", elementId: "faq-cc-1" },
             { title: "How do I price a channel?", keywords: "price channel cpm calculate", tab: "cc", subtab: "faq", elementId: "faq-cc-2" },
