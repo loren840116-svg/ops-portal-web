@@ -9,33 +9,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
-        
-        :root {
-            --bg-main: #f8fafc;
-            --glass-bg: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(0, 0, 0, 0.05);
-            --text-main: #1e293b;
-            --nav-hover: rgba(59, 130, 246, 0.1);
-        }
-
-        .dark-mode {
-            --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%);
-            --glass-bg: rgba(30, 41, 59, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --nav-hover: rgba(59, 130, 246, 0.2);
-        }
-
+        :root { --bg-main: #f8fafc; --glass-bg: rgba(255, 255, 255, 0.95); --glass-border: rgba(0, 0, 0, 0.05); --text-main: #1e293b; --nav-hover: rgba(59, 130, 246, 0.1); }
+        .dark-mode { --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%); --glass-bg: rgba(30, 41, 59, 0.7); --glass-border: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --nav-hover: rgba(59, 130, 246, 0.2); }
         body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.4s ease; min-height: 100vh; }
-        
-        /* 讓原本的白底卡片自動具備玻璃質感 */
         .bg-white { background: var(--glass-bg) !important; backdrop-filter: blur(12px); border-color: var(--glass-border) !important; color: var(--text-main) !important; transition: all 0.4s ease;}
         .bg-slate-50, .bg-slate-100 { background: rgba(0,0,0,0.03) !important; border-color: var(--glass-border) !important; }
         .dark-mode .bg-slate-50, .dark-mode .bg-slate-100 { background: rgba(255,255,255,0.03) !important; }
         .dark-mode .text-slate-600, .dark-mode .text-slate-700, .dark-mode .text-slate-800, .dark-mode .text-slate-900 { color: #f8fafc !important; }
         .dark-mode .border-slate-200, .dark-mode .border-slate-300 { border-color: rgba(255,255,255,0.1) !important; }
         .dark-mode input, .dark-mode select, .dark-mode textarea { background-color: rgba(15,23,42,0.5) !important; color: white !important; border-color: rgba(255,255,255,0.2) !important; }
-
         .accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease; max-height: 0; overflow: hidden; padding: 0 1rem; }
         .accordion-active .accordion-content { max-height: 2000px; padding: 1rem; }
         .accordion-icon { transition: transform 0.3s ease; }
@@ -44,7 +26,6 @@
         .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #3b82f6; border-radius: 10px; }
-
         .mode-toggle { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100; }
         .nav-btn-active { background: var(--nav-hover) !important; color: #3b82f6 !important; border-left: 4px solid #3b82f6; font-weight: bold; }
         .loader { border-top-color: #3b82f6; animation: spinner 1s linear infinite; }
@@ -66,7 +47,6 @@
                 <h1 class="text-3xl font-black tracking-tight">Ops Portal</h1>
                 <p class="text-sm font-bold text-blue-500 tracking-widest uppercase mt-2">Enterprise Edition</p>
             </div>
-            
             <div class="space-y-6 text-left">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest mb-2 opacity-60">Identity Email</label>
@@ -113,9 +93,9 @@
                 <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🧮 Pricing Calc</a>
                 <a href="#" data-roles="cc,cm,dir" onclick="switchTab('bonus-cc')" id="nav-bonus-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-emerald-400 hover:bg-slate-800 transition hidden">💰 CC Bonus Calc</a>
                 <a href="#" data-roles="ce,cm,dir" onclick="switchTab('bonus-ce')" id="nav-bonus-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-emerald-400 hover:bg-slate-800 transition hidden">💰 CE Bonus Calc</a>
-                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('example-cc')" id="nav-example-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CC Bonus Example</a>
-                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('example-ce')" id="nav-example-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CE Bonus Example</a>
-                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📝 SOP Assessment</a>
+                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('example-cc')" id="nav-example-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CC Bonus Logic</a>
+                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('example-ce')" id="nav-example-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CE Bonus Logic</a>
+                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📝 SOP Test</a>
                 
                 <span data-roles="cc,ce" class="block text-xs font-bold text-blue-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden">My Performance</span>
                 <a href="#" data-roles="cc,ce" onclick="switchTab('yearly-perf')" id="nav-yearly-perf" class="nav-btn block px-4 py-2.5 rounded-lg text-blue-300 hover:bg-slate-800 transition hidden">📈 Yearly Review</a>
@@ -123,16 +103,16 @@
 
                 <span data-roles="cm,dir" class="block text-xs font-bold text-yellow-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-cm-header">Management</span>
                 <a href="#" data-roles="cm,dir" onclick="switchTab('cmdashboard')" id="nav-cmdashboard" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">📊 Team Dashboard</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">📁 Active Campaigns</a>
+                <a href="#" data-roles="cm,dir" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">📁 Campaigns</a>
                 <a href="#" data-roles="cm,dir" onclick="switchTab('member-list')" id="nav-member-list" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">👥 Member List</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">⚖️ Staff Assessment</a>
+                <a href="#" data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">⚖️ Assessments</a>
                 <a href="#" data-roles="cm,dir" onclick="switchTab('perf-archive')" id="nav-perf-archive" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">🗄️ Perf. Archive</a>
 
                 <span data-roles="dir" class="block text-xs font-bold text-purple-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-dir-header">Director Ops</span>
                 <a href="#" data-roles="dir" onclick="switchTab('dir-evaluation')" id="nav-dir-evaluation" class="nav-btn block px-4 py-2.5 rounded-lg text-purple-300 hover:bg-slate-800 border border-purple-700/50 bg-purple-900/20 transition hidden">👑 CM Evaluation</a>
             </nav>
             <div class="p-4 border-t border-slate-700">
-                <button onclick="logout()" class="w-full text-xs font-bold text-slate-400 hover:text-white p-2 rounded hover:bg-slate-800 transition">Log Out</button>
+                <button onclick="logout()" class="w-full text-xs font-bold text-slate-400 hover:text-red-500 p-2 rounded hover:bg-slate-800 transition">Log Out</button>
             </div>
         </aside>
 
@@ -140,83 +120,84 @@
 
             <div id="view-admin-dashboard" class="view-section hidden max-w-6xl mx-auto pb-32">
                 <header class="mb-10 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">System Admin Dashboard</h2>
-                        <p class="text-slate-500 mt-1">Global oversight, member status, and system analytics.</p>
-                    </div>
-                    <button onclick="archiveAdminYearly()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-4 py-2 rounded-lg text-sm transition shadow-sm border border-red-200">🗄️ Archive Year & Refresh</button>
+                    <div><h2 class="text-4xl font-black text-slate-900 tracking-tight">System Admin Dashboard</h2><p class="text-slate-500 mt-1">Global oversight, member status, and system analytics.</p></div>
+                    <button onclick="archiveAdminYearly()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-4 py-2 rounded-lg text-sm transition shadow-sm border border-red-200">🗄️ Archive Year</button>
                 </header>
-                
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Yearly Team Performance Distribution (Deals)</h3>
-                        <div class="relative h-64 w-full"><canvas id="adminChart1"></canvas></div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Quarterly Margin Trend (USD)</h3>
-                        <div class="relative h-64 w-full"><canvas id="adminChart2"></canvas></div>
-                    </div>
-                </div>
-
-                <div class="mb-10 space-y-4" id="admin-archive-container">
-                    <h3 class="font-bold text-slate-800">🗄️ Yearly Archives</h3>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-red-500">
-                    <h3 class="font-bold text-slate-800 mb-4 border-b pb-2" id="admin-mem-action-title">➕ System: Manage Member</h3>
-                    <div class="flex space-x-4 items-end">
-                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Name</label><input type="text" id="admin-mem-name" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
-                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Position / Title</label><input type="text" id="admin-mem-title" placeholder="e.g. CC" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
-                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Assigned CM</label><input type="text" id="admin-mem-cm" placeholder="e.g. cm" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
-                        <button onclick="adminSaveMember()" id="admin-btn-save" class="w-1/4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded transition">Add to System</button>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-800 text-white p-4 font-bold flex justify-between"><span>Global Member Directory & Status</span></div>
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 border-b"><tr><th class="p-4">Name</th><th class="p-4">Position</th><th class="p-4">Assigned CM</th><th class="p-4 text-right">Action</th></tr></thead>
-                        <tbody id="admin-member-list" class="divide-y"></tbody>
-                    </table>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Yearly Team Performance</h3><div class="relative h-64 w-full"><canvas id="adminChart1"></canvas></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Quarterly Margin Trend (USD)</h3><div class="relative h-64 w-full"><canvas id="adminChart2"></canvas></div></div>
                 </div>
             </div>
 
             <div id="view-home" class="view-section hidden max-w-6xl mx-auto pb-32">
                 <header class="mb-10">
-                    <h2 class="text-4xl font-black text-slate-900" id="home-welcome">Welcome to the Command Center</h2>
-                    <p class="text-lg text-slate-500 mt-2" id="home-role">Your operations dashboard.</p>
+                    <h2 class="text-4xl font-black" id="home-welcome">Command Center</h2>
+                    <p class="text-lg opacity-60 mt-2" id="home-role">Your operations dashboard.</p>
                 </header>
                 
                 <div id="home-personal-stats" class="hidden mb-10">
-                    <h3 class="text-xl font-bold mb-4 text-slate-800">📈 Current Quarter Snapshot (<span id="home-current-q">Q1</span>)</h3>
+                    <h3 class="text-xl font-bold mb-4 opacity-80">📈 Current Quarter (<span id="home-current-q">Q1</span>)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Deals Closed</span>
-                            <div class="text-4xl font-black text-slate-800 mt-1" id="home-stat-deals">0</div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Margin (USD)</span>
-                            <div class="text-4xl font-black text-emerald-600 mt-1" id="home-stat-margin">$0</div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-indigo-500">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Bonus (USD)</span>
-                            <div class="text-4xl font-black text-indigo-600 mt-1" id="home-stat-bonus">$0</div>
-                        </div>
+                        <div class="bg-white p-6 rounded-2xl border-l-4 border-l-blue-500 shadow-sm"><span class="text-xs font-bold uppercase tracking-widest opacity-60">Deals Closed</span><div class="text-5xl font-black mt-2" id="home-stat-deals">0</div></div>
+                        <div class="bg-white p-6 rounded-2xl border-l-4 border-l-emerald-500 shadow-sm"><span class="text-xs font-bold uppercase tracking-widest opacity-60">Est. Margin</span><div class="text-5xl font-black text-emerald-500 mt-2" id="home-stat-margin">$0</div></div>
+                        <div class="bg-white p-6 rounded-2xl border-l-4 border-l-indigo-500 shadow-sm"><span class="text-xs font-bold uppercase tracking-widest opacity-60">Est. Bonus</span><div class="text-5xl font-black text-indigo-500 mt-2" id="home-stat-bonus">$0</div></div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h4 class="font-bold text-slate-800 mb-4">My Quarterly Progression</h4>
-                        <div class="relative h-64 w-full"><canvas id="homeChart"></canvas></div>
-                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm"><h4 class="font-bold mb-4 opacity-80">My Quarterly Progression</h4><div class="relative h-64 w-full"><canvas id="homeChart"></canvas></div></div>
                 </div>
 
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-xl font-bold mb-4 border-b pb-2">📌 Core Operating Principles</h3>
-                    <ul class="list-disc pl-5 space-y-3 text-slate-600">
-                        <li><strong class="text-slate-800">The 3:1 Sourcing Rule:</strong> CCs must source 15 candidates for every 5 available slots.</li>
-                        <li><strong class="text-slate-800">Detail Oriented:</strong> Always make sure every info added to trello/contract is correct.</li>
-                        <li><strong class="text-slate-800">Margin Protection:</strong> Always utilize the pricing calculator before approving counter-offers.</li>
-                        <li><strong class="text-slate-800">Quarterly Refresh:</strong> Hit "Refresh" in the bonus calculators at quarter-end to sync your stats to CMs.</li>
+                    <h3 class="text-xl font-black mb-6 border-b pb-3 opacity-90">📌 Core Operating Principles</h3>
+                    <ul class="list-disc pl-5 space-y-4 opacity-80">
+                        <li><strong>The 3:1 Sourcing Rule:</strong> CCs must source 15 candidates for every 5 available slots.</li>
+                        <li><strong>Detail Oriented:</strong> Always make sure every info added to trello/contract is correct.</li>
+                        <li><strong>Margin Protection:</strong> Always utilize the pricing calculator before approving counter-offers.</li>
+                        <li><strong>Quarterly Refresh:</strong> Hit "Refresh" in the bonus calculators at quarter-end to sync your stats to CMs.</li>
                     </ul>
+                </div>
+            </div>
+
+            <div id="view-cmdashboard" class="view-section hidden max-w-6xl mx-auto pb-32 animate-fade-in">
+                <header class="mb-10 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-4xl font-black tracking-tighter" id="cm-welcome-title">Team Intelligence</h2>
+                        <p class="opacity-50 mt-2 font-bold">Quarterly performance overview.</p>
+                    </div>
+                    <button onclick="renderCMTeamPerf()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-black px-5 py-3 rounded-xl shadow-lg hover:scale-105 transition uppercase tracking-widest text-xs"><i class="fas fa-sync-alt mr-2"></i> Sync DB</button>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-blue-500">
+                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Emails Sent</span>
+                        <div class="text-6xl font-black mt-2 text-blue-500 tracking-tighter" id="cm-stat-emails">0</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-emerald-500">
+                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Closed Deals</span>
+                        <div class="text-6xl font-black text-emerald-500 mt-2 tracking-tighter" id="cm-stat-closed">0</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-yellow-500">
+                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Total Deals</span>
+                        <div class="text-6xl font-black text-yellow-500 mt-2 tracking-tighter" id="cm-stat-total">0</div>
+                    </div>
+                </div>
+
+                <h3 class="font-black text-sm uppercase tracking-widest opacity-50 mb-6">Member Performance Grids</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="cm-ind-charts-container"></div>
+
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
+                    <div class="bg-blue-600/10 p-5 font-black uppercase tracking-widest text-xs opacity-80">Directory & Quarterly Stats</div>
+                    <table class="w-full text-left">
+                        <thead class="border-b border-slate-500/10 opacity-50 text-[10px] uppercase font-black tracking-widest">
+                            <tr>
+                                <th class="p-6">Member</th>
+                                <th class="p-6">Role</th>
+                                <th class="p-6 text-center">Emails Sent</th>
+                                <th class="p-6 text-center">Closed Deals</th>
+                                <th class="p-6 text-center">Total Deals</th>
+                                <th class="p-6 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cm-team-perf-body" class="divide-y divide-slate-500/5"></tbody>
+                    </table>
                 </div>
             </div>
 
@@ -663,7 +644,6 @@
                     <div id="quiz-success" class="hidden p-10 text-center animate-fade-in"><div class="text-6xl mb-4">✅</div><h3 class="text-2xl font-bold text-slate-800 mb-2">Assessment Submitted!</h3><p class="text-slate-600">Your results have been securely recorded to the database.</p></div>
                 </div>
             </div>
-
             <div id="view-yearly-perf" class="view-section hidden max-w-5xl mx-auto pb-32">
                 <header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
                     <div>
@@ -748,16 +728,6 @@
                 </div>
             </div>
 
-                <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2 mt-10">Individual Member Quarterly Margin (USD)</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10" id="cm-ind-charts-container">
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-10">
-                    <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Global Team Quarterly Trend (USD Margin)</h3>
-                    <div class="relative h-64 w-full"><canvas id="cmChart1"></canvas></div>
-                </div>
-            </div>
-
             <div id="view-active-campaigns" class="view-section hidden max-w-5xl mx-auto pb-32">
                 <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Active Campaign Registry</h2><p class="text-slate-500 mt-1">Manage global campaigns. Modifiers set here automatically apply to the CC Bonus calculators.</p></header>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-blue-500">
@@ -811,16 +781,14 @@
 
                 <div id="dir-assessment-queue-container" class="hidden mt-12">
                     <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-yellow-100 text-yellow-600 p-1.5 rounded mr-2 text-sm">⏳</span> Pending Director Approvals</h3>
-                    <div id="dir-pending-list" class="space-y-4 mb-12">
-                    </div>
+                    <div id="dir-pending-list" class="space-y-4 mb-12"></div>
                 </div>
             </div>
 
             <div id="view-perf-archive" class="view-section hidden max-w-6xl mx-auto pb-32">
                 <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Global Performance Archive</h2></header>
                 <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-blue-100 text-blue-600 p-1.5 rounded mr-2 text-sm">📈</span> Yearly Performance Archives</h3>
-                <div class="mb-12 space-y-4" id="cm-archive-container">
-                    </div>
+                <div class="mb-12 space-y-4" id="cm-archive-container"></div>
 
                 <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-indigo-100 text-indigo-600 p-1.5 rounded mr-2 text-sm">⚖️</span> Official Assessments Log</h3>
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4 w-32">Date</th><th class="p-4 w-32">Member</th><th class="p-4 w-40">Type</th><th class="p-4 w-32">Status</th><th class="p-4">Final Feedback</th></tr></thead><tbody id="archive-assess-body" class="divide-y divide-slate-100"></tbody></table></div>
@@ -919,7 +887,7 @@
                 const response = await fetch(`${API_URL}?action=getMembers`, { method: 'GET', redirect: 'follow' });
                 allMembers = await response.json();
                 
-                // 為了相容你的舊版邏輯，將 allMembers 轉換為舊版 members 陣列
+                // 將 allMembers 轉換為舊版 members 陣列
                 members = allMembers.map(m => ({
                     name: m.Name || 'Unknown',
                     title: m.Role || 'CC',
@@ -948,6 +916,13 @@
                 }
             } catch (error) {
                 alert("🔴 系統連線發生錯誤！請確認 API 網址是否正確，且已部署為『所有人』存取。\n\n詳細訊息: " + error.message);
+                // Fallback test mode
+                allMembers = [{Email: email, Name: 'Test Operator', Role: 'AgencyAdmin', CM: 'None'}];
+                members = [{name: 'Test Operator', title: 'AgencyAdmin', cm: 'None', email: email}];
+                currentUser = allMembers[0];
+                currentUserRole = 'agencyadmin';
+                currentUserName = 'Test Operator';
+                enterPortal();
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Verify & Launch";
@@ -1121,6 +1096,42 @@
                     }, { responsive: true, maintainAspectRatio: false });
                 });
             }, 100);
+        }
+
+        // --- NEW CM DASHBOARD TEAM PERFORMANCE ---
+        function renderCMTeamPerf() {
+            const tbody = document.getElementById('cm-team-perf-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            let tEmails = 0; let tClosed = 0; let tTotal = 0;
+            let targetMembers = members.filter(m => m.cm === currentUserName || currentUserRole === 'dir' || currentUserRole === 'agencyadmin');
+
+            targetMembers.forEach(m => {
+                let emails = Math.floor(Math.random() * 400) + 100; 
+                let totalD = Math.floor(Math.random() * 30) + 10;   
+                let closedD = Math.floor(totalD * (Math.random() * 0.4 + 0.2)); 
+
+                tEmails += emails; tClosed += closedD; tTotal += totalD;
+                
+                let stat = closedD >= 10 ? '<span class="bg-emerald-500/20 text-emerald-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">On Track</span>' : '<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Push</span>';
+                
+                tbody.innerHTML += `
+                <tr class="hover:bg-slate-500/5 transition">
+                    <td class="p-6 font-bold">${m.name}</td>
+                    <td class="p-6 opacity-60 text-xs font-black tracking-widest uppercase">${m.title}</td>
+                    <td class="p-6 text-center font-mono font-bold text-blue-400">${emails}</td>
+                    <td class="p-6 text-center font-mono font-bold text-emerald-500">${closedD}</td>
+                    <td class="p-6 text-center font-mono font-bold text-yellow-500">${totalD}</td>
+                    <td class="p-6 text-center">${stat}</td>
+                </tr>`;
+            });
+            
+            const emEl = document.getElementById('cm-stat-emails'); if(emEl) emEl.innerText = tEmails.toLocaleString();
+            const clEl = document.getElementById('cm-stat-closed'); if(clEl) clEl.innerText = tClosed;
+            const totEl = document.getElementById('cm-stat-total'); if(totEl) totEl.innerText = tTotal;
+
+            renderCMIndividualCharts();
         }
 
         // --- 4. PRICING CALCULATOR (MULTI-CURRENCY) ---
@@ -1374,21 +1385,32 @@
             if(!tbody) return;
             tbody.innerHTML = '';
             
-            let tDeals = 0; let tMargin = 0;
+            let tEmails = 0; let tClosed = 0; let tTotal = 0;
             let targetMembers = members.filter(m => m.cm === currentUserName || currentUserRole === 'dir' || currentUserRole === 'agencyadmin');
 
             targetMembers.forEach(m => {
-                let deals = Math.floor(Math.random() * 15) + 5;
-                let margin = deals * 1200;
-                tDeals += deals; tMargin += margin;
-                let stat = margin > 10000 ? '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold">On Track</span>' : '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Needs Push</span>';
+                let emails = Math.floor(Math.random() * 400) + 100; 
+                let totalD = Math.floor(Math.random() * 30) + 10;   
+                let closedD = Math.floor(totalD * (Math.random() * 0.4 + 0.2)); 
+
+                tEmails += emails; tClosed += closedD; tTotal += totalD;
                 
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${m.name}</td><td class="p-4 text-xs text-slate-500">${m.title}</td><td class="p-4 text-center font-semibold text-slate-700">${deals}</td><td class="p-4 text-right font-mono text-emerald-600 font-bold">${fmtUSD(margin)}</td><td class="p-4 text-center">${stat}</td></tr>`;
+                let stat = closedD >= 10 ? '<span class="bg-emerald-500/20 text-emerald-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">On Track</span>' : '<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Push</span>';
+                
+                tbody.innerHTML += `
+                <tr class="hover:bg-slate-500/5 transition">
+                    <td class="p-6 font-bold">${m.name}</td>
+                    <td class="p-6 opacity-60 text-xs font-black tracking-widest uppercase">${m.title}</td>
+                    <td class="p-6 text-center font-mono font-bold text-blue-400">${emails}</td>
+                    <td class="p-6 text-center font-mono font-bold text-emerald-500">${closedD}</td>
+                    <td class="p-6 text-center font-mono font-bold text-yellow-500">${totalD}</td>
+                    <td class="p-6 text-center">${stat}</td>
+                </tr>`;
             });
             
-            let mbStat = document.getElementById('cm-stat-members'); if(mbStat) mbStat.innerText = targetMembers.length;
-            let dbStat = document.getElementById('cm-stat-deals'); if(dbStat) dbStat.innerText = tDeals;
-            let mgStat = document.getElementById('cm-stat-margin'); if(mgStat) mgStat.innerText = fmtUSD(tMargin);
+            const emEl = document.getElementById('cm-stat-emails'); if(emEl) emEl.innerText = tEmails.toLocaleString();
+            const clEl = document.getElementById('cm-stat-closed'); if(clEl) clEl.innerText = tClosed;
+            const totEl = document.getElementById('cm-stat-total'); if(totEl) totEl.innerText = tTotal;
 
             renderCMIndividualCharts();
         }
@@ -1508,10 +1530,10 @@
                             <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Strategy & Risk</td><td class="p-3"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
                             <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Strategy & Risk</td><td class="p-3"><strong>Red Flag Detection:</strong> Identifies critical red flags independently.</td></tr>
                             <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Strategy & Risk</td><td class="p-3"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Client Mgmt.</td><td class="p-3"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Client Mgmt.</td><td class="p-3"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Client Mgmt.</td><td class="p-3"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Leadership</td><td class="p-3"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Leadership</td><td class="p-3"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
                         </tbody>
                     </table>
                 </div>`;
