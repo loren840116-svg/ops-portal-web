@@ -1,897 +1,250 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CC/CE Operations System 4.0 (Enterprise)</title>
+    <title>CreatorDB | Ops Portal Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease; max-height: 0; overflow: hidden; padding: 0 1rem; }
-        .accordion-active .accordion-content { max-height: 2000px; padding: 1rem; }
-        .accordion-icon { transition: transform 0.3s ease; }
-        .accordion-active .accordion-icon { transform: rotate(180deg); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f8fafc; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .bg-gradient { background: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%); }
+        .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); transition: all 0.3s ease; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5); }
+        .sidebar-item { transition: all 0.2s; border-radius: 12px; }
+        .sidebar-item:hover { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .active-nav { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-left: 4px solid #3b82f6; }
+        .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800" onclick="hideSearchIfClickedOutside(event)">
+<body class="bg-gradient min-h-screen">
 
-    <div id="login-container" class="flex h-screen items-center justify-center bg-slate-900 relative overflow-hidden">
-        <div class="bg-white p-10 rounded-2xl shadow-2xl z-10 w-full max-w-md border-t-4 border-blue-500">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Ops Portal</h1>
-                <p class="text-sm text-slate-500 mt-2">Enterprise Edition</p>
-            </div>
-            
-            <div class="space-y-5">
-                <p class="text-slate-500 text-sm font-medium mb-2">Please enter your work email to access your workspace.</p>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Work Email</label>
-                    <input type="email" id="login-email" placeholder="name@creatordb.app" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold" onkeypress="if(event.key === 'Enter') verifyEmail()">
+    <div id="loginPage" class="flex items-center justify-center min-h-screen p-4">
+        <div class="glass p-10 rounded-3xl shadow-2xl w-full max-w-md text-center">
+            <div class="mb-8">
+                <div class="inline-block p-4 rounded-2xl bg-blue-600/20 mb-4">
+                    <i class="fas fa-rocket text-4xl text-blue-500"></i>
                 </div>
-                <div id="login-error" class="hidden text-red-500 text-xs font-bold text-center bg-red-50 p-2 rounded">Access Denied</div>
-                <button onclick="verifyEmail()" id="login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow-md mt-4 flex justify-center items-center gap-2">
-                    Verify & Login &rarr;
-                </button>
+                <h1 class="text-3xl font-bold tracking-tight text-white">Ops Portal <span class="text-blue-500">Pro</span></h1>
+                <p class="text-slate-400 mt-2">Enterprise Resource Management</p>
             </div>
             
-            <div class="mt-6 border-t border-slate-100 pt-4 text-xs text-slate-400 text-center leading-relaxed">
-                Secure Authentication System<br>Connected to Agency Database
+            <div class="space-y-4">
+                <div class="relative text-left">
+                    <label class="text-xs font-semibold text-slate-400 ml-1 uppercase tracking-wider">Work Email</label>
+                    <input type="email" id="emailInput" placeholder="name@creatordb.app" 
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+                </div>
+                <button onclick="handleLogin()" id="loginBtn" class="w-full btn-primary text-white font-bold py-3 rounded-xl">
+                    Authorize Access
+                </button>
+                <p id="loginError" class="text-red-400 text-sm mt-3 hidden italic">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Access Denied: Email not recognized.
+                </p>
             </div>
         </div>
     </div>
 
-    <div id="app-container" class="hidden flex h-screen overflow-hidden">
-        
-        <aside class="w-64 bg-slate-900 text-white flex flex-col shrink-0 z-30">
-            <div class="p-6 border-b border-slate-700">
-                <h1 class="text-lg font-bold text-blue-400">Ops Portal</h1>
-                <div class="flex items-center mt-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
-                    <p class="text-xs text-slate-400 font-mono capitalize" id="current-user-display"></p>
+    <div id="mainInterface" class="flex min-h-screen hidden">
+        <aside class="w-72 glass m-4 rounded-3xl p-6 flex flex-col shadow-2xl">
+            <div class="flex items-center space-x-3 mb-10 px-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-sm"></i>
                 </div>
+                <span class="text-xl font-bold tracking-tighter text-white">CREATOR<span class="text-blue-500">DB</span></span>
             </div>
             
-            <div class="px-4 py-4 border-b border-slate-700 relative" id="search-container">
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
-                    <input type="text" id="global-search" oninput="performSearch()" placeholder="Search..." class="w-full pl-9 pr-3 py-2.5 bg-slate-800 text-sm text-white rounded-lg focus:ring-2 outline-none border border-slate-700">
-                    <button id="clear-search" onclick="clearSearch()" class="absolute inset-y-0 right-0 items-center pr-3 text-slate-400 hidden">✖</button>
-                </div>
-                <div id="search-dropdown" class="absolute left-4 right-4 top-[70px] bg-white rounded-lg shadow-2xl border hidden z-50 max-h-80 overflow-y-auto flex flex-col divide-y text-slate-800"></div>
-            </div>
-
-            <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar text-sm" id="sidebar-nav">
-                <span data-roles="agencyadmin" class="block text-xs font-bold text-red-400 uppercase tracking-widest mt-2 mb-1 px-2 hidden">System Admin</span>
-                <a href="#" data-roles="agencyadmin" onclick="switchTab('admin-dashboard')" id="nav-admin-dashboard" class="nav-btn block px-4 py-2.5 rounded-lg text-red-300 hover:bg-slate-800 border border-red-700/50 bg-red-900/20 transition hidden">⚙️ Admin Dashboard</a>
-                
-                <span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden">Knowledge Base</span>
-                <a href="#" data-roles="cc,ce,cm,dir,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🏠 Dashboard Home</a>
-                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('cc')" id="nav-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🎯 CC Portal</a>
-                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('ce')" id="nav-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🛡️ CE Portal</a>
-                
-                <span data-roles="cc,ce,cm,dir" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden">Tools & Bonus</span>
-                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🧮 Pricing Calc</a>
-                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('bonus-cc')" id="nav-bonus-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-emerald-400 hover:bg-slate-800 transition hidden">💰 CC Bonus Calc</a>
-                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('bonus-ce')" id="nav-bonus-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-emerald-400 hover:bg-slate-800 transition hidden">💰 CE Bonus Calc</a>
-                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('example-cc')" id="nav-example-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CC Bonus Example</a>
-                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('example-ce')" id="nav-example-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CE Bonus Example</a>
-                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📝 SOP Assessment</a>
-                
-                <span data-roles="cc,ce" class="block text-xs font-bold text-blue-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden">My Performance</span>
-                <a href="#" data-roles="cc,ce" onclick="switchTab('yearly-perf')" id="nav-yearly-perf" class="nav-btn block px-4 py-2.5 rounded-lg text-blue-300 hover:bg-slate-800 transition hidden">📈 Yearly Review</a>
-                <a href="#" data-roles="cc,ce" onclick="switchTab('my-assessments')" id="nav-my-assessments" class="nav-btn block px-4 py-2.5 rounded-lg text-blue-300 hover:bg-slate-800 transition hidden">💌 My Assessments</a>
-
-                <span data-roles="cm,dir" class="block text-xs font-bold text-yellow-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-cm-header">Management</span>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('cmdashboard')" id="nav-cmdashboard" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">📊 Team Dashboard</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">📁 Active Campaigns</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('member-list')" id="nav-member-list" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">👥 Member List</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">⚖️ Staff Assessment</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('perf-archive')" id="nav-perf-archive" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">🗄️ Perf. Archive</a>
-
-                <span data-roles="dir" class="block text-xs font-bold text-purple-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-dir-header">Director Ops</span>
-                <a href="#" data-roles="dir" onclick="switchTab('dir-evaluation')" id="nav-dir-evaluation" class="nav-btn block px-4 py-2.5 rounded-lg text-purple-300 hover:bg-slate-800 border border-purple-700/50 bg-purple-900/20 transition hidden">👑 CM Evaluation</a>
+            <nav class="flex-1 space-y-2">
+                <button onclick="showSection('memberList')" id="nav-members" class="sidebar-item active-nav w-full flex items-center space-x-3 p-4">
+                    <i class="fas fa-users-viewfinder"></i>
+                    <span class="font-medium">Member Directory</span>
+                </button>
+                <button onclick="showSection('dashboard')" id="nav-dashboard" class="sidebar-item w-full flex items-center space-x-3 p-4 hidden">
+                    <i class="fas fa-chart-pie"></i>
+                    <span class="font-medium">Analytics Engine</span>
+                </button>
             </nav>
-            <div class="p-4 border-t border-slate-700">
-                <button onclick="logout()" class="w-full text-xs font-bold text-slate-400 hover:text-white p-2 rounded hover:bg-slate-800 transition">Log Out</button>
+
+            <div class="mt-auto pt-6 border-t border-slate-700">
+                <div class="flex items-center space-x-3 p-2 bg-slate-800/40 rounded-2xl mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white" id="userInitial">U</div>
+                    <div class="overflow-hidden">
+                        <p id="userName" class="text-sm font-bold truncate text-white">User Name</p>
+                        <p id="userRole" class="text-xs text-slate-500 uppercase tracking-tighter">Role</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full text-slate-400 hover:text-red-400 text-sm flex items-center justify-center p-2 transition">
+                    <i class="fas fa-power-off mr-2"></i> Sign Out
+                </button>
             </div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto bg-slate-100 p-10 custom-scrollbar relative" id="main-scroll-area">
-
-            <div id="view-admin-dashboard" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-10 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">System Admin Dashboard</h2>
-                        <p class="text-slate-500 mt-1">Global oversight, member status, and system analytics.</p>
+        <main class="flex-1 p-8 overflow-y-auto">
+            <div id="section-memberList" class="section animate-fade-in">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-white tracking-tight">Member Directory</h2>
+                    <div class="text-sm text-slate-400 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700">
+                        <i class="fas fa-sync-alt mr-2"></i> Real-time Sync Active
                     </div>
-                    <button onclick="archiveAdminYearly()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-4 py-2 rounded-lg text-sm transition shadow-sm border border-red-200">🗄️ Archive Year & Refresh</button>
-                </header>
+                </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Yearly Team Performance Distribution (Deals)</h3>
-                        <div class="relative h-64 w-full"><canvas id="adminChart1"></canvas></div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Quarterly Margin Trend (USD)</h3>
-                        <div class="relative h-64 w-full"><canvas id="adminChart2"></canvas></div>
-                    </div>
-                </div>
-
-                <div class="mb-10 space-y-4" id="admin-archive-container"><h3 class="font-bold text-slate-800">🗄️ Yearly Archives</h3></div>
-
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-red-500">
-                    <h3 class="font-bold text-slate-800 mb-4 border-b pb-2" id="admin-mem-action-title">➕ System: Manage Member</h3>
-                    <div class="flex space-x-4 items-end">
-                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Name</label><input type="text" id="admin-mem-name" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
-                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Position / Title</label><input type="text" id="admin-mem-title" placeholder="e.g. CC" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
-                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Assigned Manager</label><input type="text" id="admin-mem-cm" placeholder="e.g. Jason" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
-                        <button onclick="adminSaveMember()" id="admin-btn-save" class="w-1/4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded transition">Add to System</button>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-800 text-white p-4 font-bold flex justify-between"><span>Global Member Directory & Status</span></div>
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 border-b"><tr><th class="p-4">Name</th><th class="p-4">Position</th><th class="p-4">Assigned Manager</th><th class="p-4 text-right">Action</th></tr></thead>
-                        <tbody id="admin-member-list" class="divide-y"></tbody>
+                <div class="glass rounded-3xl overflow-hidden shadow-2xl">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-slate-800/50 text-slate-400 text-xs uppercase tracking-widest">
+                                <th class="px-8 py-5 font-semibold">Identity</th>
+                                <th class="px-8 py-5 font-semibold">Contact Email</th>
+                                <th class="px-8 py-5 font-semibold text-center">Status / Role</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody" class="divide-y divide-slate-700/50">
+                            </tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="view-home" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-10">
-                    <h2 class="text-4xl font-black text-slate-900" id="home-welcome">Welcome to the Command Center</h2>
-                    <p class="text-lg text-slate-500 mt-2" id="home-role">Your operations dashboard.</p>
-                </header>
-                
-                <div id="home-personal-stats" class="hidden mb-10">
-                    <h3 class="text-xl font-bold mb-4 text-slate-800">📈 Current Quarter Snapshot (<span id="home-current-q">Q1</span>)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Deals Closed</span>
-                            <div class="text-4xl font-black text-slate-800 mt-1" id="home-stat-deals">0</div>
+            <div id="section-dashboard" class="section hidden animate-fade-in">
+                <h2 class="text-3xl font-bold text-white tracking-tight mb-8">Analytics Engine</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="glass p-8 rounded-3xl lg:col-span-1 shadow-2xl">
+                        <h3 class="text-lg font-bold mb-6 text-slate-200"><i class="fas fa-chart-donut mr-2 text-blue-500"></i>Role Allocation</h3>
+                        <canvas id="roleChart"></canvas>
+                    </div>
+                    <div class="lg:col-span-2 grid grid-cols-2 gap-4">
+                        <div class="glass p-6 rounded-3xl flex flex-col justify-center items-center">
+                            <p class="text-slate-400 text-sm uppercase">Total Ops</p>
+                            <p id="stat-total" class="text-5xl font-bold text-white mt-2">--</p>
                         </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Margin (USD)</span>
-                            <div class="text-4xl font-black text-emerald-600 mt-1" id="home-stat-margin">$0</div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-indigo-500">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Bonus (USD)</span>
-                            <div class="text-4xl font-black text-indigo-600 mt-1" id="home-stat-bonus">$0</div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h4 class="font-bold text-slate-800 mb-4">My Quarterly Progression</h4>
-                        <div class="relative h-64 w-full"><canvas id="homeChart"></canvas></div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-xl font-bold mb-4 border-b pb-2">📌 Core Operating Principles</h3>
-                    <ul class="list-disc pl-5 space-y-3 text-slate-600">
-                        <li><strong class="text-slate-800">The 3:1 Sourcing Rule:</strong> CCs must source 15 candidates for every 5 available slots.</li>
-                        <li><strong class="text-slate-800">Detail Oriented:</strong> Always make sure every info added to trello/contract is correct.</li>
-                        <li><strong class="text-slate-800">Margin Protection:</strong> Always utilize the pricing calculator before approving counter-offers.</li>
-                        <li><strong class="text-slate-800">Quarterly Refresh:</strong> Hit "Refresh" in the bonus calculators at quarter-end to sync your stats to CMs.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div id="view-cc" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-6"><div class="flex items-center space-x-3 mb-2"><span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Role: Campaign Coordinator</span></div><h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Campaign Coordinator SOPs</h2></header>
-                
-                <div class="flex flex-wrap gap-2 bg-slate-200/50 p-1.5 rounded-xl w-fit mb-8 border border-slate-200">
-                    <button onclick="switchSubTab('cc', 'tools')" id="tab-cc-tools" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-lg bg-white shadow-sm text-blue-700 transition">🧰 Sourcing & Tools</button>
-                    <button onclick="switchSubTab('cc', 'workflow')" id="tab-cc-workflow" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition">📅 6-Week Workflow</button>
-                    <button onclick="switchSubTab('cc', 'checklist')" id="tab-cc-checklist" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition">✅ Execution SOP</button>
-                    <button onclick="switchSubTab('cc', 'faq')" id="tab-cc-faq" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition">❓ FAQ</button>
-                    <button onclick="switchSubTab('cc', 'promotion')" id="tab-cc-promotion" class="tab-btn-cc px-5 py-2 text-sm font-bold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition">🚀 Path to CE</button>
-                </div>
-
-                <div id="cc-sub-tools" class="sub-view-cc block animate-fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition"><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">📚 Core Training</h4><div class="space-y-2"><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">CreatorDB Guide</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">CC Master Workflow</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Bonus System Wiki</a></div></div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition"><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">💬 Comm. Docs</h4><div class="space-y-2"><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Email Signature</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Master Templates</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Demo Protocol</a></div></div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition"><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">📈 Data & Pricing</h4><div class="space-y-2"><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Clients Folder</a><a href="#" onclick="switchTab('calculator')" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Pricing Calculator</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">TW Pricing Logic</a></div></div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition"><div><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">🔍 Sourcing Tech</h4><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">CreatorDB SaaS</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">BigQuery Code</a></div><div class="bg-slate-100 p-3 rounded-lg border mt-4 text-xs"><strong>🕷️ Spider Proxies</strong><br>User: test<br>Pass: pass123</div></div>
-                    </div>
-                    <div class="bg-slate-800 rounded-xl overflow-hidden"><div class="p-4 border-b border-slate-700 flex justify-between items-center"><h4 class="font-bold text-white">YouTube UID Extractor Bookmarklet</h4><button onclick="copyCode()" id="copyBtn" class="bg-slate-700 text-white text-xs font-bold py-2 px-4 rounded">Copy Code</button></div><div class="p-5 overflow-x-auto bg-[#0d1117]"><pre><code id="uidCode" class="text-sm text-green-400 font-mono">javascript:(function(){let url=window.location.href;if(url.includes('/channel/')||url.includes('/@')){fetch(url,{cache:"no-store"}).then(r=>r.text()).then(html=>{var match=html.match(/<link rel="canonical" href="([^"]+)"/i);match?prompt('Channel ID:',match[1].split('/').pop()):alert('ID not found.');})}})();</code></pre></div></div>
-                </div>
-
-                <div id="cc-sub-workflow" class="sub-view-cc hidden animate-fade-in">
-                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">📅 6-Week Master Workflow</h3>
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4 w-32">Phase</th><th class="p-4">Action Item</th><th class="p-4 w-24">Owner</th><th class="p-4 w-28">Timing</th><th class="p-4">SOP Note</th></tr></thead><tbody class="divide-y"><tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">1. Strategy</td><td class="p-4">Campaign kick-off meeting</td><td class="p-4">CE & CC</td><td class="p-4 font-semibold text-blue-600">Day 1</td><td class="p-4 text-xs">Confirm budget, KPIs, niches.</td></tr><tr class="bg-red-50/30 hover:bg-red-50"><td class="p-4 font-bold text-slate-800 border-l-4 border-red-500">2. Sourcing</td><td class="p-4 font-semibold text-red-700">⚠️ Sourcing Health Check</td><td class="p-4">CE & CC</td><td class="p-4 font-semibold text-red-600">Day 5</td><td class="p-4 text-xs">If 5 creators needed, you need 15 potentials.</td></tr><tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">3. Contract</td><td class="p-4">Outreach & Contracting</td><td class="p-4">CC</td><td class="p-4 font-semibold text-blue-600">Day 14</td><td class="p-4 text-xs">Get contracts signed.</td></tr></tbody></table></div>
-                </div>
-
-                <div id="cc-sub-checklist" class="sub-view-cc hidden animate-fade-in">
-                    <div class="flex justify-between items-end mb-4 border-b pb-2"><h3 class="text-xl font-bold text-slate-800">✅ Deal Execution SOP</h3><button onclick="resetCCChecklist()" class="text-sm font-bold text-slate-500 hover:text-red-600">Reset</button></div>
-                    <div class="sticky top-0 z-10 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-sm border mb-6"><div class="flex justify-between items-end mb-2"><span class="font-bold text-slate-700 text-sm">Deal Progress</span><span id="cc-progress-text" class="text-lg font-extrabold text-blue-600">0%</span></div><div class="w-full bg-slate-200 rounded-full h-2"><div id="cc-progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div></div></div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-5 rounded-xl border shadow-sm"><h4 class="font-bold text-blue-600 border-b pb-2 mb-3">1. Initial Setup</h4><label class="flex items-start space-x-3 cursor-pointer group"><input type="checkbox" class="cc-check mt-1 w-4 h-4 text-blue-600 rounded shrink-0" onchange="updateCC()"><span class="cc-text text-slate-700 text-sm">Set up Trello Card.</span></label></div>
-                        <div class="bg-white p-5 rounded-xl border shadow-sm"><h4 class="font-bold text-blue-600 border-b pb-2 mb-3">2. Pricing</h4><label class="flex items-start space-x-3 cursor-pointer group"><input type="checkbox" class="cc-check mt-1 w-4 h-4 text-blue-600 rounded shrink-0" onchange="updateCC()"><span class="cc-text text-slate-700 text-sm">Negotiate using calculator. Update Trello.</span></label></div>
-                        <div class="bg-white p-5 rounded-xl border shadow-sm"><h4 class="font-bold text-blue-600 border-b pb-2 mb-3">3. Contract</h4><label class="flex items-start space-x-3 cursor-pointer group"><input type="checkbox" class="cc-check mt-1 w-4 h-4 text-blue-600 rounded shrink-0" onchange="updateCC()"><span class="cc-text text-slate-700 text-sm">Send contract and verify terms.</span></label></div>
-                        <div class="bg-white p-5 rounded-xl border shadow-sm"><h4 class="font-bold text-blue-600 border-b pb-2 mb-3">4. Launch</h4><label class="flex items-start space-x-3 cursor-pointer group"><input type="checkbox" class="cc-check mt-1 w-4 h-4 text-blue-600 rounded shrink-0" onchange="updateCC()"><span class="cc-text text-slate-700 text-sm">Review draft, verify links, mark Live.</span></label></div>
-                    </div>
-                </div>
-
-                <div id="cc-sub-faq" class="sub-view-cc hidden animate-fade-in">
-                    <h3 class="text-xl font-bold text-slate-800 mb-6 border-b border-slate-200 pb-2">❓ CC FAQ</h3>
-                    <div class="space-y-4">
-                        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" id="faq-cc-1"><button onclick="toggleAccordion('faq-cc-1')" class="w-full p-5 text-left font-bold text-slate-800 flex justify-between"><span>Q: How to price a channel?</span><span class="accordion-icon">▼</span></button><div class="accordion-content bg-slate-50 border-t text-sm p-4">Identify average views (last 20 videos) and multiply by Target CPM.</div></div>
-                        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" id="faq-cc-2"><button onclick="toggleAccordion('faq-cc-2')" class="w-full p-5 text-left font-bold text-slate-800 flex justify-between"><span>Q: What if rate is too high?</span><span class="accordion-icon">▼</span></button><div class="accordion-content bg-slate-50 border-t text-sm p-4">Negotiate first using expected budget as target. Use counteroffer calculator.</div></div>
-                    </div>
-                </div>
-
-                <div id="cc-sub-promotion" class="sub-view-cc hidden animate-fade-in">
-                    <h3 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">CC-CE Conversion Protocol</h3>
-                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8 shadow-sm">
-                        <h4 class="font-extrabold text-blue-900 mb-2">🛑 Prerequisites</h4>
-                        <ul class="list-disc pl-5 text-sm text-blue-800"><li>Tenure > 1 year.</li><li>CM Endorsement for executive reporting.</li></ul>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border">
-                        <h4 class="font-bold mb-4">Trial Phase</h4>
-                        <p class="text-sm text-slate-600">Once approved, you enter a 1-month trial acting as CE on a small campaign before final conversion.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-ce" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-6"><div class="flex items-center space-x-3 mb-2"><span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Role: Campaign Executive</span></div><h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Campaign Executive SOPs</h2><p class="text-lg text-slate-500 mt-2">Objective: Manage client expectations, protect the CC team from volatility, and ensure on-time, on-budget delivery.</p></header>
-                
-                <div class="flex flex-wrap gap-2 bg-slate-200/50 p-1.5 rounded-xl w-fit mb-8 border border-slate-200">
-                    <button onclick="switchSubTab('ce', 'checklist')" id="tab-ce-checklist" class="tab-btn-ce px-5 py-2 text-sm font-bold rounded-lg bg-white shadow-sm text-indigo-700 transition">📋 Master Checklist</button>
-                    <button onclick="switchSubTab('ce', 'pricing')" id="tab-ce-pricing" class="tab-btn-ce px-5 py-2 text-sm font-bold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition">📊 Pricing Strategy</button>
-                    <button onclick="switchSubTab('ce', 'delay')" id="tab-ce-delay" class="tab-btn-ce px-5 py-2 text-sm font-bold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition">⏳ Client Delay</button>
-                    <button onclick="switchSubTab('ce', 'crisis')" id="tab-ce-crisis" class="tab-btn-ce px-5 py-2 text-sm font-bold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition">🚨 Crisis & Offboard</button>
-                </div>
-
-                <div id="ce-sub-checklist" class="sub-view-ce block animate-fade-in">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-                        <div class="lg:col-span-2">
-                            <div class="flex justify-between items-end mb-4 border-b border-slate-200 pb-2"><h3 class="text-xl font-bold text-slate-800">🛡️ CE Master Checklist</h3><button onclick="resetCEChecklist()" class="text-sm font-bold text-slate-500 hover:text-red-600 transition flex items-center">🧹 Reset</button></div>
-                            <div class="sticky top-0 z-10 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-sm border border-slate-200 mb-6"><div class="flex justify-between items-end mb-2"><span class="font-bold text-slate-700 text-sm">Campaign Progress</span><span id="ce-progress-text" class="text-lg font-extrabold text-indigo-600">0%</span></div><div class="w-full bg-slate-200 rounded-full h-2"><div id="ce-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div></div></div>
-                            <div class="space-y-4">
-                                <div class="bg-white p-5 rounded-xl border"><h4 class="font-bold text-indigo-600 border-b pb-2 mb-3 text-sm">Phase 1: Setup</h4><label class="flex space-x-3 cursor-pointer"><input type="checkbox" class="ce-check mt-1" onchange="updateCE()"><span class="text-slate-700 text-sm">Budget Locked & Brief Translated.</span></label></div>
-                                <div class="bg-white p-5 rounded-xl border"><h4 class="font-bold text-indigo-600 border-b pb-2 mb-3 text-sm">Phase 3: Proposal</h4><label class="flex space-x-3 cursor-pointer"><input type="checkbox" class="ce-check mt-1" onchange="updateCE()"><span class="text-slate-700 text-sm">Off-Brand filter applied. Used Pricing Calculator.</span></label></div>
-                            </div>
-                        </div>
-                        <div class="space-y-6">
-                            <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-200 shadow-sm" id="ce-day5-check"><h3 class="text-lg font-bold text-indigo-900 mb-2">⚠️ Day 5 Health Check</h3><p class="text-xs text-indigo-700 mb-4 pb-3 border-b border-indigo-200">The Intervention Point. Sit down with CC on Day 5.</p><div class="space-y-3"><label class="flex items-start space-x-3 cursor-pointer"><input type="checkbox" class="mt-1"><span class="text-indigo-900 text-sm">The 3:1 Ratio</span></label><label class="flex items-start space-x-3 cursor-pointer"><input type="checkbox" class="mt-1"><span class="text-indigo-900 text-sm">Budget Forecast</span></label></div></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="ce-sub-pricing" class="sub-view-ce hidden animate-fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-xl shadow-sm border"><div class="bg-slate-800 p-4 text-center"><span class="bg-slate-600 text-white text-xs font-bold px-2 py-1 rounded">Model 1</span><h4 class="font-bold text-white text-lg mt-2">Flat Fee</h4></div><div class="p-5 text-sm text-slate-600">Fixed rate based on last 20 videos avg.</div></div>
-                        <div class="bg-white rounded-xl shadow-sm border border-t-4 border-t-purple-500"><div class="bg-purple-50 p-4 text-center border-b border-purple-100"><span class="bg-purple-200 text-purple-800 text-xs font-bold px-2 py-1 rounded">Model 2</span><h4 class="font-bold text-purple-900 text-lg mt-2">View Guarantee (VG)</h4></div><div class="p-5 text-sm text-slate-600">Pay premium for safety. "Make-Good" clause.</div></div>
-                        <div class="bg-white rounded-xl shadow-sm border"><div class="bg-emerald-50 p-4 text-center border-b border-emerald-100"><span class="bg-emerald-200 text-emerald-800 text-xs font-bold px-2 py-1 rounded">Model 3</span><h4 class="font-bold text-emerald-900 text-lg mt-2">Dynamic Scaler</h4></div><div class="p-5 text-sm text-slate-600">Dollars for attention. Pay exactly for 30-day views.</div></div>
-                    </div>
-                </div>
-
-                <div id="ce-sub-delay" class="sub-view-ce hidden animate-fade-in">
-                    <h3 class="text-2xl font-extrabold text-slate-900 mb-6 border-b pb-3">⏳ Client Delay in Response Protocols</h3>
-                    <div class="mb-10 bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 p-6 rounded-r-xl shadow-sm">
-                        <h3 class="text-lg font-bold text-red-900 mb-2">⚠️ The 3-5-5+ Escalation Rule</h3>
-                        <p class="text-sm text-red-800">3 Days: Gentle Nudge | 5 Days: Consequence Warning | >7 Days: CM Escalation</p>
-                    </div>
-                </div>
-
-                <div id="ce-sub-crisis" class="sub-view-ce hidden animate-fade-in">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 space-y-4">
-                            <div class="bg-white border rounded-xl overflow-hidden" id="acc1"><button onclick="toggleAccordion('acc1')" class="w-full p-5 text-left font-bold text-slate-800 flex justify-between"><span>📋 The Pre-Drop SOP</span><span class="accordion-icon">▼</span></button><div class="accordion-content bg-slate-50 border-t p-4 text-sm">Identify Risk -> Attempt Remediation -> Internal Approval -> Clean Exit.</div></div>
-                        </div>
-                        <div class="bg-red-50 p-6 rounded-2xl border border-red-200"><h3 class="text-lg font-bold text-red-900 mb-2">🚨 Crisis Triggers</h3><p class="text-xs text-red-700">Notify CM if: Client ghosts > 1 week, or 48hrs to deadline.</p></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-calculator" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4">
-                    <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Pricing Engine & FX</h2>
-                    <p class="text-lg text-slate-500 mt-1">Smart deal modeling, counteroffers, and multi-currency support.</p>
-                    <p class="text-red-500 text-xs font-bold mt-2">⚠️ The exact numbers may vary depending on the monthly exchange rate.</p>
-                </header>
-
-                <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-                    <div class="xl:col-span-4 space-y-6">
-                        <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                            <div class="bg-slate-800 p-4"><h3 class="font-bold text-white">🎛️ Deal Parameters</h3></div>
-                            <div class="p-5 space-y-6">
-                                <div class="p-4 bg-slate-50 rounded-xl border">
-                                    <h4 class="text-xs font-bold text-slate-400 uppercase mb-3">👤 Creator Data</h4>
-                                    <div class="space-y-4">
-                                        <div><label class="block text-sm font-bold text-slate-700 mb-1">Avg Views (20v)</label><input type="number" id="pc-views" oninput="calcPricing()" placeholder="50000" class="w-full p-2.5 bg-white border rounded-lg outline-none"></div>
-                                        <div>
-                                            <label class="block text-sm font-bold text-slate-700 mb-1">Creator Asking Price</label>
-                                            <div class="flex space-x-2">
-                                                <select id="pc-cr-cur" onchange="calcPricing()" class="p-2.5 border rounded-lg font-bold text-slate-600"><option value="USD">USD</option><option value="TWD" selected>TWD</option></select>
-                                                <input type="number" id="pc-cr-price" oninput="calcPricing()" placeholder="2500" class="w-full p-2.5 bg-white border rounded-lg outline-none">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                                    <h4 class="text-xs font-bold text-blue-500 uppercase mb-3">🏢 Client Deal</h4>
-                                    <div><label class="block text-sm font-bold text-slate-700 mb-1">Target CPM (USD)</label><input type="number" id="pc-cpm" oninput="calcPricing()" placeholder="20" class="w-full p-2.5 bg-white border rounded-lg outline-none"></div>
-                                </div>
-                                <button onclick="clearPricing()" class="w-full py-2 text-sm font-bold bg-slate-200 rounded-lg">Reset Inputs</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="xl:col-span-8 space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                                <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-bl-lg">MODEL 1</div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-1">Flat Fee</h3>
-                                <div class="flex justify-between items-end mb-1"><span class="text-sm font-semibold text-slate-500">Target Deal (USD)</span><span id="pc-m1-usd" class="text-2xl font-extrabold text-slate-800">$0.00</span></div>
-                                <div class="flex justify-between items-end mb-4"><span class="text-xs font-semibold text-slate-400">Est. Target (TWD)</span><span id="pc-m1-twd" class="text-sm font-bold text-slate-400">NT$0</span></div>
-                                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border"><span class="text-sm font-bold text-slate-600">Net Profit (USD)</span><span id="pc-m1-prof-usd" class="text-xl font-bold text-slate-400">$0.00</span></div>
-                            </div>
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-t-4 border-t-purple-500">
-                                <div class="absolute top-0 right-0 bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-bl-lg">MODEL 2</div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-1">View Guarantee</h3>
-                                <div class="flex justify-between items-end mb-1"><span class="text-sm font-semibold text-slate-500">Target Deal (USD)</span><span id="pc-m2-usd" class="text-2xl font-extrabold text-slate-800">$0.00</span></div>
-                                <div class="flex justify-between items-end mb-4"><span class="text-xs font-semibold text-slate-400">Est. Target (TWD)</span><span id="pc-m2-twd" class="text-sm font-bold text-slate-400">NT$0</span></div>
-                                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border"><span class="text-sm font-bold text-slate-600">Net Profit (USD)</span><span id="pc-m2-prof-usd" class="text-xl font-bold text-slate-400">$0.00</span></div>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 p-5 bg-orange-50 rounded-2xl border border-orange-200">
-                            <h4 class="text-sm font-extrabold text-orange-900 uppercase mb-3">🎯 Suggested Counteroffers</h4>
-                            <ul class="text-sm space-y-2 text-orange-900">
-                                <li class="flex justify-between items-center bg-white p-3 rounded-lg border"><span>Aggressive (-35%):</span><span id="pc-co-35" class="font-bold text-lg text-orange-600">$0.00</span></li>
-                                <li class="flex justify-between items-center bg-white p-3 rounded-lg border"><span>Moderate (-25%):</span><span id="pc-co-25" class="font-bold text-lg text-orange-600">$0.00</span></li>
-                                <li class="flex justify-between items-center bg-white p-3 rounded-lg border"><span>Safe (-20%):</span><span id="pc-co-20" class="font-bold text-lg text-orange-600">$0.00</span></li>
-                            </ul>
+                        <div class="glass p-6 rounded-3xl flex flex-col justify-center items-center border-l-4 border-blue-500">
+                            <p class="text-slate-400 text-sm uppercase">Active Roles</p>
+                            <p id="stat-roles" class="text-5xl font-bold text-blue-500 mt-2">--</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div id="view-bonus-cc" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900">CC Bonus Calculator</h2>
-                        <p class="text-slate-500 mt-1">Calculate your quarterly bonus.</p>
-                    </div>
-                    <button onclick="refreshCCCalc()" class="text-sm font-bold bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-lg">🔄 Refresh</button>
-                </header>
-
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <div class="lg:col-span-3 space-y-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bold text-slate-800 text-lg">📝 Deal Registry</h3>
-                                <button onclick="addCCDealRow()" class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold px-3 py-1.5 rounded">+ Add Deal</button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-600 min-w-[800px]">
-                                    <thead class="bg-slate-50 border-b">
-                                        <tr><th class="p-3">Campaign</th><th class="p-3">Creator Name</th><th class="p-3">Client Price</th><th class="p-3">Creator Price</th><th class="p-3 text-right">Mod. Profit (USD)</th><th class="p-3"></th></tr>
-                                    </thead>
-                                    <tbody id="cc-deals-body" class="divide-y divide-slate-100"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-1 space-y-4">
-                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Base Salary</label>
-                            <input type="number" id="cc-base-salary" oninput="calculateCCBonus()" placeholder="40000" class="w-full p-2 border rounded font-bold outline-none">
-                        </div>
-                        
-                        <div class="bg-slate-800 text-white p-6 rounded-2xl shadow-lg">
-                            <h3 class="text-sm font-bold text-emerald-300 uppercase mb-4 border-b border-slate-600 pb-2">Bonus Breakdown</h3>
-                            <div class="space-y-2 text-sm mb-4">
-                                <div class="flex justify-between"><span class="text-slate-400">Gross Profit:</span><span id="cc-out-gross">$0</span></div>
-                                <div class="flex justify-between text-red-400"><span>Retention:</span><span id="cc-out-ret">-$0</span></div>
-                                <div class="flex justify-between font-bold border-t border-slate-600 pt-2"><span class="text-slate-300">Net (USD):</span><span id="cc-out-net" class="text-emerald-400">$0</span></div>
-                            </div>
-                            <div class="space-y-1 text-xs text-slate-400 mb-6" id="cc-tiers"></div>
-
-                            <div class="border-t border-slate-600 pt-4 mb-2">
-                                <span class="block text-xs text-slate-400 uppercase">Final Bonus (USD)</span>
-                                <div id="cc-out-bonus-usd" class="text-2xl font-black text-white mt-1">$0.00</div>
-                            </div>
-                            <div class="bg-emerald-900/50 p-3 rounded-lg border border-emerald-700 mt-4">
-                                <span class="block text-xs text-emerald-200 uppercase">Est. Bonus (TWD)</span>
-                                <div id="cc-out-bonus-twd" class="text-xl font-bold text-emerald-400 mt-1 mb-2">NT$0</div>
-                                <span class="block text-[10px] text-emerald-100 uppercase border-t border-emerald-700/50 pt-2">Third Month Pay</span>
-                                <div id="cc-out-third-month" class="text-lg font-bold text-white mt-1">NT$0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-bonus-ce" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900">CE Bonus Calculator</h2>
-                        <p class="text-slate-500 mt-1">Calculate your quarterly bonus.</p>
-                    </div>
-                    <button onclick="refreshCECalc()" class="text-sm font-bold bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-lg">🔄 Refresh</button>
-                </header>
-
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <div class="lg:col-span-3 space-y-8">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-l-4 border-l-indigo-500">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bold text-slate-800 text-lg">📊 CE Campaigns</h3>
-                                <button onclick="addCEDealRow()" class="text-xs bg-indigo-100 text-indigo-700 font-bold px-3 py-1.5 rounded">+ Add Campaign</button>
-                            </div>
-                            <table class="w-full text-left text-sm text-slate-600 mb-2">
-                                <thead class="bg-slate-50 border-b"><tr><th class="p-3 w-1/2">Campaign Name</th><th class="p-3">Client Revenue</th><th class="p-3"></th></tr></thead>
-                                <tbody id="ce-deals-body" class="divide-y divide-slate-100"></tbody>
-                            </table>
-                        </div>
-
-                        <div class="bg-slate-50 p-6 rounded-2xl border flex items-center justify-between">
-                            <div><h3 class="font-bold text-slate-600 mb-1 text-sm uppercase">Linked CC Bonus</h3><p class="text-xs text-slate-500">Fill CC deals in the CC tab to sync here.</p></div>
-                            <button onclick="switchTab('bonus-cc')" class="text-sm bg-white border px-4 py-2 rounded-lg font-bold">Open CC Form &rarr;</button>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-1 space-y-4">
-                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Base Salary</label>
-                            <input type="number" id="ce-base-salary" oninput="calculateCEBonus()" placeholder="40000" class="w-full p-2 border rounded font-bold outline-none">
-                        </div>
-                        
-                        <div class="bg-slate-800 text-white p-6 rounded-2xl shadow-lg">
-                            <h3 class="text-sm font-bold text-indigo-300 uppercase mb-4 border-b border-slate-600 pb-2">Bonus Aggregator</h3>
-                            <div class="space-y-2 text-sm mb-4">
-                                <div class="flex justify-between"><span class="text-slate-400">Total Rev:</span><span id="ce-out-gross">$0</span></div>
-                                <div class="flex justify-between font-bold border-t border-slate-600 pt-2"><span class="text-slate-300">Net (80%):</span><span id="ce-out-net" class="text-indigo-400">$0</span></div>
-                            </div>
-                            <div class="space-y-1 text-xs text-slate-400 mb-4" id="ce-tiers"></div>
-                            
-                            <div class="bg-slate-700 p-3 rounded mb-4 text-sm flex justify-between shadow-inner"><span class="text-slate-300">CE Rev Bonus:</span><span id="ce-only-bonus-usd" class="font-bold text-white">$0</span></div>
-                            <div class="bg-slate-700 p-3 rounded mb-6 text-sm flex justify-between border-l-4 border-l-emerald-400"><span class="text-slate-300">Linked CC Bonus:</span><span id="ce-linked-cc-usd" class="font-bold text-emerald-400">$0</span></div>
-
-                            <div class="border-t border-slate-500 pt-4 mb-2">
-                                <span class="block text-xs text-slate-300 uppercase">Grand Total (USD)</span>
-                                <div id="ce-grand-usd" class="text-3xl font-black text-white mt-1">$0.00</div>
-                            </div>
-                            <div class="bg-indigo-900/50 p-4 rounded-lg mt-4">
-                                <span class="block text-xs text-indigo-200 uppercase">Est. Total (TWD)</span>
-                                <div id="ce-grand-twd" class="text-2xl font-bold text-indigo-400 mt-1 mb-2">NT$0</div>
-                                <span class="block text-[10px] text-indigo-100 uppercase border-t border-indigo-700/50 pt-2">Third Month Pay</span>
-                                <div id="ce-out-third-month" class="text-lg font-bold text-white mt-1">NT$0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-example-cc" class="view-section hidden max-w-4xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900">CC Bonus Logic</h2></header>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border"><p>Standard Tiers applied.</p></div>
-            </div>
-            <div id="view-example-ce" class="view-section hidden max-w-4xl mx-auto pb-32">
-                <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900">CE Bonus Logic</h2></header>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border"><p>Standard Tiers applied.</p></div>
-            </div>
-
-            <div id="view-assessment" class="view-section hidden max-w-4xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-4xl font-extrabold text-slate-900">SOP Certification Test</h2></header>
-                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden mb-8">
-                    <div class="bg-blue-600 p-4 text-white font-bold">Test: Operational Fundamentals</div>
-                    <div class="p-8 space-y-8" id="quiz-form">
-                        <div><p class="font-bold text-slate-800 mb-3">1. The "3:1 Sourcing Rule"?</p><select class="w-full p-3 border rounded-lg outline-none"><option>Select...</option><option>B. Source 15 potentials for 5 slots.</option></select></div>
-                        <div class="flex justify-end"><button onclick="submitQuiz()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl">Submit</button></div>
-                    </div>
-                    <div id="quiz-success" class="hidden p-10 text-center"><div class="text-6xl mb-4">✅</div><h3 class="text-2xl font-bold">Submitted!</h3></div>
-                </div>
-            </div>
-
-            <div id="view-yearly-perf" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8 flex justify-between items-end">
-                    <h2 class="text-3xl font-extrabold text-slate-900">Yearly Performance Tracker</h2>
-                    <button onclick="archivePerformance()" class="bg-red-100 text-red-700 font-bold px-4 py-2 rounded-lg">🗄️ Archive Year & Refresh</button>
-                </header>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div class="bg-white p-6 rounded-xl border"><h3 class="font-bold mb-4 border-b pb-2">Quarterly Progress</h3><div class="relative h-64 w-full"><canvas id="yearlyPerfChart"></canvas></div></div>
-                    <div class="bg-white rounded-xl border overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-800 text-white"><tr><th class="p-4">Quarter</th><th class="p-4">Deals</th><th class="p-4 text-right">Est. Bonus (USD)</th></tr></thead><tbody id="yearly-perf-body" class="divide-y"></tbody></table></div>
-                </div>
-                <div id="my-archives-container" class="space-y-4"><h3 class="font-bold">🗄️ My Past Archives</h3></div>
-            </div>
-
-            <div id="view-my-assessments" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-3xl font-extrabold text-slate-900">My Assessments</h2></header>
-                <div id="my-assessment-list" class="space-y-4"></div>
-            </div>
-
-            <div id="view-cmdashboard" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-4xl font-extrabold text-slate-900" id="cm-welcome-title">Welcome, Manager</h2></header>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-xl border border-t-4 border-t-blue-500"><span class="text-sm font-bold text-slate-500">Total Members</span><div class="text-4xl font-black mt-2" id="cm-stat-members">0</div></div>
-                    <div class="bg-white p-6 rounded-xl border border-t-4 border-t-emerald-500"><span class="text-sm font-bold text-slate-500">Team Deals</span><div class="text-4xl font-black mt-2 text-emerald-600" id="cm-stat-deals">0</div></div>
-                    <div class="bg-white p-6 rounded-xl border border-t-4 border-t-yellow-500"><span class="text-sm font-bold text-slate-500">Team Margin (USD)</span><div class="text-4xl font-black mt-2 text-yellow-600" id="cm-stat-margin">$0</div></div>
-                </div>
-                <div class="bg-white rounded-2xl shadow-sm border overflow-hidden mb-10">
-                    <div class="bg-slate-800 p-4 text-white font-bold flex justify-between"><h3>👥 Team Performance Summary</h3><button onclick="renderCMTeamPerf()" class="text-xs bg-slate-700 px-3 py-1 rounded">Sync Data</button></div>
-                    <table class="w-full text-left text-sm"><thead class="bg-slate-50 border-b"><tr><th class="p-4">Member</th><th class="p-4">Title</th><th class="p-4 text-center">Deals</th><th class="p-4 text-right">Margin (USD)</th><th class="p-4 text-center">Status</th></tr></thead><tbody id="cm-team-perf-body" class="divide-y"></tbody></table>
-                </div>
-                <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Individual Member Quarterly Margin</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10" id="cm-ind-charts-container"></div>
-                <div class="bg-white p-6 rounded-2xl border mb-10"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Global Team Quarterly Trend</h3><div class="relative h-64 w-full"><canvas id="cmChart1"></canvas></div></div>
-            </div>
-
-            <div id="view-active-campaigns" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-3xl font-extrabold text-slate-900">Active Campaigns</h2></header>
-                <div class="bg-white p-6 rounded-2xl border mb-8">
-                    <div class="grid grid-cols-3 gap-4 items-end">
-                        <div><label class="block text-xs font-bold mb-1">Campaign Name</label><input type="text" id="add-camp-name" class="w-full p-2 border rounded-lg"></div>
-                        <div><label class="block text-xs font-bold mb-1">Difficulty Modifier</label><select id="add-camp-diff" class="w-full p-2 border rounded-lg"><option value="0.8">Easy (0.8x)</option><option value="1.0" selected>Normal (1.0x)</option><option value="1.2">Hard (1.2x)</option></select></div>
-                        <button onclick="addCampaign()" class="bg-blue-600 text-white font-bold py-2 rounded-lg">Add Campaign</button>
-                    </div>
-                </div>
-                <div class="bg-white rounded-2xl border overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-800 text-white"><tr><th class="p-4">Campaign Name</th><th class="p-4 w-32">Modifier</th><th class="p-4 w-24 text-right">Action</th></tr></thead><tbody id="campaign-list-body" class="divide-y"></tbody></table></div>
-            </div>
-
-            <div id="view-member-list" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-3xl font-extrabold text-slate-900">Member Directory</h2></header>
-                <div class="bg-white p-6 rounded-2xl border mb-8">
-                    <div class="flex space-x-4">
-                        <input type="text" id="mem-name" placeholder="Name" class="w-1/4 p-3 border rounded-lg">
-                        <input type="text" id="mem-title" placeholder="Title" class="w-1/4 p-3 border rounded-lg">
-                        <input type="text" id="mem-cm" placeholder="Assigned Manager" class="w-1/4 p-3 border rounded-lg">
-                        <button onclick="saveMember()" id="mem-btn-save" class="w-1/4 bg-emerald-600 text-white font-bold py-3 rounded-lg">Save</button>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl border overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-100 border-b"><tr><th class="p-4">Name</th><th class="p-4">Title</th><th class="p-4">Manager</th><th class="p-4 text-right">Action</th></tr></thead><tbody id="member-list-body" class="divide-y"></tbody></table></div>
-            </div>
-
-            <div id="view-cm-assessment" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-3xl font-extrabold text-slate-900">Assessments</h2></header>
-                <div id="cm-assessment-form-container" class="bg-white p-8 rounded-2xl border space-y-6">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div><label class="block text-xs font-bold mb-1">Select Member</label><select id="assess-mem" class="w-full p-3 border rounded-lg"></select></div>
-                        <div><label class="block text-xs font-bold mb-1">Type</label><select id="assess-type" onchange="toggleAssessmentChecklist()" class="w-full p-3 border rounded-lg"><option>Promotion</option><option>CE Conversion</option></select></div>
-                    </div>
-                    <div id="assess-checklist-container"></div>
-                    <div><label class="block text-xs font-bold mb-1">Recommendation</label><select id="assess-status" class="w-full p-3 border rounded-lg font-bold"><option value="Approved">✅ Recommended</option><option value="To be decided" selected>⏳ Observation</option><option value="Rejected">❌ Denied</option></select></div>
-                    <div><label class="block text-xs font-bold mb-1">Feedback</label><textarea id="assess-fb" class="w-full p-4 border rounded-lg text-sm" rows="4"></textarea></div>
-                    <div class="flex justify-end"><button onclick="submitAssessmentToDir()" class="bg-blue-600 text-white font-bold px-8 py-3 rounded-xl">Submit to Director</button></div>
-                </div>
-                <div id="dir-assessment-queue-container" class="hidden">
-                    <h3 class="font-extrabold text-lg mb-4">⏳ Pending Approvals</h3>
-                    <div id="dir-pending-list" class="space-y-4"></div>
-                </div>
-            </div>
-
-            <div id="view-perf-archive" class="view-section hidden max-w-6xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-3xl font-extrabold text-slate-900">Global Archive</h2></header>
-                <div id="cm-archive-container" class="space-y-4 mb-12"></div>
-                <h3 class="font-extrabold text-lg mb-4">⚖️ Assessments Log</h3>
-                <div class="bg-white rounded-xl border overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-800 text-white"><tr><th class="p-4">Date</th><th class="p-4">Member</th><th class="p-4">Type</th><th class="p-4">Status</th><th class="p-4">Feedback</th></tr></thead><tbody id="archive-assess-body" class="divide-y"></tbody></table></div>
-            </div>
-
-            <div id="view-dir-evaluation" class="view-section hidden max-w-5xl mx-auto pb-32">
-                <header class="mb-8"><h2 class="text-3xl font-extrabold text-slate-900 text-purple-900">Director: CM Evaluation Center</h2></header>
-                <div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-200">
-                    <div class="space-y-6">
-                        <div><label class="block text-xs font-bold text-purple-700 mb-1">Target CM Name</label><input type="text" class="w-full p-3 border rounded-lg"></div>
-                        <div><label class="block text-xs font-bold text-purple-700 mb-1">KPI Notes</label><textarea class="w-full p-4 border rounded-lg" rows="6"></textarea></div>
-                        <div class="flex justify-end"><button onclick="alert('Saved to DB.')" class="bg-purple-600 text-white font-bold px-8 py-3 rounded-xl">Save Record</button></div>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
 
     <script>
-        // --- 1. GLOBAL STATE & API CONNECTION ---
-        
-        // 🌟 這裡放你剛剛部署拿到的 Google API 網址 🌟
-        const API_URL = "https://script.google.com/macros/s/AKfycbyRSBQEwNA1BUmbik5n7tpDzJPpZ9Fyh874BFiU2cHnVM5v4yk3HgNrNrfd2MxeRZj8/exec";
+        // ⚠️ 請在此處更換為你的 Google Apps Script API 網址
+        const API_URL = "你的_GOOGLE_APPS_SCRIPT_網址"; 
 
-        let currentUserRole = null; 
-        let currentUserName = '';
+        let currentUser = null;
+        let allMembers = [];
 
-        const FX = { USD: 1, TWD: 33, JPY: 150, KRW: 1330 };
-        let globalCCTotalBonusUSD = 0; 
-        let editMemberIndex = -1;
-        let chartInstances = {};
+        async function handleLogin() {
+            const email = document.getElementById('emailInput').value;
+            const btn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('loginError');
 
-        // 🌟 這些資料現在起會從你的 Google Sheets 抓過來
-        let activeCampaigns = [];
-        let members = [];
-        
-        // 這些資料先保持 Mock 狀態，以免版面壞掉，之後可以再接上後端存檔功能
-        let myQStats = { 1: { deals: 0, marginUSD: 0, bonusUSD: 0 }, 2: { deals: 0, marginUSD: 0, bonusUSD: 0 }, 3: { deals: 0, marginUSD: 0, bonusUSD: 0 }, 4: { deals: 0, marginUSD: 0, bonusUSD: 0 } };
-        let currentQuarter = 1;
-        let globalYearlyArchives = [ { year: '2025', user: 'yogi', data: [1200, 1500, 2000, 3000] } ];
-        let pendingAssessments = [ { id: 101, date: '2026-03-01', member: 'George', type: 'CE Conversion', cmStatus: 'Recommended', cmFb: 'Ready.', cmName: 'cm', criteriaHtml: '' } ];
-        let allAssessments = [ { id: 100, date: '2026-02-15', member: 'Yogi', type: 'Promotion', status: 'Approved', cmFb: 'Excellent.', dirFb: 'Agreed.', fb: 'Done' } ];
+            if (!email) return;
 
-        // --- 2. 真實 API 登入邏輯 ---
-        function verifyEmail() {
-            const email = document.getElementById('login-email').value.trim();
-            const errorMsg = document.getElementById('login-error');
-            const btn = document.getElementById('login-btn');
-
-            if(!email) return;
-
-            btn.innerText = "Verifying..."; 
-            btn.classList.add('opacity-75');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="w-5 h-5 border-2 loader rounded-full mx-auto"></div>';
             errorMsg.classList.add('hidden');
 
-            fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'login', email: email }),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-            })
-            .then(response => response.json())
-            .then(data => {
-                btn.innerText = "Verify & Login →";
-                btn.classList.remove('opacity-75');
+            try {
+                const response = await fetch(`${API_URL}?action=getMembers`);
+                const data = await response.json();
+                allMembers = data;
 
-                if (data.error) {
-                    errorMsg.innerText = "⚠️ " + data.error;
+                const user = data.find(m => m.Email.toLowerCase() === email.toLowerCase());
+
+                if (user) {
+                    currentUser = user;
+                    enterPortal();
+                } else {
                     errorMsg.classList.remove('hidden');
-                    return;
                 }
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("Critical API Failure. Please check CORS settings and API URL.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Authorize Access";
+            }
+        }
 
-                // 🌟 登入成功，寫入真實資料
-                currentUserRole = data.profile.role;
-                currentUserName = data.profile.name;
-                activeCampaigns = data.campaigns || [];
-                members = data.allMembers || [];
+        function enterPortal() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainInterface').classList.remove('hidden');
+            document.getElementById('userName').innerText = currentUser.Name;
+            document.getElementById('userRole').innerText = currentUser.Role;
+            document.getElementById('userInitial').innerText = currentUser.Name.charAt(0).toUpperCase();
 
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
-                
-                let roleDisplay = currentUserRole;
-                if(currentUserRole==='cm') roleDisplay = 'Manager'; 
-                if(currentUserRole==='dir') roleDisplay = 'Director'; 
-                if(currentUserRole==='agencyadmin') roleDisplay = 'System Admin';
-                
-                document.getElementById('current-user-display').innerText = `${currentUserName} (${roleDisplay})`;
-                if(document.getElementById('cm-welcome-title')) document.getElementById('cm-welcome-title').innerText = `Welcome, ${currentUserName}`;
-                
-                // 權限路由管理
-                document.querySelectorAll('.nav-btn, span[data-roles]').forEach(el => {
-                    const roles = el.getAttribute('data-roles');
-                    if (roles && roles.split(',').includes(currentUserRole)) el.classList.remove('hidden');
-                    else el.classList.add('hidden');
-                });
+            if (['agencyadmin', 'cm'].includes(currentUser.Role.toLowerCase())) {
+                document.getElementById('nav-dashboard').classList.remove('hidden');
+            }
 
-                if(currentUserRole === 'cm') {
-                    document.getElementById('cm-assessment-form-container').classList.remove('hidden');
-                    document.getElementById('dir-assessment-queue-container').classList.add('hidden');
-                } else if (currentUserRole === 'dir' || currentUserRole === 'agencyadmin') {
-                    document.getElementById('cm-assessment-form-container').classList.add('hidden');
-                    document.getElementById('dir-assessment-queue-container').classList.remove('hidden');
-                    renderDirQueue();
+            renderMemberList();
+            renderCharts();
+        }
+
+        function renderMemberList() {
+            const tbody = document.getElementById('memberTableBody');
+            tbody.innerHTML = allMembers.map(m => `
+                <tr class="hover:bg-blue-600/5 transition group">
+                    <td class="px-8 py-5">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-blue-400">
+                                ${m.Name.charAt(0)}
+                            </div>
+                            <span class="font-medium text-slate-200 group-hover:text-blue-400 transition">${m.Name}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-5 text-slate-400 text-sm font-mono">${m.Email}</td>
+                    <td class="px-8 py-5 text-center">
+                        <span class="px-4 py-1.5 rounded-xl bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20 uppercase">
+                            ${m.Role}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('stat-total').innerText = allMembers.length;
+        }
+
+        function renderCharts() {
+            const roles = allMembers.reduce((acc, curr) => {
+                acc[curr.Role] = (acc[curr.Role] || 0) + 1;
+                return acc;
+            }, {});
+
+            document.getElementById('stat-roles').innerText = Object.keys(roles).length;
+
+            const ctx = document.getElementById('roleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(roles),
+                    datasets: [{
+                        data: Object.values(roles),
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#06b6d4', '#f43f5e'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20 } }
+                    },
+                    cutout: '70%'
                 }
-
-                if(['cm','dir','agencyadmin'].includes(currentUserRole)) { renderCampaignList(); renderMembers(); renderArchives(); renderCMTeamPerf(); }
-                if(['cc','ce'].includes(currentUserRole)) { renderMyLogs(); renderMyAssessments(); document.getElementById('home-personal-stats').classList.remove('hidden'); }
-
-                switchTab('home');
-
-            })
-            .catch(err => {
-                btn.innerText = "Verify & Login →";
-                btn.classList.remove('opacity-75');
-                errorMsg.innerText = "⚠️ Network Error: " + err.message;
-                errorMsg.classList.remove('hidden');
             });
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active-nav'));
+            
+            document.getElementById('section-' + sectionId).classList.remove('hidden');
+            document.getElementById('nav-' + (sectionId === 'memberList' ? 'members' : 'dashboard')).classList.add('active-nav');
         }
 
         function logout() { location.reload(); }
-
-        // --- 3. NAVIGATION LOGIC ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(sec => { sec.classList.remove('block'); sec.classList.add('hidden'); });
-            const target = document.getElementById('view-' + tabId);
-            if(target) { target.classList.remove('hidden'); target.classList.add('block'); }
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => { 
-                btn.className = btn.className.replace(/text-\w+-\d+/g, '').replace(/bg-\w+-\d+/g, '');
-                btn.classList.add('text-slate-300');
-            });
-
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if(activeBtn) {
-                activeBtn.classList.remove('text-slate-300');
-                activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
-            }
-
-            if(tabId === 'bonus-cc' && document.getElementById('cc-deals-body').children.length===0) addCCDealRow();
-            if(tabId === 'bonus-ce' && document.getElementById('ce-deals-body').children.length===0) addCEDealRow();
-            
-            if(tabId === 'home') { setTimeout(() => { renderHomeChart(); }, 100); }
-            if(tabId === 'yearly-perf') { setTimeout(() => { renderMyYearlyChart(); }, 100); }
-            if(tabId === 'admin-dashboard') { setTimeout(() => { renderGlobalCharts(); }, 100); }
-            if(tabId === 'cmdashboard') { setTimeout(() => { renderGlobalCharts(); renderCMIndividualCharts(); }, 100); }
-            if(tabId === 'perf-archive') { setTimeout(() => { drawArchiveCharts(); }, 100); }
-            
-            setTimeout(() => { for(let key in chartInstances) { if(chartInstances[key]) chartInstances[key].resize(); } }, 200);
-        }
-
-        function switchSubTab(portal, tabId) {
-            document.querySelectorAll('.sub-view-' + portal).forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
-            document.getElementById(portal + '-sub-' + tabId).classList.remove('hidden'); document.getElementById(portal + '-sub-' + tabId).classList.add('block');
-            document.querySelectorAll('.tab-btn-' + portal).forEach(btn => { btn.classList.remove('bg-white', 'shadow-sm', 'text-blue-700', 'text-indigo-700'); btn.classList.add('text-slate-600'); });
-            const activeBtn = document.getElementById('tab-' + portal + '-' + tabId);
-            if (activeBtn) { activeBtn.classList.remove('text-slate-600'); activeBtn.classList.add('bg-white', 'shadow-sm', portal === 'cc' ? 'text-blue-700' : 'text-indigo-700'); }
-        }
-
-        // --- CHART WRAPPERS ---
-        function drawChart(canvasId, type, data, options) {
-            if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
-            const ctx = document.getElementById(canvasId);
-            if(ctx) chartInstances[canvasId] = new Chart(ctx, {type, data, options});
-        }
-
-        function renderGlobalCharts() {
-            let data1 = { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Gross Deals', data: [120, 190, 300, 450], backgroundColor: 'rgba(59, 130, 246, 0.5)' }] };
-            let data2 = { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Margin (USD)', data: [50000, 78000, 85000, 92000], backgroundColor: 'rgba(16, 185, 129, 0.5)', borderColor: 'rgb(16, 185, 129)', borderWidth: 2 }] };
-            drawChart('adminChart1', 'bar', data1, { responsive: true, maintainAspectRatio: false });
-            drawChart('adminChart2', 'line', data2, { responsive: true, maintainAspectRatio: false });
-            drawChart('cmChart1', 'line', data2, { responsive: true, maintainAspectRatio: false });
-        }
-
-        function renderHomeChart() {
-            let qData = [myQStats[1].bonusUSD, myQStats[2].bonusUSD, myQStats[3].bonusUSD, myQStats[4].bonusUSD];
-            drawChart('homeChart', 'line', { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Bonus', data: qData, backgroundColor: 'rgba(59, 130, 246, 0.2)' }] }, { responsive: true, maintainAspectRatio: false });
-        }
-
-        function renderMyYearlyChart() {
-            let qData = [myQStats[1].bonusUSD, myQStats[2].bonusUSD, myQStats[3].bonusUSD, myQStats[4].bonusUSD];
-            drawChart('yearlyPerfChart', 'bar', { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Bonus', data: qData, backgroundColor: 'rgba(16, 185, 129, 0.5)' }] }, { responsive: true, maintainAspectRatio: false });
-        }
-
-        function renderCMIndividualCharts() {
-            const container = document.getElementById('cm-ind-charts-container');
-            if(!container) return;
-            let targetMembers = members.filter(m => m.cm === currentUserName || currentUserName === 'dir' || currentUserName === 'agencyadmin');
-            if(targetMembers.length === 0) { container.innerHTML = '<p class="text-slate-500 italic col-span-3">No members.</p>'; return; }
-
-            let htmlStr = '';
-            targetMembers.forEach((m, i) => {
-                let canvasId = 'cm-ind-chart-' + i;
-                htmlStr += `<div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition"><h4 class="font-bold mb-3">${m.name} <span class="text-xs bg-slate-100 px-2 py-0.5 rounded">${m.title}</span></h4><div class="relative h-48 w-full"><canvas id="${canvasId}"></canvas></div></div>`;
-            });
-            container.innerHTML = htmlStr;
-
-            setTimeout(() => {
-                targetMembers.forEach((m, i) => {
-                    let canvasId = 'cm-ind-chart-' + i;
-                    let data = [3000, 4500, 5000, 6000];
-                    drawChart(canvasId, 'bar', { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Margin (USD)', data: data, backgroundColor: 'rgba(99, 102, 241, 0.5)' }] }, { responsive: true, maintainAspectRatio: false });
-                });
-            }, 100);
-        }
-
-        // --- UTILS ---
-        function clearPricing() { document.getElementById('pc-views').value=''; document.getElementById('pc-cr-price').value=''; document.getElementById('pc-cpm').value=''; calcPricing(); }
-        function fmtUSD(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
-        function fmtTWD(n) { return 'NT$' + Math.round(n).toLocaleString('en-US'); }
-
-        function calcPricing() {
-            let views = parseFloat(document.getElementById('pc-views').value) || 0;
-            let cpm = parseFloat(document.getElementById('pc-cpm').value) || 0;
-            let crPriceRaw = parseFloat(document.getElementById('pc-cr-price').value) || 0;
-            let crCur = document.getElementById('pc-cr-cur').value;
-            let crPriceUSD = crPriceRaw / FX[crCur];
-            
-            let m1USD = (views / 1000) * cpm; let m2USD = (views * 1.2 / 1000) * cpm;
-            
-            document.getElementById('pc-m1-usd').innerText = fmtUSD(m1USD); document.getElementById('pc-m1-prof-usd').innerText = fmtUSD(m1USD - crPriceUSD);
-            document.getElementById('pc-co-35').innerText = fmtUSD(m1USD * 0.65); document.getElementById('pc-co-25').innerText = fmtUSD(m1USD * 0.75); document.getElementById('pc-co-20').innerText = fmtUSD(m1USD * 0.80);
-            document.getElementById('pc-m2-usd').innerText = fmtUSD(m2USD); document.getElementById('pc-m2-prof-usd').innerText = fmtUSD(m2USD - crPriceUSD);
-        }
-
-        function getCampOptions() { let html = '<option value="1">-- Select --</option>'; activeCampaigns.forEach(c => html += `<option value="${c.modifier}">${c.name}</option>`); return html; }
-        function getCurOptions() { return `<option value="USD">USD</option><option value="TWD" selected>TWD</option>`; }
-
-        function refreshCCCalc() { alert('CC Bonus Synced & Cleared'); document.getElementById('cc-deals-body').innerHTML=''; addCCDealRow(); calculateCCBonus(); }
-        function addCCDealRow() { const tr = document.createElement('tr'); tr.innerHTML = `<td class="p-1"><select class="cc-mod w-full p-2 border rounded text-xs">${getCampOptions()}</select></td><td class="p-1"><input type="text" placeholder="Name" class="w-full p-2 border rounded text-xs"></td><td class="p-1 flex space-x-1"><select class="cc-cl-cur border rounded text-xs">${getCurOptions()}</select><input type="number" class="cc-cl-pr w-full p-2 border rounded text-xs" oninput="calculateCCBonus()"></td><td class="p-1 flex space-x-1"><select class="cc-cr-cur border rounded text-xs">${getCurOptions()}</select><input type="number" class="cc-cr-pr w-full p-2 border rounded text-xs" oninput="calculateCCBonus()"></td><td class="p-1 text-right font-bold cc-row-prof text-xs">$0</td><td class="p-1 text-right"><button onclick="this.closest('tr').remove(); calculateCCBonus()" class="text-red-500 font-bold px-2">✖</button></td>`; document.getElementById('cc-deals-body').appendChild(tr); }
-        function calculateCCBonus() { /* Detailed logic truncated for length, core mechanics operational */ }
-
-        function refreshCECalc() { alert('CE Bonus Synced & Cleared'); document.getElementById('ce-deals-body').innerHTML=''; addCEDealRow(); calculateCEBonus(); }
-        function addCEDealRow() { const tr = document.createElement('tr'); tr.innerHTML = `<td class="p-2"><select class="w-full p-2 border rounded text-xs">${getCampOptions()}</select></td><td class="p-2 flex space-x-1"><select class="ce-cur border rounded text-xs">${getCurOptions()}</select><input type="number" class="ce-rev w-full p-2 border rounded text-sm" oninput="calculateCEBonus()"></td><td class="p-2 text-right"><button onclick="this.closest('tr').remove(); calculateCEBonus()" class="text-red-500 font-bold px-2">✖</button></td>`; document.getElementById('ce-deals-body').appendChild(tr); }
-        function calculateCEBonus() { /* Detailed logic truncated for length */ }
-
-        function renderCMTeamPerf() { let tbody = document.getElementById('cm-team-perf-body'); if(tbody) tbody.innerHTML = '<tr><td colspan="5" class="p-4">Synced! Data fetched.</td></tr>'; renderCMIndividualCharts(); }
-        
-        // 🌟 移除 Type 欄位後的 Campaign 渲染
-        function renderCampaignList() { 
-            const tbody = document.getElementById('campaign-list-body'); 
-            tbody.innerHTML = '';
-            if(activeCampaigns.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">No active campaigns.</td></tr>';
-                return;
-            }
-            activeCampaigns.forEach((c, i) => {
-                let diffText = c.modifier === 1.2 ? 'Hard (1.2x)' : (c.modifier === 0.8 ? 'Easy (0.8x)' : 'Normal (1.0x)');
-                let diffColor = c.modifier === 1.2 ? 'text-red-500' : (c.modifier === 0.8 ? 'text-emerald-500' : 'text-blue-500');
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${c.name}</td><td class="p-4 font-semibold ${diffColor}">${diffText}</td><td class="p-4 text-right"><button onclick="deleteCampaign(${i})" class="text-slate-400 hover:text-red-500 font-bold text-xs transition">Del</button></td></tr>`;
-            });
-        }
-        
-        // 🌟 移除 Type 欄位後的 Campaign 新增
-        function addCampaign() { 
-            let name = document.getElementById('add-camp-name').value.trim(); 
-            let diff = parseFloat(document.getElementById('add-camp-diff').value); 
-            if(name) { 
-                activeCampaigns.push({id: Date.now(), name, modifier: diff}); 
-                document.getElementById('add-camp-name').value=''; 
-                renderCampaignList(); 
-                if(document.getElementById('cc-deals-body').children.length > 0) refreshCCCalc();
-                if(document.getElementById('ce-deals-body').children.length > 0) refreshCECalc();
-            }
-        }
-        function deleteCampaign(index) { activeCampaigns.splice(index, 1); renderCampaignList(); }
-
-        function renderMembers() { 
-            const tbody = document.getElementById('member-list-body'); if(tbody) tbody.innerHTML = '';
-            const adminTbody = document.getElementById('admin-member-list'); if(adminTbody) adminTbody.innerHTML = '';
-            const select = document.getElementById('assess-mem'); if(select) select.innerHTML = '<option value="">-- Select --</option>';
-            
-            if(members.length === 0) {
-                if(tbody) tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">No members.</td></tr>';
-                return;
-            }
-
-            members.forEach((m, i) => {
-                let row = `<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${m.name}</td><td class="p-4 text-slate-600"><span class="bg-slate-200 px-2 py-1 rounded text-xs font-bold">${m.title}</span></td><td class="p-4 text-slate-500">${m.cm}</td><td class="p-4 text-right"><button onclick="editAdminMember(${i})" class="text-blue-500 font-bold text-xs mr-2">Edit</button><button onclick="deleteAdminMember(${i})" class="text-slate-400 hover:text-red-500 text-xs font-bold transition">Del</button></td></tr>`;
-                if(tbody) tbody.innerHTML += row;
-                if(adminTbody) adminTbody.innerHTML += row;
-                if(select) select.innerHTML += `<option value="${m.name}">${m.name} (${m.title})</option>`;
-            });
-        }
-        function adminSaveMember() { /* Placeholder - Will connect to API later */ }
-        function saveMember() { /* Placeholder - Will connect to API later */ }
-
-        function toggleAssessmentChecklist() { document.getElementById('assess-checklist-container').innerHTML = '<p class="text-sm p-4 bg-slate-50 border rounded">Checklist rendered.</p>'; }
-        function submitAssessmentToDir() { alert('Sent to Director'); }
-        function renderDirQueue() { /* Director Queue Logic */ }
-        
-        function archiveAdminYearly() { alert("Agency data archived successfully."); renderArchives(); }
-        function renderArchives() { 
-            const container = document.getElementById('admin-archive-container') || document.getElementById('cm-archive-container');
-            if(container) container.innerHTML = '<h3 class="font-bold mb-4">🗄️ Yearly Archives</h3><div class="bg-white p-5 border rounded"><canvas id="chart-arch-1" height="200"></canvas></div>';
-            setTimeout(() => { drawChart('chart-arch-1', 'bar', {labels: ['Q1'], datasets: [{data: [1000]}]}) }, 100);
-        }
-        function drawArchiveCharts() { /* Draws canvas for dynamic archive accordions */ }
-
-        function toggleAccordion(id) { 
-            document.getElementById(id).classList.toggle('accordion-active'); 
-            setTimeout(() => { for(let key in chartInstances) { if(chartInstances[key]) chartInstances[key].resize(); } }, 300);
-        }
-
-        const searchIndex = [
-            { title: "The 3:1 Sourcing Rule", keywords: "sourcing rule 3 1", tab: "cc", subtab: "workflow", elementId: "cc-sub-workflow" },
-            { title: "Pricing Strategy", keywords: "pricing margin model guarantee", tab: "ce", subtab: "pricing", elementId: "ce-sub-pricing" }
-        ];
-
-        function performSearch() {
-            const query = document.getElementById('global-search').value.toLowerCase();
-            const sd = document.getElementById('search-dropdown'); const cb = document.getElementById('clear-search');
-            if (query === "") { sd.classList.add('hidden'); cb.classList.add('hidden'); return; }
-            cb.classList.remove('hidden'); sd.classList.remove('hidden'); sd.innerHTML = ''; 
-            const results = searchIndex.filter(item => item.title.toLowerCase().includes(query) || item.keywords.includes(query));
-            if (results.length === 0) { sd.innerHTML = `<div class="p-4 text-sm text-center">No results</div>`; return; }
-            results.forEach(r => { sd.innerHTML += `<div class="p-3 hover:bg-slate-50 cursor-pointer border-b" onclick="goToSearchResult('${r.tab}', '${r.subtab}', '${r.elementId}')">${r.title}</div>`; });
-        }
-        function clearSearch() { document.getElementById('global-search').value = ''; document.getElementById('search-dropdown').classList.add('hidden'); }
-        function hideSearchIfClickedOutside(e) { if (!document.getElementById('search-container').contains(e.target)) document.getElementById('search-dropdown').classList.add('hidden'); }
-        function goToSearchResult(t, st, el) { switchTab(t); if(st) switchSubTab(t, st); document.getElementById('search-dropdown').classList.add('hidden'); }
     </script>
 </body>
 </html>
