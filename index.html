@@ -19,8 +19,8 @@
         }
 
         .dark-mode {
-            --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%);
-            --glass-bg: rgba(30, 41, 59, 0.7);
+            --bg-main: #0f172a;
+            --glass-bg: #1e293b;
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #f8fafc;
             --nav-hover: rgba(59, 130, 246, 0.2);
@@ -29,9 +29,8 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.4s ease; min-height: 100vh; }
         
         .bg-white { background: var(--glass-bg) !important; backdrop-filter: blur(12px); border-color: var(--glass-border) !important; color: var(--text-main) !important; transition: all 0.4s ease;}
-        .bg-slate-50, .bg-slate-100 { background: rgba(0,0,0,0.03) !important; border-color: var(--glass-border) !important; }
         
-        /* 終極黑夜模式修復：涵蓋所有透明度色塊，強制反白 */
+        /* 🚨 終極黑夜模式修復：強制所有原本是白底、淺色底的卡片變成深灰色 (#1e293b) */
         .dark-mode .bg-slate-50, .dark-mode .bg-slate-100,
         .dark-mode .bg-blue-50, .dark-mode .bg-indigo-50,
         .dark-mode .bg-emerald-50, .dark-mode .bg-red-50,
@@ -39,19 +38,31 @@
         .dark-mode .bg-blue-500\/5, .dark-mode .bg-blue-500\/10,
         .dark-mode .bg-orange-500\/10, .dark-mode .bg-emerald-500\/10, 
         .dark-mode .bg-slate-500\/5 { 
-            background-color: rgba(30, 41, 59, 0.8) !important; 
+            background-color: #1e293b !important; 
             border-color: rgba(255,255,255,0.1) !important; 
         }
         
-        .dark-mode .text-slate-600, .dark-mode .text-slate-700, .dark-mode .text-slate-800, .dark-mode .text-slate-900 { color: #f1f5f9 !important; }
-        .dark-mode .text-blue-500, .dark-mode .text-blue-600, .dark-mode .text-blue-700 { color: #60a5fa !important; }
+        /* 強制把深色字體反白 */
+        .dark-mode .text-slate-600, .dark-mode .text-slate-700, 
+        .dark-mode .text-slate-800, .dark-mode .text-slate-900 { 
+            color: #f8fafc !important; 
+        }
+
+        /* 將各種彩色字體的深色版調亮，避免在深灰底上看不見 */
+        .dark-mode .text-blue-700, .dark-mode .text-blue-800, .dark-mode .text-blue-900 { color: #60a5fa !important; }
         .dark-mode .text-indigo-700, .dark-mode .text-indigo-800, .dark-mode .text-indigo-900 { color: #818cf8 !important; }
-        
+        .dark-mode .text-emerald-700, .dark-mode .text-emerald-800, .dark-mode .text-emerald-900 { color: #34d399 !important; }
+        .dark-mode .text-red-700, .dark-mode .text-red-800, .dark-mode .text-red-900 { color: #f87171 !important; }
+        .dark-mode .text-orange-700, .dark-mode .text-orange-800, .dark-mode .text-orange-900 { color: #fb923c !important; }
+        .dark-mode .text-yellow-700, .dark-mode .text-yellow-800, .dark-mode .text-yellow-900 { color: #facc15 !important; }
+
+        /* 輸入框全面暗化與反白 */
         .dark-mode input, .dark-mode select, .dark-mode textarea { 
             background-color: #0f172a !important; 
             color: #f8fafc !important; 
-            border-color: rgba(255,255,255,0.2) !important; 
+            border-color: rgba(255,255,255,0.3) !important; 
         }
+        
         .dark-mode select option {
             background-color: #1e293b !important;
             color: #f8fafc !important;
