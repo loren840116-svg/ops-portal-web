@@ -9,15 +9,41 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
-        :root { --bg-main: #f8fafc; --glass-bg: rgba(255, 255, 255, 0.95); --glass-border: rgba(0, 0, 0, 0.05); --text-main: #1e293b; --nav-hover: rgba(59, 130, 246, 0.1); }
-        .dark-mode { --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%); --glass-bg: rgba(30, 41, 59, 0.7); --glass-border: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --nav-hover: rgba(59, 130, 246, 0.2); }
+        
+        :root {
+            --bg-main: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-main: #1e293b;
+            --nav-hover: rgba(59, 130, 246, 0.1);
+        }
+
+        .dark-mode {
+            --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%);
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --nav-hover: rgba(59, 130, 246, 0.2);
+        }
+
         body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.4s ease; min-height: 100vh; }
+        .glass { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); transition: all 0.4s ease; }
+        
+        /* 讓原本的白底卡片自動具備玻璃質感 */
         .bg-white { background: var(--glass-bg) !important; backdrop-filter: blur(12px); border-color: var(--glass-border) !important; color: var(--text-main) !important; transition: all 0.4s ease;}
         .bg-slate-50, .bg-slate-100 { background: rgba(0,0,0,0.03) !important; border-color: var(--glass-border) !important; }
-        .dark-mode .bg-slate-50, .dark-mode .bg-slate-100 { background: rgba(255,255,255,0.03) !important; }
+        
+        /* ⚠️ 終極黑夜模式字體修正：確保所有深色背景文字反白發光 */
+        .dark-mode .bg-slate-50, .dark-mode .bg-slate-100 { background: rgba(255,255,255,0.05) !important; }
         .dark-mode .text-slate-600, .dark-mode .text-slate-700, .dark-mode .text-slate-800, .dark-mode .text-slate-900 { color: #f8fafc !important; }
+        .dark-mode .text-blue-700, .dark-mode .text-blue-800, .dark-mode .text-blue-900 { color: #93c5fd !important; }
+        .dark-mode .text-indigo-700, .dark-mode .text-indigo-800, .dark-mode .text-indigo-900 { color: #a5b4fc !important; }
+        .dark-mode .text-emerald-700, .dark-mode .text-emerald-800, .dark-mode .text-emerald-900 { color: #6ee7b7 !important; }
+        .dark-mode .text-red-700, .dark-mode .text-red-800, .dark-mode .text-red-900 { color: #fca5a5 !important; }
+        .dark-mode .text-orange-700, .dark-mode .text-orange-800, .dark-mode .text-orange-900 { color: #fdba74 !important; }
         .dark-mode .border-slate-200, .dark-mode .border-slate-300 { border-color: rgba(255,255,255,0.1) !important; }
         .dark-mode input, .dark-mode select, .dark-mode textarea { background-color: rgba(15,23,42,0.5) !important; color: white !important; border-color: rgba(255,255,255,0.2) !important; }
+
         .accordion-content { transition: max-height 0.3s ease-out, padding 0.3s ease; max-height: 0; overflow: hidden; padding: 0 1rem; }
         .accordion-active .accordion-content { max-height: 2000px; padding: 1rem; }
         .accordion-icon { transition: transform 0.3s ease; }
@@ -41,21 +67,20 @@
     </div>
 
     <div id="login-container" class="flex h-screen items-center justify-center relative overflow-hidden">
-        <div class="bg-white p-10 rounded-3xl shadow-2xl z-10 w-full max-w-md border-t-4 border-blue-500">
-            <div class="text-center mb-8">
-                <div class="inline-block p-4 rounded-3xl bg-blue-600/20 mb-4"><i class="fas fa-bolt text-4xl text-blue-500"></i></div>
-                <h1 class="text-3xl font-black tracking-tight">Ops Portal</h1>
+        <div class="bg-white p-12 rounded-[40px] shadow-2xl w-full max-w-md border-t-4 border-blue-500 text-center z-10">
+            <div class="mb-10">
+                <h1 class="text-4xl font-black tracking-tight">Ops Portal</h1>
                 <p class="text-sm font-bold text-blue-500 tracking-widest uppercase mt-2">Enterprise Edition</p>
             </div>
             <div class="space-y-6 text-left">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest mb-2 opacity-60">Identity Email</label>
-                    <input type="email" id="login-email" placeholder="name@creatordb.app" class="w-full p-4 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition font-semibold">
+                    <input type="email" id="login-email" placeholder="name@creatordb.app" class="w-full p-4 rounded-xl border focus:ring-2 focus:ring-blue-500 outline-none transition font-semibold">
                 </div>
                 <button onclick="handleLogin()" id="login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl transition shadow-lg tracking-widest uppercase text-sm">
                     Verify & Launch
                 </button>
-                <div id="login-error" class="hidden text-red-500 text-xs font-bold text-center bg-red-500/10 border border-red-500/20 p-3 rounded-lg">Access Denied: Connection or Email Error.</div>
+                <div id="login-error" class="hidden text-red-500 text-xs font-bold text-center bg-red-500/10 border border-red-500/20 p-3 rounded-lg">Access Denied: Email not in DB.</div>
             </div>
         </div>
     </div>
@@ -74,42 +99,42 @@
             <div class="px-4 py-4 border-b border-slate-700 relative" id="search-container">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
-                    <input type="text" id="global-search" oninput="performSearch()" placeholder="Search..." class="w-full pl-9 pr-3 py-2.5 bg-slate-800 text-sm text-white rounded-lg focus:ring-2 focus:ring-blue-500 outline-none border border-slate-700">
+                    <input type="text" id="global-search" oninput="performSearch()" placeholder="Search SOP..." class="w-full pl-9 pr-3 py-2.5 bg-slate-800 text-sm text-white rounded-lg focus:ring-2 focus:ring-blue-500 outline-none border border-slate-700">
                     <button id="clear-search" onclick="clearSearch()" class="absolute inset-y-0 right-0 items-center pr-3 text-slate-400 hidden">✖</button>
                 </div>
                 <div id="search-dropdown" class="absolute left-4 right-4 top-[70px] bg-slate-800 rounded-xl shadow-2xl border border-slate-700 hidden z-50 max-h-80 overflow-y-auto flex flex-col divide-y divide-slate-700"></div>
             </div>
 
             <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar text-sm" id="sidebar-nav">
-                <span data-roles="agencyadmin" class="block text-xs font-bold text-red-400 uppercase tracking-widest mt-2 mb-1 px-2 hidden">System Admin</span>
-                <a href="#" data-roles="agencyadmin" onclick="switchTab('admin-dashboard')" id="nav-admin-dashboard" class="nav-btn block px-4 py-2.5 rounded-lg text-red-300 hover:bg-slate-800 border border-red-700/50 bg-red-900/20 transition hidden">⚙️ Admin Dashboard</a>
+                <span data-roles="agencyadmin" class="block text-[10px] font-black text-red-400 uppercase tracking-widest mt-2 mb-1 px-2 hidden">System Admin</span>
+                <a href="#" data-roles="agencyadmin" onclick="switchTab('admin-dashboard')" id="nav-admin-dashboard" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-red-300 border border-red-900/30 bg-red-900/10">⚙️ Admin Dashboard</a>
                 
-                <span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden">Knowledge Base</span>
-                <a href="#" data-roles="cc,ce,cm,dir,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🏠 Dashboard Home</a>
-                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('cc')" id="nav-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🎯 CC Portal</a>
-                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('ce')" id="nav-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🛡️ CE Portal</a>
+                <span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden">Knowledge Base</span>
+                <a href="#" data-roles="cc,ce,cm,dir,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold">🏠 Dashboard Home</a>
+                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('cc')" id="nav-cc" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold">🎯 CC Portal</a>
+                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('ce')" id="nav-ce" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold">🛡️ CE Portal</a>
                 
-                <span data-roles="cc,ce,cm,dir" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden">Tools & Bonus</span>
-                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">🧮 Pricing Calc</a>
-                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('bonus-cc')" id="nav-bonus-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-emerald-400 hover:bg-slate-800 transition hidden">💰 CC Bonus Calc</a>
-                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('bonus-ce')" id="nav-bonus-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-emerald-400 hover:bg-slate-800 transition hidden">💰 CE Bonus Calc</a>
-                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('example-cc')" id="nav-example-cc" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CC Bonus Logic</a>
-                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('example-ce')" id="nav-example-ce" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📊 CE Bonus Logic</a>
-                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition hidden">📝 SOP Test</a>
+                <span data-roles="cc,ce,cm,dir" class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden">Tools & Bonus</span>
+                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold">🧮 Pricing Engine</a>
+                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('bonus-cc')" id="nav-bonus-cc" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-emerald-400">💰 CC Bonus Calc</a>
+                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('bonus-ce')" id="nav-bonus-ce" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-emerald-400">💰 CE Bonus Calc</a>
+                <a href="#" data-roles="cc,cm,dir" onclick="switchTab('example-cc')" id="nav-example-cc" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold">📊 CC Bonus Logic</a>
+                <a href="#" data-roles="ce,cm,dir" onclick="switchTab('example-ce')" id="nav-example-ce" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold">📊 CE Bonus Logic</a>
+                <a href="#" data-roles="cc,ce,cm,dir" onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold">📝 SOP Test</a>
                 
-                <span data-roles="cc,ce" class="block text-xs font-bold text-blue-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden">My Performance</span>
-                <a href="#" data-roles="cc,ce" onclick="switchTab('yearly-perf')" id="nav-yearly-perf" class="nav-btn block px-4 py-2.5 rounded-lg text-blue-300 hover:bg-slate-800 transition hidden">📈 Yearly Review</a>
-                <a href="#" data-roles="cc,ce" onclick="switchTab('my-assessments')" id="nav-my-assessments" class="nav-btn block px-4 py-2.5 rounded-lg text-blue-300 hover:bg-slate-800 transition hidden">💌 My Assessments</a>
+                <span data-roles="cc,ce" class="block text-[10px] font-black text-blue-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden">My Performance</span>
+                <a href="#" data-roles="cc,ce" onclick="switchTab('yearly-perf')" id="nav-yearly-perf" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-blue-300">📈 Yearly Review</a>
+                <a href="#" data-roles="cc,ce" onclick="switchTab('my-assessments')" id="nav-my-assessments" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-blue-300">💌 My Assessments</a>
 
-                <span data-roles="cm,dir" class="block text-xs font-bold text-yellow-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-cm-header">Management</span>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('cmdashboard')" id="nav-cmdashboard" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">📊 Team Dashboard</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">📁 Campaigns</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('member-list')" id="nav-member-list" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">👥 Member List</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">⚖️ Assessments</a>
-                <a href="#" data-roles="cm,dir" onclick="switchTab('perf-archive')" id="nav-perf-archive" class="nav-btn block px-4 py-2.5 rounded-lg text-yellow-400 hover:bg-slate-800 border border-yellow-700/50 bg-yellow-900/20 transition hidden">🗄️ Perf. Archive</a>
+                <span data-roles="cm,dir" class="block text-[10px] font-black text-yellow-500 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-cm-header">Management</span>
+                <a href="#" data-roles="cm,dir" onclick="switchTab('cmdashboard')" id="nav-cmdashboard" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10">📊 Team Dashboard</a>
+                <a href="#" data-roles="cm,dir" onclick="switchTab('active-campaigns')" id="nav-active-campaigns" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10">📁 Campaigns</a>
+                <a href="#" data-roles="cm,dir" onclick="switchTab('member-list')" id="nav-member-list" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10">👥 Member List</a>
+                <a href="#" data-roles="cm,dir" onclick="switchTab('cm-assessment')" id="nav-cm-assessment" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10">⚖️ Assessments</a>
+                <a href="#" data-roles="cm,dir" onclick="switchTab('perf-archive')" id="nav-perf-archive" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-yellow-400 border border-yellow-900/30 bg-yellow-900/10">🗄️ Perf. Archive</a>
 
-                <span data-roles="dir" class="block text-xs font-bold text-purple-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-dir-header">Director Ops</span>
-                <a href="#" data-roles="dir" onclick="switchTab('dir-evaluation')" id="nav-dir-evaluation" class="nav-btn block px-4 py-2.5 rounded-lg text-purple-300 hover:bg-slate-800 border border-purple-700/50 bg-purple-900/20 transition hidden">👑 CM Evaluation</a>
+                <span data-roles="dir" class="block text-[10px] font-black text-purple-400 uppercase tracking-widest mt-4 mb-1 px-2 hidden" id="nav-dir-header">Director Ops</span>
+                <a href="#" data-roles="dir" onclick="switchTab('dir-evaluation')" id="nav-dir-evaluation" class="nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-purple-300 border border-purple-900/30 bg-purple-900/10">👑 CM Evaluation</a>
             </nav>
             <div class="p-4 border-t border-slate-700">
                 <button onclick="logout()" class="w-full text-xs font-bold text-slate-400 hover:text-red-500 p-2 rounded hover:bg-slate-800 transition">Log Out</button>
@@ -120,84 +145,83 @@
 
             <div id="view-admin-dashboard" class="view-section hidden max-w-6xl mx-auto pb-32">
                 <header class="mb-10 flex justify-between items-end">
-                    <div><h2 class="text-4xl font-black text-slate-900 tracking-tight">System Admin Dashboard</h2><p class="text-slate-500 mt-1">Global oversight, member status, and system analytics.</p></div>
-                    <button onclick="archiveAdminYearly()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-4 py-2 rounded-lg text-sm transition shadow-sm border border-red-200">🗄️ Archive Year</button>
+                    <div>
+                        <h2 class="text-4xl font-black text-slate-900 tracking-tight">System Admin Dashboard</h2>
+                        <p class="text-slate-500 mt-1">Global oversight, member status, and system analytics.</p>
+                    </div>
+                    <button onclick="archiveAdminYearly()" class="bg-red-500 text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm hover:scale-105 transition">🗄️ Archive Year</button>
                 </header>
+                
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Yearly Team Performance</h3><div class="relative h-64 w-full"><canvas id="adminChart1"></canvas></div></div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm"><h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Quarterly Margin Trend (USD)</h3><div class="relative h-64 w-full"><canvas id="adminChart2"></canvas></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Yearly Team Performance</h3>
+                        <div class="relative h-64 w-full"><canvas id="adminChart1"></canvas></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Quarterly Margin Trend (USD)</h3>
+                        <div class="relative h-64 w-full"><canvas id="adminChart2"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="mb-10 space-y-4" id="admin-archive-container">
+                    <h3 class="font-bold text-slate-800">🗄️ Yearly Archives</h3>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 border-t-4 border-t-red-500">
+                    <h3 class="font-bold text-slate-800 mb-4 border-b pb-2" id="admin-mem-action-title">➕ System: Manage Member</h3>
+                    <div class="flex space-x-4 items-end">
+                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Name</label><input type="text" id="admin-mem-name" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
+                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Position / Title</label><input type="text" id="admin-mem-title" placeholder="e.g. CC" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
+                        <div class="w-1/4"><label class="block text-xs font-bold text-slate-500 mb-1">Assigned CM</label><input type="text" id="admin-mem-cm" placeholder="e.g. cm" class="w-full p-2 border rounded outline-none focus:ring-2 focus:ring-red-500"></div>
+                        <button onclick="adminSaveMember()" id="admin-btn-save" class="w-1/4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded transition">Add to System</button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-800 text-white p-4 font-bold flex justify-between"><span>Global Member Directory & Status</span></div>
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 border-b"><tr><th class="p-4">Name</th><th class="p-4">Position</th><th class="p-4">Assigned CM</th><th class="p-4 text-right">Action</th></tr></thead>
+                        <tbody id="admin-member-list" class="divide-y"></tbody>
+                    </table>
                 </div>
             </div>
 
             <div id="view-home" class="view-section hidden max-w-6xl mx-auto pb-32">
                 <header class="mb-10">
-                    <h2 class="text-4xl font-black" id="home-welcome">Command Center</h2>
-                    <p class="text-lg opacity-60 mt-2" id="home-role">Your operations dashboard.</p>
+                    <h2 class="text-4xl font-black text-slate-900" id="home-welcome">Command Center</h2>
+                    <p class="text-lg text-slate-500 mt-2" id="home-role">Your operations dashboard.</p>
                 </header>
                 
                 <div id="home-personal-stats" class="hidden mb-10">
-                    <h3 class="text-xl font-bold mb-4 opacity-80">📈 Current Quarter (<span id="home-current-q">Q1</span>)</h3>
+                    <h3 class="text-xl font-bold mb-4 text-slate-800">📈 Current Quarter (<span id="home-current-q">Q1</span>)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div class="bg-white p-6 rounded-2xl border-l-4 border-l-blue-500 shadow-sm"><span class="text-xs font-bold uppercase tracking-widest opacity-60">Deals Closed</span><div class="text-5xl font-black mt-2" id="home-stat-deals">0</div></div>
-                        <div class="bg-white p-6 rounded-2xl border-l-4 border-l-emerald-500 shadow-sm"><span class="text-xs font-bold uppercase tracking-widest opacity-60">Est. Margin</span><div class="text-5xl font-black text-emerald-500 mt-2" id="home-stat-margin">$0</div></div>
-                        <div class="bg-white p-6 rounded-2xl border-l-4 border-l-indigo-500 shadow-sm"><span class="text-xs font-bold uppercase tracking-widest opacity-60">Est. Bonus</span><div class="text-5xl font-black text-indigo-500 mt-2" id="home-stat-bonus">$0</div></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Deals Closed</span>
+                            <div class="text-4xl font-black text-slate-800 mt-1" id="home-stat-deals">0</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Margin (USD)</span>
+                            <div class="text-4xl font-black text-emerald-600 mt-1" id="home-stat-margin">$0</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-indigo-500">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Bonus (USD)</span>
+                            <div class="text-4xl font-black text-indigo-600 mt-1" id="home-stat-bonus">$0</div>
+                        </div>
                     </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-sm"><h4 class="font-bold mb-4 opacity-80">My Quarterly Progression</h4><div class="relative h-64 w-full"><canvas id="homeChart"></canvas></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-slate-800 mb-4">My Quarterly Progression</h4>
+                        <div class="relative h-64 w-full"><canvas id="homeChart"></canvas></div>
+                    </div>
                 </div>
 
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                     <h3 class="text-xl font-black mb-6 border-b pb-3 opacity-90">📌 Core Operating Principles</h3>
-                    <ul class="list-disc pl-5 space-y-4 opacity-80">
+                    <ul class="list-disc pl-5 space-y-4 opacity-80 text-slate-700">
                         <li><strong>The 3:1 Sourcing Rule:</strong> CCs must source 15 candidates for every 5 available slots.</li>
                         <li><strong>Detail Oriented:</strong> Always make sure every info added to trello/contract is correct.</li>
                         <li><strong>Margin Protection:</strong> Always utilize the pricing calculator before approving counter-offers.</li>
-                        <li><strong>Quarterly Refresh:</strong> Hit "Refresh" in the bonus calculators at quarter-end to sync your stats to CMs.</li>
+                        <li><strong>Quarterly Refresh:</strong> Hit "Refresh" in the bonus calculators at quarter-end to sync your stats.</li>
                     </ul>
-                </div>
-            </div>
-
-            <div id="view-cmdashboard" class="view-section hidden max-w-6xl mx-auto pb-32 animate-fade-in">
-                <header class="mb-10 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-4xl font-black tracking-tighter" id="cm-welcome-title">Team Intelligence</h2>
-                        <p class="opacity-50 mt-2 font-bold">Quarterly performance overview.</p>
-                    </div>
-                    <button onclick="renderCMTeamPerf()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-black px-5 py-3 rounded-xl shadow-lg hover:scale-105 transition uppercase tracking-widest text-xs"><i class="fas fa-sync-alt mr-2"></i> Sync DB</button>
-                </header>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                    <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-blue-500">
-                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Emails Sent</span>
-                        <div class="text-6xl font-black mt-2 text-blue-500 tracking-tighter" id="cm-stat-emails">0</div>
-                    </div>
-                    <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-emerald-500">
-                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Closed Deals</span>
-                        <div class="text-6xl font-black text-emerald-500 mt-2 tracking-tighter" id="cm-stat-closed">0</div>
-                    </div>
-                    <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-yellow-500">
-                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Total Deals</span>
-                        <div class="text-6xl font-black text-yellow-500 mt-2 tracking-tighter" id="cm-stat-total">0</div>
-                    </div>
-                </div>
-
-                <h3 class="font-black text-sm uppercase tracking-widest opacity-50 mb-6">Member Performance Grids</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="cm-ind-charts-container"></div>
-
-                <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
-                    <div class="bg-blue-600/10 p-5 font-black uppercase tracking-widest text-xs opacity-80">Directory & Quarterly Stats</div>
-                    <table class="w-full text-left">
-                        <thead class="border-b border-slate-500/10 opacity-50 text-[10px] uppercase font-black tracking-widest">
-                            <tr>
-                                <th class="p-6">Member</th>
-                                <th class="p-6">Role</th>
-                                <th class="p-6 text-center">Emails Sent</th>
-                                <th class="p-6 text-center">Closed Deals</th>
-                                <th class="p-6 text-center">Total Deals</th>
-                                <th class="p-6 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cm-team-perf-body" class="divide-y divide-slate-500/5"></tbody>
-                    </table>
                 </div>
             </div>
 
@@ -217,7 +241,7 @@
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition"><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">📚 Core Training</h4><div class="space-y-2"><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">CreatorDB Guide</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">CC Master Workflow</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Bonus System Wiki</a></div></div>
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition"><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">💬 Comm. Docs</h4><div class="space-y-2"><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Email Signature</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Master Templates</a><a href="#" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Demo Protocol</a></div></div>
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition"><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">📈 Data & Pricing</h4><div class="space-y-2"><a href="https://drive.google.com/drive/folders/1ZJHBloKb1FuRhgT3w0B6mgZlmvT4Sj_6?usp=drive_link" target="_blank" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Clients Folder</a><a href="#" onclick="switchTab('calculator')" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Pricing Calculator</a><a href="https://simpany.co/professional-income-calc" target="_blank" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">Laobaodan Calc</a><a href="https://docs.google.com/document/d/10iksiS7rV_xGnrGtr3hzbLFxIgzEOIPxEbfgSys16hM/edit" target="_blank" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">TW Pricing Logic</a></div></div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition"><div><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">🔍 Sourcing Tech</h4><a href="https://app.creatordb.app/discover" target="_blank" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">CreatorDB SaaS</a><a href="https://docs.google.com/document/d/10T9g0niFpLVIs4yIioidRtrfLyz31PbqklJeHowL4B0/edit" target="_blank" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">BigQuery Code</a></div><div class="bg-slate-100 p-3 rounded-lg border mt-4 text-xs"><strong>🕷️ Spider Proxies</strong><br>User: clayton<br>Pass: Y2xheXRvbg==<br><a href="http://147.182.130.237/" target="_blank" class="text-blue-600 hover:underline">Spider 1</a> | <a href="http://159.223.130.38/" target="_blank" class="text-blue-600 hover:underline">Spider 2</a></div></div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition"><div><h4 class="font-extrabold text-slate-800 mb-3 flex items-center">🔍 Sourcing Tech</h4><a href="https://app.creatordb.app/discover" target="_blank" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">CreatorDB SaaS</a><a href="https://docs.google.com/document/d/10T9g0niFpLVIs4yIioidRtrfLyz31PbqklJeHowL4B0/edit" target="_blank" class="block p-2 text-sm font-bold text-slate-700 hover:text-blue-600 bg-slate-50 rounded">BigQuery Code</a></div><div class="bg-slate-100 p-3 rounded-lg border mt-4 text-xs text-slate-700"><strong>🕷️ Spider Proxies</strong><br>User: clayton<br>Pass: Y2xheXRvbg==<br><a href="http://147.182.130.237/" target="_blank" class="text-blue-600 hover:underline">Spider 1</a> | <a href="http://159.223.130.38/" target="_blank" class="text-blue-600 hover:underline">Spider 2</a></div></div>
                     </div>
                     <div class="bg-gradient-to-r from-indigo-50 to-blue-50 border p-5 rounded-xl flex justify-between items-center mb-6"><div><strong class="text-lg font-bold text-indigo-900">📧 Smartlead</strong><p class="text-sm text-indigo-700">Naming: [Region]_[Owner]_[Brand]_[Platform]_[YYMM]</p></div><a href="https://app.smartlead.ai/" target="_blank" class="bg-indigo-600 text-white text-sm font-bold py-2 px-5 rounded-lg">Open Smartlead &rarr;</a></div>
                     <div class="bg-slate-800 rounded-xl overflow-hidden"><div class="p-4 border-b border-slate-700 flex justify-between items-center"><h4 class="font-bold text-white">YouTube UID Extractor Bookmarklet</h4><button onclick="copyCode()" id="copyBtn" class="bg-slate-700 text-white text-xs font-bold py-2 px-4 rounded">Copy Code</button></div><div class="p-5 overflow-x-auto bg-[#0d1117]"><pre><code id="uidCode" class="text-sm text-green-400 font-mono">javascript:(function(){let url=window.location.href;if(url.includes('/channel/')||url.includes('/@')||url.includes('/c/')){fetch(url,{cache:"no-store"}).then(response=>response.text()).then(html=>{var match=html.match(/<link rel="canonical" href="([^"]+)"/i);match?prompt('Channel ID:',match[1].split('/').pop()):alert('Link tag with rel="canonical" not found.');}).catch(error=>{console.error('Error fetching the page:',error);alert('An error occurred while fetching the page.');});}else{let videoId=url.match(/v=([a-zA-Z0-9_-]+)/);if(videoId){fetch('https://www.youtube.com/watch?v='+videoId[1]).then(response=>response.text()).then(data=>{let channelId=data.match(/"channelId":"(UC[^\"]+)"/);channelId?prompt('Channel ID:',channelId[1]):alert('Channel ID not found.');}).catch(e=>alert('Error fetching channel ID.'));}else{alert('Not a valid YouTube video URL.');}}})();</code></pre></div></div>
@@ -226,18 +250,18 @@
                 <div id="cc-sub-workflow" class="sub-view-cc hidden animate-fade-in">
                     <h3 class="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">📅 6-Week Master Workflow</h3>
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4 w-32">Phase</th><th class="p-4">Action Item</th><th class="p-4 w-24">Owner</th><th class="p-4 w-28">Timing</th><th class="p-4">Strategic Buffer / SOP</th></tr></thead><tbody class="divide-y">
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">1. Strategy</td><td class="p-4">Campaign kick-off meeting</td><td class="p-4">CE & CC</td><td class="p-4 font-semibold text-blue-600">Day 1</td><td class="p-4 text-xs">Confirm budget, KPIs, niches, deliverables, brief, and CTA.</td></tr>
-                        <tr class="bg-red-50/30 hover:bg-red-50"><td class="p-4 font-bold text-slate-800 border-l-4 border-red-500">2. Sourcing</td><td class="p-4 font-semibold text-red-700">⚠️ Sourcing Health Check</td><td class="p-4">CE & CC</td><td class="p-4 font-semibold text-red-600">Day 5</td><td class="p-4 text-xs">If 5 creators are needed, you should have 15 potentials. If &lt;10, check with CE immediately.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4">CC Submits Long List to CE</td><td class="p-4">CC &rarr; CE</td><td class="p-4 font-semibold text-blue-600">Day 8</td><td class="p-4 text-xs">Internal QC. CE filters out off-brand creators.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4">Submit 1st List to Client</td><td class="p-4">CE &rarr; Client</td><td class="p-4 font-semibold text-blue-600">Day 10</td><td class="p-4 text-xs">CE will present the list to the client for review.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">3. Contracting</td><td class="p-4">Client Approval of Creators</td><td class="p-4">Client</td><td class="p-4 font-semibold text-blue-600">Day 13</td><td class="p-4 text-xs">If client rejects too many, activate "Round 2 Sourcing" using Day 5 backups.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4">Outreach & Contracting</td><td class="p-4">CC</td><td class="p-4 font-semibold text-blue-600">Day 14-17</td><td class="p-4 text-xs">Get contracts signed. STOP if product hasn't shipped.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">4. Product</td><td class="p-4">Product Shipping / Briefing</td><td class="p-4">CE & CC</td><td class="p-4 font-semibold text-blue-600">Day 18</td><td class="p-4 text-xs">Ensure creators have product and final creative brief.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">5. Creation</td><td class="p-4">Content Draft Deadline</td><td class="p-4">Creator</td><td class="p-4 font-semibold text-blue-600">Day 30</td><td class="p-4 text-xs">Set this date 3-5 days before the Client needs to see it.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4">Internal QC Review</td><td class="p-4">CE & CC</td><td class="p-4 font-semibold text-blue-600">Day 31</td><td class="p-4 text-xs">Check against brief. Fix errors now.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4">Submit Drafts to Client</td><td class="p-4">CE &rarr; Client</td><td class="p-4 font-semibold text-blue-600">Day 32</td><td class="p-4 text-xs">Rule: "Please provide feedback by Day 35 to stay on launch schedule."</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4">Revisions (If any)</td><td class="p-4">CC</td><td class="p-4 font-semibold text-blue-600">Day 35-37</td><td class="p-4 text-xs">Handle edits with creator.</td></tr>
-                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">6. Launch</td><td class="p-4">Go Live & Monitor</td><td class="p-4">Creator</td><td class="p-4 font-semibold text-blue-600">Day 40-42</td><td class="p-4 text-xs">Monitor live links and track performance.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">1. Strategy</td><td class="p-4 text-slate-700">Campaign kick-off meeting</td><td class="p-4 text-slate-700">CE & CC</td><td class="p-4 font-semibold text-blue-600">Day 1</td><td class="p-4 text-xs text-slate-600">Confirm budget, KPIs, niches, deliverables, brief, and CTA.</td></tr>
+                        <tr class="bg-red-50/30 hover:bg-red-50"><td class="p-4 font-bold text-slate-800 border-l-4 border-red-500">2. Sourcing</td><td class="p-4 font-semibold text-red-700">⚠️ Sourcing Health Check</td><td class="p-4 text-slate-700">CE & CC</td><td class="p-4 font-semibold text-red-600">Day 5</td><td class="p-4 text-xs text-slate-600">If 5 creators are needed, you should have 15 potentials. If &lt;10, check with CE immediately.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4 text-slate-700">CC Submits Long List to CE</td><td class="p-4 text-slate-700">CC &rarr; CE</td><td class="p-4 font-semibold text-blue-600">Day 8</td><td class="p-4 text-xs text-slate-600">Internal QC. CE filters out off-brand creators.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4 text-slate-700">Submit 1st List to Client</td><td class="p-4 text-slate-700">CE &rarr; Client</td><td class="p-4 font-semibold text-blue-600">Day 10</td><td class="p-4 text-xs text-slate-600">CE will present the list to the client for review.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">3. Contracting</td><td class="p-4 text-slate-700">Client Approval of Creators</td><td class="p-4 text-slate-700">Client</td><td class="p-4 font-semibold text-blue-600">Day 13</td><td class="p-4 text-xs text-slate-600">If client rejects too many, activate "Round 2 Sourcing" using Day 5 backups.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4 text-slate-700">Outreach & Contracting</td><td class="p-4 text-slate-700">CC</td><td class="p-4 font-semibold text-blue-600">Day 14-17</td><td class="p-4 text-xs text-slate-600">Get contracts signed. STOP if product hasn't shipped.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">4. Product</td><td class="p-4 text-slate-700">Product Shipping / Briefing</td><td class="p-4 text-slate-700">CE & CC</td><td class="p-4 font-semibold text-blue-600">Day 18</td><td class="p-4 text-xs text-slate-600">Ensure creators have product and final creative brief.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">5. Creation</td><td class="p-4 text-slate-700">Content Draft Deadline</td><td class="p-4 text-slate-700">Creator</td><td class="p-4 font-semibold text-blue-600">Day 30</td><td class="p-4 text-xs text-slate-600">Set this date 3-5 days before the Client needs to see it.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4 text-slate-700">Internal QC Review</td><td class="p-4 text-slate-700">CE & CC</td><td class="p-4 font-semibold text-blue-600">Day 31</td><td class="p-4 text-xs text-slate-600">Check against brief. Fix errors now.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4 text-slate-700">Submit Drafts to Client</td><td class="p-4 text-slate-700">CE &rarr; Client</td><td class="p-4 font-semibold text-blue-600">Day 32</td><td class="p-4 text-xs text-slate-600">Rule: "Please provide feedback by Day 35 to stay on launch schedule."</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800"></td><td class="p-4 text-slate-700">Revisions (If any)</td><td class="p-4 text-slate-700">CC</td><td class="p-4 font-semibold text-blue-600">Day 35-37</td><td class="p-4 text-xs text-slate-600">Handle edits with creator.</td></tr>
+                        <tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">6. Launch</td><td class="p-4 text-slate-700">Go Live & Monitor</td><td class="p-4 text-slate-700">Creator</td><td class="p-4 font-semibold text-blue-600">Day 40-42</td><td class="p-4 text-xs text-slate-600">Monitor live links and track performance.</td></tr>
                     </tbody></table></div>
                 </div>
 
@@ -398,7 +422,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="view-calculator" class="view-section hidden max-w-6xl mx-auto pb-32">
                 <header class="mb-8 border-b border-slate-200 pb-4">
                     <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Pricing Engine & FX</h2>
@@ -644,6 +667,7 @@
                     <div id="quiz-success" class="hidden p-10 text-center animate-fade-in"><div class="text-6xl mb-4">✅</div><h3 class="text-2xl font-bold text-slate-800 mb-2">Assessment Submitted!</h3><p class="text-slate-600">Your results have been securely recorded to the database.</p></div>
                 </div>
             </div>
+
             <div id="view-yearly-perf" class="view-section hidden max-w-5xl mx-auto pb-32">
                 <header class="mb-8 border-b border-slate-200 pb-4 flex justify-between items-end">
                     <div>
@@ -687,33 +711,33 @@
                 <header class="mb-10 flex justify-between items-end">
                     <div>
                         <h2 class="text-4xl font-black tracking-tighter" id="cm-welcome-title">Team Intelligence</h2>
-                        <p class="opacity-50 mt-2 font-bold">Quarterly performance overview.</p>
+                        <p class="opacity-50 mt-2 font-bold text-slate-600">Quarterly performance overview.</p>
                     </div>
                     <button onclick="renderCMTeamPerf()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-black px-5 py-3 rounded-xl shadow-lg hover:scale-105 transition uppercase tracking-widest text-xs"><i class="fas fa-sync-alt mr-2"></i> Sync DB</button>
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                     <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-blue-500">
-                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Emails Sent</span>
+                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest text-slate-700">Emails Sent</span>
                         <div class="text-6xl font-black mt-2 text-blue-500 tracking-tighter" id="cm-stat-emails">0</div>
                     </div>
                     <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-emerald-500">
-                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Closed Deals</span>
+                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest text-slate-700">Closed Deals</span>
                         <div class="text-6xl font-black text-emerald-500 mt-2 tracking-tighter" id="cm-stat-closed">0</div>
                     </div>
                     <div class="bg-white p-8 rounded-3xl shadow-sm border-b-8 border-yellow-500">
-                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest">Total Deals</span>
+                        <span class="text-[10px] font-black opacity-50 uppercase tracking-widest text-slate-700">Total Deals</span>
                         <div class="text-6xl font-black text-yellow-500 mt-2 tracking-tighter" id="cm-stat-total">0</div>
                     </div>
                 </div>
 
-                <h3 class="font-black text-sm uppercase tracking-widest opacity-50 mb-6">Member Performance Grids</h3>
+                <h3 class="font-black text-sm uppercase tracking-widest opacity-50 mb-6 text-slate-700">Member Performance Grids</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="cm-ind-charts-container"></div>
 
-                <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
-                    <div class="bg-blue-600/10 p-5 font-black uppercase tracking-widest text-xs opacity-80">Directory & Quarterly Stats</div>
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200">
+                    <div class="bg-blue-600/10 p-5 font-black uppercase tracking-widest text-xs opacity-80 text-slate-800">Directory & Quarterly Stats</div>
                     <table class="w-full text-left">
-                        <thead class="border-b border-slate-500/10 opacity-50 text-[10px] uppercase font-black tracking-widest">
+                        <thead class="border-b border-slate-200/50 opacity-60 text-[10px] uppercase font-black tracking-widest text-slate-700">
                             <tr>
                                 <th class="p-6">Member</th>
                                 <th class="p-6">Role</th>
@@ -723,7 +747,7 @@
                                 <th class="p-6 text-center">Status</th>
                             </tr>
                         </thead>
-                        <tbody id="cm-team-perf-body" class="divide-y divide-slate-500/5"></tbody>
+                        <tbody id="cm-team-perf-body" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
@@ -781,14 +805,16 @@
 
                 <div id="dir-assessment-queue-container" class="hidden mt-12">
                     <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-yellow-100 text-yellow-600 p-1.5 rounded mr-2 text-sm">⏳</span> Pending Director Approvals</h3>
-                    <div id="dir-pending-list" class="space-y-4 mb-12"></div>
+                    <div id="dir-pending-list" class="space-y-4 mb-12">
+                    </div>
                 </div>
             </div>
 
             <div id="view-perf-archive" class="view-section hidden max-w-6xl mx-auto pb-32">
                 <header class="mb-8 border-b border-slate-200 pb-4"><h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Global Performance Archive</h2></header>
                 <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-blue-100 text-blue-600 p-1.5 rounded mr-2 text-sm">📈</span> Yearly Performance Archives</h3>
-                <div class="mb-12 space-y-4" id="cm-archive-container"></div>
+                <div class="mb-12 space-y-4" id="cm-archive-container">
+                    </div>
 
                 <h3 class="font-extrabold text-lg mb-4 text-slate-800 flex items-center"><span class="bg-indigo-100 text-indigo-600 p-1.5 rounded mr-2 text-sm">⚖️</span> Official Assessments Log</h3>
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"><table class="w-full text-left text-sm text-slate-600"><thead class="bg-slate-800 text-white font-bold"><tr><th class="p-4 w-32">Date</th><th class="p-4 w-32">Member</th><th class="p-4 w-40">Type</th><th class="p-4 w-32">Status</th><th class="p-4">Final Feedback</th></tr></thead><tbody id="archive-assess-body" class="divide-y divide-slate-100"></tbody></table></div>
@@ -808,7 +834,6 @@
 
         </main>
     </div>
-
     <script>
         // --- 1. GLOBAL STATE & MOCK DATABASES ---
         const API_URL = "https://script.google.com/macros/s/AKfycbyoOqH2XqAytf91NEaNJZePbl3It3gbC4R-dmwUHAca2xcBIls7Es8IlgEaMasaAQtR/exec"; 
@@ -817,21 +842,19 @@
         let currentUserName = '';
         let currentUser = null;
         let allMembers = []; // 從 Google Sheet 抓來的完整資料
-        let members = []; // 為了相容你的舊版邏輯而轉換的陣列
+        let members = []; // 為了相容舊版邏輯的陣列
 
         const FX = { USD: 1, TWD: 33, JPY: 150, KRW: 1330 };
         let globalCCTotalBonusUSD = 0; 
         let editMemberIndex = -1;
         let chartInstances = {};
 
-        // Active Campaigns DB
         let activeCampaigns = [
             { id: 1, name: 'Brand A - Q1', type: 'New', modifier: 1.0 },
             { id: 2, name: 'Brand B - Hard', type: 'Old', modifier: 1.2 },
             { id: 3, name: 'Brand C - Easy', type: 'New', modifier: 0.8 }
         ];
 
-        // My Quarterly Stats (Q1-Q4)
         let myQStats = {
             1: { deals: 0, marginUSD: 0, bonusUSD: 0 },
             2: { deals: 0, marginUSD: 0, bonusUSD: 0 },
@@ -840,12 +863,10 @@
         };
         let currentQuarter = 1;
 
-        // Global Archives DB
         let globalYearlyArchives = [
             { year: '2025', user: 'yogi', data: [1200, 1500, 2000, 3000] }
         ];
 
-        // Assessments DB
         let pendingAssessments = [
             { id: 101, date: '2026-03-01', member: 'George', type: 'CE Conversion', cmStatus: 'Recommended for Approval', cmFb: 'Ready for trial. Execution is flawless.', cmName: 'cm', criteriaHtml: '<ul class="list-disc pl-5 text-xs text-slate-600 mt-2"><li>✅ Sourcing Logic</li><li>✅ Data Accuracy</li><li>✅ Zero-Error Record</li></ul>' }
         ];
@@ -867,8 +888,8 @@
                 icon.classList.replace('fa-moon', 'fa-sun');
                 icon.classList.replace('text-slate-600', 'text-yellow-500');
             }
-            if(document.getElementById('view-cmdashboard').classList.contains('block')) renderCMIndividualCharts(); 
-            if(document.getElementById('view-home').classList.contains('block')) renderHomeChart();
+            if(document.getElementById('view-cmdashboard').classList.contains('block')) { renderCMIndividualCharts(); }
+            if(document.getElementById('view-home').classList.contains('block')) { renderHomeChart(); }
         }
 
         // --- 2. LOGIN LOGIC (Google API Version) ---
@@ -887,7 +908,6 @@
                 const response = await fetch(`${API_URL}?action=getMembers`, { method: 'GET', redirect: 'follow' });
                 allMembers = await response.json();
                 
-                // 將 allMembers 轉換為舊版 members 陣列
                 members = allMembers.map(m => ({
                     name: m.Name || 'Unknown',
                     title: m.Role || 'CC',
@@ -899,8 +919,6 @@
 
                 if (user) {
                     currentUser = user;
-                    
-                    // 將 Sheet 來的 Role 轉換為舊版系統認得的短代碼
                     let r = user.Role.toLowerCase();
                     if(r.includes('admin')) currentUserRole = 'agencyadmin';
                     else if(r.includes('cm') || r.includes('manager')) currentUserRole = 'cm';
@@ -909,20 +927,12 @@
                     else currentUserRole = 'cc';
                     
                     currentUserName = user.Name;
-
                     enterPortal();
                 } else {
                     errorMsg.classList.remove('hidden');
                 }
             } catch (error) {
                 alert("🔴 系統連線發生錯誤！請確認 API 網址是否正確，且已部署為『所有人』存取。\n\n詳細訊息: " + error.message);
-                // Fallback test mode
-                allMembers = [{Email: email, Name: 'Test Operator', Role: 'AgencyAdmin', CM: 'None'}];
-                members = [{name: 'Test Operator', title: 'AgencyAdmin', cm: 'None', email: email}];
-                currentUser = allMembers[0];
-                currentUserRole = 'agencyadmin';
-                currentUserName = 'Test Operator';
-                enterPortal();
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Verify & Launch";
@@ -935,21 +945,15 @@
             
             let roleDisplay = currentUser.Role;
             document.getElementById('current-user-display').innerText = `${currentUserName} | ${roleDisplay}`;
-            if(document.getElementById('cm-welcome-title')) {
-                document.getElementById('cm-welcome-title').innerText = `Welcome, ${currentUserName}`;
-            }
-            if(document.getElementById('home-welcome')) {
-                document.getElementById('home-welcome').innerText = `Welcome, ${currentUserName}`;
-            }
+            if(document.getElementById('cm-welcome-title')) document.getElementById('cm-welcome-title').innerText = `Team Intelligence`;
+            if(document.getElementById('home-welcome')) document.getElementById('home-welcome').innerText = `Welcome, ${currentUserName}`;
             
-            // Route Access dynamically based on attributes
             document.querySelectorAll('.nav-btn, span[data-roles]').forEach(el => {
                 const roles = el.getAttribute('data-roles');
                 if (roles && roles.split(',').includes(currentUserRole)) el.classList.remove('hidden');
                 else el.classList.add('hidden');
             });
 
-            // Assessment Dual View Logic
             if(currentUserRole === 'cm') {
                 document.getElementById('cm-assessment-form-container').classList.remove('hidden');
                 document.getElementById('dir-assessment-queue-container').classList.add('hidden');
@@ -959,7 +963,6 @@
                 renderDirQueue();
             }
 
-            // For ALL USers: Make Dashboard Home the default view
             if(['cm','dir','agencyadmin'].includes(currentUserRole)) { 
                 renderCampaignList(); renderMembers(); renderArchives(); renderCMTeamPerf();
                 setTimeout(() => { renderGlobalCharts(); }, 500);
@@ -971,7 +974,6 @@
                 setTimeout(() => { renderHomeChart(); }, 500);
             }
 
-            // Navigate Everyone to Home
             switchTab('home');
         }
 
@@ -1002,7 +1004,7 @@
 
             const activeBtn = document.getElementById('nav-' + tabId);
             if(activeBtn) {
-                activeBtn.className = activeBtn.className.replace(/text-\w+-\d+/g, ''); // strip colors
+                activeBtn.className = activeBtn.className.replace(/text-\w+-\d+/g, ''); 
                 if(tabId.includes('dir')) activeBtn.classList.add('bg-purple-600', 'text-white', 'font-semibold', 'shadow-md');
                 else if(tabId.includes('admin')) activeBtn.classList.add('bg-red-600', 'text-white', 'font-semibold', 'shadow-md');
                 else if(['cmdashboard','active-campaigns','member-list','cm-assessment','perf-archive'].includes(tabId)) activeBtn.classList.add('bg-yellow-600', 'text-white', 'font-semibold', 'shadow-md');
@@ -1021,10 +1023,10 @@
         function switchSubTab(portal, tabId) {
             document.querySelectorAll('.sub-view-' + portal).forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
             document.getElementById(portal + '-sub-' + tabId).classList.remove('hidden'); document.getElementById(portal + '-sub-' + tabId).classList.add('block');
-            document.querySelectorAll('.tab-btn-' + portal).forEach(btn => { btn.classList.remove('bg-white', 'shadow-sm', 'text-blue-700', 'text-indigo-700', 'text-white', 'bg-blue-500', 'bg-indigo-500'); btn.classList.add('text-slate-600', 'opacity-60'); });
+            document.querySelectorAll('.tab-btn-' + portal).forEach(btn => { btn.classList.remove('bg-white', 'shadow-sm', 'text-blue-700', 'text-indigo-700'); btn.classList.add('text-slate-600'); });
             const activeBtn = document.getElementById('tab-' + portal + '-' + tabId);
             if (activeBtn) {
-                activeBtn.classList.remove('text-slate-600', 'opacity-60'); activeBtn.classList.add('bg-white', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600'); activeBtn.classList.add('bg-white', 'shadow-sm');
                 if (portal === 'cc') activeBtn.classList.add('text-blue-700');
                 if (portal === 'ce') activeBtn.classList.add('text-indigo-700');
             }
@@ -1042,7 +1044,6 @@
             let data2 = { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [{ label: 'Quarterly Margin (USD)', data: [50000, 78000, 85000, 92000], backgroundColor: 'rgba(16, 185, 129, 0.5)', borderColor: 'rgb(16, 185, 129)', borderWidth: 2 }] };
             drawChart('adminChart1', 'bar', data1, { responsive: true, maintainAspectRatio: false });
             drawChart('adminChart2', 'line', data2, { responsive: true, maintainAspectRatio: false });
-            drawChart('cmChart1', 'line', data2, { responsive: true, maintainAspectRatio: false });
         }
 
         function renderHomeChart() {
@@ -1098,7 +1099,7 @@
             }, 100);
         }
 
-        // --- NEW CM DASHBOARD TEAM PERFORMANCE ---
+        // --- 8. CM DASHBOARD TEAM PERFORMANCE ---
         function renderCMTeamPerf() {
             const tbody = document.getElementById('cm-team-perf-body');
             if(!tbody) return;
@@ -1118,11 +1119,11 @@
                 
                 tbody.innerHTML += `
                 <tr class="hover:bg-slate-500/5 transition">
-                    <td class="p-6 font-bold">${m.name}</td>
-                    <td class="p-6 opacity-60 text-xs font-black tracking-widest uppercase">${m.title}</td>
-                    <td class="p-6 text-center font-mono font-bold text-blue-400">${emails}</td>
-                    <td class="p-6 text-center font-mono font-bold text-emerald-500">${closedD}</td>
-                    <td class="p-6 text-center font-mono font-bold text-yellow-500">${totalD}</td>
+                    <td class="p-6 font-bold text-slate-800">${m.name}</td>
+                    <td class="p-6 opacity-60 text-xs font-black tracking-widest uppercase text-slate-700">${m.title}</td>
+                    <td class="p-6 text-center font-mono font-bold text-blue-500">${emails}</td>
+                    <td class="p-6 text-center font-mono font-bold text-emerald-600">${closedD}</td>
+                    <td class="p-6 text-center font-mono font-bold text-yellow-600">${totalD}</td>
                     <td class="p-6 text-center">${stat}</td>
                 </tr>`;
             });
@@ -1213,10 +1214,10 @@
         function addCCDealRow() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="p-1"><select class="cc-mod w-full p-2 border border-slate-300 rounded outline-none text-xs bg-slate-50 focus:bg-white">${getCampOptions()}</select></td>
-                <td class="p-1"><input type="text" placeholder="Name" class="w-full p-2 border border-slate-300 rounded outline-none text-xs focus:ring-1 focus:ring-blue-500"></td>
-                <td class="p-1 flex space-x-1"><select class="cc-cl-cur border border-slate-300 rounded outline-none text-xs bg-slate-50">${getCurOptions()}</select><input type="number" class="cc-cl-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500" placeholder="Client" oninput="calculateCCBonus()"></td>
-                <td class="p-1 flex space-x-1"><select class="cc-cr-cur border border-slate-300 rounded outline-none text-xs bg-slate-50">${getCurOptions()}</select><input type="number" class="cc-cr-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500" placeholder="Creator" oninput="calculateCCBonus()"></td>
+                <td class="p-1"><select class="cc-mod w-full p-2 border border-slate-300 rounded outline-none text-xs bg-slate-50 focus:bg-white text-slate-700">${getCampOptions()}</select></td>
+                <td class="p-1"><input type="text" placeholder="Name" class="w-full p-2 border border-slate-300 rounded outline-none text-xs focus:ring-1 focus:ring-blue-500 text-slate-700"></td>
+                <td class="p-1 flex space-x-1"><select class="cc-cl-cur border border-slate-300 rounded outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="cc-cl-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500 text-slate-700" placeholder="Client" oninput="calculateCCBonus()"></td>
+                <td class="p-1 flex space-x-1"><select class="cc-cr-cur border border-slate-300 rounded outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="cc-cr-pr w-full p-2 border border-slate-300 rounded outline-none text-xs font-mono focus:ring-1 focus:ring-blue-500 text-slate-700" placeholder="Creator" oninput="calculateCCBonus()"></td>
                 <td class="p-1 text-right font-bold text-slate-700 cc-row-prof text-xs leading-tight py-2">$0</td>
                 <td class="p-1 text-right"><button onclick="this.closest('tr').remove(); calculateCCBonus()" class="text-slate-400 hover:text-red-500 transition font-bold px-2">✖</button></td>
             `;
@@ -1297,8 +1298,8 @@
             let options = '<option value="">-- Select Campaign --</option>';
             activeCampaigns.forEach(c => options += `<option value="${c.name}">${c.name}</option>`);
             tr.innerHTML = `
-                <td class="p-2"><select class="w-full p-2.5 border border-slate-300 rounded-lg outline-none text-xs bg-slate-50 focus:bg-white">${options}</select></td>
-                <td class="p-2 flex space-x-1"><select class="ce-cur border border-slate-300 rounded-lg outline-none text-xs bg-slate-50">${getCurOptions()}</select><input type="number" class="ce-rev w-full p-2.5 border border-slate-300 rounded-lg outline-none text-sm font-mono focus:ring-1 focus:ring-indigo-500" placeholder="Revenue" oninput="calculateCEBonus()"></td>
+                <td class="p-2"><select class="w-full p-2.5 border border-slate-300 rounded-lg outline-none text-xs bg-slate-50 focus:bg-white text-slate-700">${options}</select></td>
+                <td class="p-2 flex space-x-1"><select class="ce-cur border border-slate-300 rounded-lg outline-none text-xs bg-slate-50 text-slate-700">${getCurOptions()}</select><input type="number" class="ce-rev w-full p-2.5 border border-slate-300 rounded-lg outline-none text-sm font-mono focus:ring-1 focus:ring-indigo-500 text-slate-700" placeholder="Revenue" oninput="calculateCEBonus()"></td>
                 <td class="p-2 text-right"><button onclick="this.closest('tr').remove(); calculateCEBonus()" class="text-slate-400 hover:text-red-500 transition font-bold px-2">✖</button></td>
             `;
             document.getElementById('ce-deals-body').appendChild(tr);
@@ -1332,12 +1333,11 @@
             document.getElementById('ce-out-third-month').innerText = fmtTWD(baseTWD + grandTWD);
         }
 
-        // --- 7. YEARLY PERFORMANCE & ARCHIVE (CC/CE) ---
         function renderMyLogs() {
             const tbody = document.getElementById('yearly-perf-body'); tbody.innerHTML = '';
             for(let i=1; i<=4; i++) {
                 let stat = myQStats[i];
-                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="p-4 font-bold">Q${i}</td><td class="p-4">${stat.deals} items logged</td><td class="p-4 text-right font-bold text-emerald-600">${fmtUSD(stat.bonusUSD)}</td></tr>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">Q${i}</td><td class="p-4 text-slate-700">${stat.deals} items logged</td><td class="p-4 text-right font-bold text-emerald-600">${fmtUSD(stat.bonusUSD)}</td></tr>`;
             }
         }
         
@@ -1377,42 +1377,6 @@
                 alert('Year archived successfully!');
                 if(['cm','dir','agencyadmin'].includes(currentUserRole)) { renderArchives(); renderCMTeamPerf(); }
             }
-        }
-
-        // --- 8. CM DASHBOARD & MANAGEMENT LOGIC ---
-        function renderCMTeamPerf() {
-            const tbody = document.getElementById('cm-team-perf-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            
-            let tEmails = 0; let tClosed = 0; let tTotal = 0;
-            let targetMembers = members.filter(m => m.cm === currentUserName || currentUserRole === 'dir' || currentUserRole === 'agencyadmin');
-
-            targetMembers.forEach(m => {
-                let emails = Math.floor(Math.random() * 400) + 100; 
-                let totalD = Math.floor(Math.random() * 30) + 10;   
-                let closedD = Math.floor(totalD * (Math.random() * 0.4 + 0.2)); 
-
-                tEmails += emails; tClosed += closedD; tTotal += totalD;
-                
-                let stat = closedD >= 10 ? '<span class="bg-emerald-500/20 text-emerald-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">On Track</span>' : '<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Push</span>';
-                
-                tbody.innerHTML += `
-                <tr class="hover:bg-slate-500/5 transition">
-                    <td class="p-6 font-bold">${m.name}</td>
-                    <td class="p-6 opacity-60 text-xs font-black tracking-widest uppercase">${m.title}</td>
-                    <td class="p-6 text-center font-mono font-bold text-blue-400">${emails}</td>
-                    <td class="p-6 text-center font-mono font-bold text-emerald-500">${closedD}</td>
-                    <td class="p-6 text-center font-mono font-bold text-yellow-500">${totalD}</td>
-                    <td class="p-6 text-center">${stat}</td>
-                </tr>`;
-            });
-            
-            const emEl = document.getElementById('cm-stat-emails'); if(emEl) emEl.innerText = tEmails.toLocaleString();
-            const clEl = document.getElementById('cm-stat-closed'); if(clEl) clEl.innerText = tClosed;
-            const totEl = document.getElementById('cm-stat-total'); if(totEl) totEl.innerText = tTotal;
-
-            renderCMIndividualCharts();
         }
 
         function renderCampaignList() {
@@ -1519,21 +1483,21 @@
                     <table class="w-full text-left text-sm text-slate-700 border-t border-slate-200 mt-2">
                         <thead class="bg-slate-800 text-white"><tr><th class="p-3 w-16 text-center">Tick</th><th class="p-3 w-48">Category</th><th class="p-3">Criteria required for promotion (1 Pt Each)</th></tr></thead>
                         <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Execution Mastery</td><td class="p-3"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Execution Mastery</td><td class="p-3"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Execution Mastery</td><td class="p-3"><strong>Zero-Error Record:</strong> Flawless execution on Trello CRM updates and contract clauses.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Execution Mastery</td><td class="p-3"><strong>Gatekeeping:</strong> Strictly enforces the "Hard Gate" rule (No contract = No product).</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3"><strong>Margin Protection:</strong> Habitually uses the Pricing Calculator to protect Target Margin.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3"><strong>Value Maximization:</strong> Successfully negotiates additional deliverables without increasing budget.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3"><strong>Error Recovery:</strong> Knows exact protocol for margin errors.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Strategy & Risk</td><td class="p-3"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Strategy & Risk</td><td class="p-3"><strong>Red Flag Detection:</strong> Identifies critical red flags independently.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold">Strategy & Risk</td><td class="p-3"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Leadership</td><td class="p-3"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Zero-Error Record:</strong> Flawless execution on Trello CRM updates and contract clauses.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Gatekeeping:</strong> Strictly enforces the "Hard Gate" rule (No contract = No product).</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Margin Protection:</strong> Habitually uses the Pricing Calculator to protect Target Margin.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Value Maximization:</strong> Successfully negotiates additional deliverables without increasing budget.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Error Recovery:</strong> Knows exact protocol for margin errors.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Red Flag Detection:</strong> Identifies critical red flags independently.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded"></td><td class="p-3 font-bold text-slate-800">Leadership</td><td class="p-3 text-slate-700"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
                         </tbody>
                     </table>
                 </div>`;
@@ -1728,7 +1692,7 @@
 
         function toggleAccordion(id) { document.getElementById(id).classList.toggle('accordion-active'); }
         function copyContent(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>alert('Copied!')); }
-        function copyCode() { navigator.clipboard.writeText(document.getElementById('uidCode').innerText).then(()=>{ let b=document.getElementById('copyBtn'); b.innerText='Copied!';b.classList.replace('bg-slate-700','bg-green-600'); setTimeout(()=>{b.innerText='Copy JS';b.classList.replace('bg-green-600','bg-slate-700');},2000)}); }
+        function copyCode() { navigator.clipboard.writeText(document.getElementById('uidCode').innerText).then(()=>{ let b=document.getElementById('copyBtn'); b.innerText='Copied!';b.classList.replace('bg-slate-700','bg-green-600'); setTimeout(()=>{b.innerText='Copy Code';b.classList.replace('bg-green-600','bg-slate-700');},2000)}); }
 
         // --- 11. SEARCH ENGINE ---
         const searchIndex = [
@@ -1774,8 +1738,8 @@
                 const el = document.createElement('div'); el.className = "p-3 hover:bg-slate-500/20 cursor-pointer transition";
                 let portalName = result.tab === 'cc' ? 'CC Portal' : (result.tab === 'ce' ? 'CE Portal' : 'Tools & Apps');
                 let subName = result.subtab ? ` > ${result.subtab.toUpperCase()}` : '';
-                let badgeColor = result.tab === 'cc' ? 'text-blue-500' : 'text-indigo-500';
-                el.innerHTML = `<div class="text-[10px] font-black ${badgeColor} mb-1 tracking-widest uppercase">${portalName}${subName}</div><div class="text-sm font-bold">${result.title}</div>`;
+                let badgeColor = result.tab === 'cc' ? 'text-blue-600' : 'text-indigo-600';
+                el.innerHTML = `<div class="text-xs font-extrabold ${badgeColor} mb-0.5 tracking-wider uppercase">${portalName}${subName}</div><div class="text-sm font-semibold text-slate-800">${result.title}</div>`;
                 el.onclick = () => goToSearchResult(result.tab, result.subtab, result.elementId);
                 sd.appendChild(el);
             });
