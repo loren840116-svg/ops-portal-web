@@ -697,15 +697,15 @@
             
             let roleDisplay = currentUser.Role;
             document.getElementById('current-user-display').innerText = `${currentUserName} | ${roleDisplay}`;
-            if(document.getElementById('cm-welcome-title')) document.getElementById('cm-welcome-title').innerText = `Team Intelligence`;
-            if(document.getElementById('home-welcome')) document.getElementById('home-welcome').innerText = `Command Center`;
             
+            // Route Access dynamically based on attributes
             document.querySelectorAll('.nav-btn, span[data-roles]').forEach(el => {
                 const roles = el.getAttribute('data-roles');
                 if (roles && roles.split(',').includes(currentUserRole)) el.classList.remove('hidden');
                 else el.classList.add('hidden');
             });
 
+            // Assessment Dual View Logic
             if(currentUserRole === 'cm') {
                 document.getElementById('cm-assessment-form-container').classList.remove('hidden');
                 document.getElementById('dir-assessment-queue-container').classList.add('hidden');
@@ -715,18 +715,23 @@
                 renderDirQueue();
             }
 
+            // 初始化資料與圖表
             if(['cm','dir','agencyadmin'].includes(currentUserRole)) { 
                 renderCampaignList(); renderMembers(); renderArchives(); renderCMTeamPerf();
                 setTimeout(() => { renderGlobalCharts(); }, 500);
             }
-            
             if(['cc','ce'].includes(currentUserRole)) { 
                 renderMyLogs(); renderMyAssessments(); 
                 document.getElementById('home-personal-stats').classList.remove('hidden');
                 setTimeout(() => { renderHomeChart(); }, 500);
             }
 
-            switchTab('home');
+            // 🎯 核心修復：CM 登入後直接跳轉 Team Dashboard
+            if (['cm', 'dir', 'agencyadmin'].includes(currentUserRole)) {
+                switchTab('cmdashboard');
+            } else {
+                switchTab('home');
+            }
         }
 
         function logout() { location.reload(); }
