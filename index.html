@@ -9,119 +9,124 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f8fafc; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .bg-gradient { background: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%); }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f8fafc; overflow-x: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); }
         .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); transition: all 0.3s ease; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5); }
-        .sidebar-item { transition: all 0.2s; border-radius: 12px; }
-        .sidebar-item:hover { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); }
+        .sidebar-item { transition: all 0.2s; border-radius: 12px; cursor: pointer; }
         .active-nav { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-left: 4px solid #3b82f6; }
-        .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
+        .loader { border-top-color: #3b82f6; animation: spinner 1s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-gradient min-h-screen">
+<body class="min-h-screen">
 
-    <div id="loginPage" class="flex items-center justify-center min-h-screen p-4">
+    <div id="loginPage" class="flex items-center justify-center min-h-screen p-6">
         <div class="glass p-10 rounded-3xl shadow-2xl w-full max-w-md text-center">
             <div class="mb-8">
                 <div class="inline-block p-4 rounded-2xl bg-blue-600/20 mb-4">
-                    <i class="fas fa-rocket text-4xl text-blue-500"></i>
+                    <i class="fas fa-bolt text-4xl text-blue-500"></i>
                 </div>
-                <h1 class="text-3xl font-bold tracking-tight text-white">Ops Portal <span class="text-blue-500">Pro</span></h1>
-                <p class="text-slate-400 mt-2">Enterprise Resource Management</p>
+                <h1 class="text-3xl font-bold text-white">Ops Portal <span class="text-blue-500 text-sm align-top">PRO</span></h1>
+                <p class="text-slate-400 mt-2 italic">CreatorDB Enterprise Management</p>
             </div>
             
-            <div class="space-y-4">
-                <div class="relative text-left">
-                    <label class="text-xs font-semibold text-slate-400 ml-1 uppercase tracking-wider">Work Email</label>
+            <div class="space-y-5 text-left">
+                <div>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Email Authorization</label>
                     <input type="email" id="emailInput" placeholder="name@creatordb.app" 
-                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+                        class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-4 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white transition-all">
                 </div>
-                <button onclick="handleLogin()" id="loginBtn" class="w-full btn-primary text-white font-bold py-3 rounded-xl">
-                    Authorize Access
+                <button onclick="handleLogin()" id="loginBtn" class="w-full btn-primary text-white font-bold py-4 rounded-xl shadow-lg">
+                    Access System
                 </button>
-                <p id="loginError" class="text-red-400 text-sm mt-3 hidden italic">
-                    <i class="fas fa-exclamation-circle mr-1"></i> Access Denied: Email not recognized.
-                </p>
+                <div id="loginError" class="hidden bg-red-500/10 border border-red-500/50 p-3 rounded-lg text-red-400 text-sm text-center">
+                    <i class="fas fa-user-slash mr-2"></i> Access Denied.
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="mainInterface" class="flex min-h-screen hidden">
-        <aside class="w-72 glass m-4 rounded-3xl p-6 flex flex-col shadow-2xl">
-            <div class="flex items-center space-x-3 mb-10 px-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-shield-alt text-sm"></i>
+    <div id="mainInterface" class="hidden flex min-h-screen">
+        <nav class="w-72 glass m-4 rounded-3xl p-6 flex flex-col">
+            <div class="flex items-center space-x-3 mb-12 px-2">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fas fa-database text-white"></i>
                 </div>
-                <span class="text-xl font-bold tracking-tighter text-white">CREATOR<span class="text-blue-500">DB</span></span>
+                <span class="text-2xl font-black tracking-tighter text-white italic">CREATOR<span class="text-blue-500">DB</span></span>
             </div>
             
-            <nav class="flex-1 space-y-2">
-                <button onclick="showSection('memberList')" id="nav-members" class="sidebar-item active-nav w-full flex items-center space-x-3 p-4">
-                    <i class="fas fa-users-viewfinder"></i>
-                    <span class="font-medium">Member Directory</span>
-                </button>
-                <button onclick="showSection('dashboard')" id="nav-dashboard" class="sidebar-item w-full flex items-center space-x-3 p-4 hidden">
-                    <i class="fas fa-chart-pie"></i>
-                    <span class="font-medium">Analytics Engine</span>
-                </button>
-            </nav>
+            <div class="space-y-3 flex-1">
+                <div onclick="showSection('memberList')" id="nav-members" class="sidebar-item active-nav flex items-center space-x-4 p-4">
+                    <i class="fas fa-address-book"></i>
+                    <span class="font-semibold">Directory</span>
+                </div>
+                <div onclick="showSection('dashboard')" id="nav-dashboard" class="sidebar-item hidden flex items-center space-x-4 p-4">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="font-semibold">Analytics</span>
+                </div>
+            </div>
 
-            <div class="mt-auto pt-6 border-t border-slate-700">
-                <div class="flex items-center space-x-3 p-2 bg-slate-800/40 rounded-2xl mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white" id="userInitial">U</div>
-                    <div class="overflow-hidden">
-                        <p id="userName" class="text-sm font-bold truncate text-white">User Name</p>
-                        <p id="userRole" class="text-xs text-slate-500 uppercase tracking-tighter">Role</p>
+            <div class="mt-auto pt-6 border-t border-slate-800">
+                <div class="flex items-center space-x-3 p-3 bg-slate-800/50 rounded-2xl mb-4">
+                    <div id="userInitial" class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">?</div>
+                    <div class="truncate">
+                        <p id="userName" class="text-sm font-bold text-white truncate">Loading...</p>
+                        <p id="userRole" class="text-[10px] text-blue-400 uppercase font-black tracking-widest">Role</p>
                     </div>
                 </div>
-                <button onclick="logout()" class="w-full text-slate-400 hover:text-red-400 text-sm flex items-center justify-center p-2 transition">
-                    <i class="fas fa-power-off mr-2"></i> Sign Out
+                <button onclick="logout()" class="w-full text-slate-500 hover:text-white transition py-2 text-sm">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
                 </button>
             </div>
-        </aside>
+        </nav>
 
-        <main class="flex-1 p-8 overflow-y-auto">
-            <div id="section-memberList" class="section animate-fade-in">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-3xl font-bold text-white tracking-tight">Member Directory</h2>
-                    <div class="text-sm text-slate-400 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700">
-                        <i class="fas fa-sync-alt mr-2"></i> Real-time Sync Active
+        <main class="flex-1 p-8">
+            <div id="section-memberList" class="section">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-4xl font-extrabold text-white">Directory</h2>
+                        <p class="text-slate-500 mt-1">Manage and view all team members across departments.</p>
+                    </div>
+                    <div class="bg-blue-500/10 text-blue-400 px-4 py-2 rounded-xl text-xs font-bold border border-blue-500/20">
+                        <i class="fas fa-circle text-[8px] mr-2 animate-pulse"></i> LIVE SYSTEM
                     </div>
                 </div>
                 
                 <div class="glass rounded-3xl overflow-hidden shadow-2xl">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="bg-slate-800/50 text-slate-400 text-xs uppercase tracking-widest">
-                                <th class="px-8 py-5 font-semibold">Identity</th>
-                                <th class="px-8 py-5 font-semibold">Contact Email</th>
-                                <th class="px-8 py-5 font-semibold text-center">Status / Role</th>
+                    <table class="w-full">
+                        <thead class="bg-slate-800/40 text-slate-500 text-[10px] uppercase font-black tracking-[0.2em]">
+                            <tr>
+                                <th class="px-8 py-5 text-left">Member</th>
+                                <th class="px-8 py-5 text-left">Contact Info</th>
+                                <th class="px-8 py-5 text-center">Permission</th>
                             </tr>
                         </thead>
-                        <tbody id="memberTableBody" class="divide-y divide-slate-700/50">
+                        <tbody id="memberTableBody" class="divide-y divide-slate-800">
                             </tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="section-dashboard" class="section hidden animate-fade-in">
-                <h2 class="text-3xl font-bold text-white tracking-tight mb-8">Analytics Engine</h2>
+            <div id="section-dashboard" class="section hidden">
+                <h2 class="text-4xl font-extrabold text-white mb-8">Analytics Engine</h2>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="glass p-8 rounded-3xl lg:col-span-1 shadow-2xl">
-                        <h3 class="text-lg font-bold mb-6 text-slate-200"><i class="fas fa-chart-donut mr-2 text-blue-500"></i>Role Allocation</h3>
-                        <canvas id="roleChart"></canvas>
-                    </div>
-                    <div class="lg:col-span-2 grid grid-cols-2 gap-4">
-                        <div class="glass p-6 rounded-3xl flex flex-col justify-center items-center">
-                            <p class="text-slate-400 text-sm uppercase">Total Ops</p>
-                            <p id="stat-total" class="text-5xl font-bold text-white mt-2">--</p>
+                    <div class="glass p-8 rounded-3xl lg:col-span-1 flex flex-col items-center">
+                        <h3 class="text-sm font-black text-slate-500 uppercase tracking-widest mb-8 self-start">Role Distribution</h3>
+                        <div class="w-full max-w-[250px]">
+                            <canvas id="roleChart"></canvas>
                         </div>
-                        <div class="glass p-6 rounded-3xl flex flex-col justify-center items-center border-l-4 border-blue-500">
-                            <p class="text-slate-400 text-sm uppercase">Active Roles</p>
-                            <p id="stat-roles" class="text-5xl font-bold text-blue-500 mt-2">--</p>
+                    </div>
+                    <div class="lg:col-span-2 grid grid-cols-2 gap-6">
+                        <div class="glass p-8 rounded-3xl">
+                            <i class="fas fa-user-friends text-blue-500 text-2xl mb-4"></i>
+                            <p class="text-slate-500 text-xs font-black uppercase">Total Headcount</p>
+                            <p id="stat-total" class="text-6xl font-black text-white mt-2">0</p>
+                        </div>
+                        <div class="glass p-8 rounded-3xl border-r-4 border-blue-500">
+                            <i class="fas fa-project-diagram text-indigo-500 text-2xl mb-4"></i>
+                            <p class="text-slate-500 text-xs font-black uppercase">Active Segments</p>
+                            <p id="stat-roles" class="text-6xl font-black text-white mt-2">0</p>
                         </div>
                     </div>
                 </div>
@@ -130,29 +135,36 @@
     </div>
 
     <script>
-        // ⚠️ 請在此處更換為你的 Google Apps Script API 網址
+        // ⚠️ 把你的 Google Apps Script Web App URL 貼在這裡
         const API_URL = "https://script.google.com/macros/s/AKfycbyRSBQEwNA1BUmbik5n7tpDzJPpZ9Fyh874BFiU2cHnVM5v4yk3HgNrNrfd2MxeRZj8/exec"; 
 
         let currentUser = null;
         let allMembers = [];
 
         async function handleLogin() {
-            const email = document.getElementById('emailInput').value;
+            const email = document.getElementById('emailInput').value.trim().toLowerCase();
             const btn = document.getElementById('loginBtn');
             const errorMsg = document.getElementById('loginError');
 
             if (!email) return;
 
             btn.disabled = true;
-            btn.innerHTML = '<div class="w-5 h-5 border-2 loader rounded-full mx-auto"></div>';
+            btn.innerHTML = '<div class="w-6 h-6 border-2 loader rounded-full mx-auto"></div>';
             errorMsg.classList.add('hidden');
 
             try {
-                const response = await fetch(`${API_URL}?action=getMembers`);
-                const data = await response.json();
-                allMembers = data;
+                const response = await fetch(`${API_URL}?action=getMembers`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
 
-                const user = data.find(m => m.Email.toLowerCase() === email.toLowerCase());
+                if (!response.ok) throw new Error('連線失敗，請檢查 API 部署網址。');
+                
+                allMembers = await response.json();
+
+                if (allMembers.error) throw new Error(allMembers.error);
+
+                const user = allMembers.find(m => m.Email.toLowerCase() === email);
 
                 if (user) {
                     currentUser = user;
@@ -161,11 +173,11 @@
                     errorMsg.classList.remove('hidden');
                 }
             } catch (error) {
-                console.error("Login Error:", error);
-                alert("Critical API Failure. Please check CORS settings and API URL.");
+                console.error(error);
+                alert("🔴 系統連線發生錯誤！\n請確認 API 網址是否正確，且已部署為『所有人』存取。\n\n詳細訊息: " + error.message);
             } finally {
                 btn.disabled = false;
-                btn.innerText = "Authorize Access";
+                btn.innerText = "Access System";
             }
         }
 
@@ -174,9 +186,11 @@
             document.getElementById('mainInterface').classList.remove('hidden');
             document.getElementById('userName').innerText = currentUser.Name;
             document.getElementById('userRole').innerText = currentUser.Role;
-            document.getElementById('userInitial').innerText = currentUser.Name.charAt(0).toUpperCase();
+            document.getElementById('userInitial').innerText = currentUser.Name.charAt(0);
 
-            if (['agencyadmin', 'cm'].includes(currentUser.Role.toLowerCase())) {
+            // 權限判斷：Admin 或 CM 可看 Analytics
+            const role = currentUser.Role.toLowerCase();
+            if (role.includes('admin') || role === 'cm' || role === 'dir') {
                 document.getElementById('nav-dashboard').classList.remove('hidden');
             }
 
@@ -189,16 +203,16 @@
             tbody.innerHTML = allMembers.map(m => `
                 <tr class="hover:bg-blue-600/5 transition group">
                     <td class="px-8 py-5">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-blue-400">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-blue-400 font-bold border border-slate-700">
                                 ${m.Name.charAt(0)}
                             </div>
-                            <span class="font-medium text-slate-200 group-hover:text-blue-400 transition">${m.Name}</span>
+                            <span class="font-bold text-slate-200 group-hover:text-white transition">${m.Name}</span>
                         </div>
                     </td>
-                    <td class="px-8 py-5 text-slate-400 text-sm font-mono">${m.Email}</td>
+                    <td class="px-8 py-5 text-slate-500 text-sm font-medium tracking-tight">${m.Email}</td>
                     <td class="px-8 py-5 text-center">
-                        <span class="px-4 py-1.5 rounded-xl bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20 uppercase">
+                        <span class="px-3 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[10px] font-black border border-blue-500/20">
                             ${m.Role}
                         </span>
                     </td>
@@ -222,16 +236,14 @@
                     labels: Object.keys(roles),
                     datasets: [{
                         data: Object.values(roles),
-                        backgroundColor: ['#3b82f6', '#8b5cf6', '#06b6d4', '#f43f5e'],
-                        borderWidth: 0,
-                        hoverOffset: 10
+                        backgroundColor: ['#3b82f6', '#6366f1', '#2dd4bf', '#fbbf24', '#f87171'],
+                        borderWidth: 0
                     }]
                 },
                 options: {
-                    plugins: { 
-                        legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20 } }
-                    },
-                    cutout: '70%'
+                    plugins: { legend: { display: false } },
+                    cutout: '80%',
+                    responsive: true
                 }
             });
         }
@@ -239,7 +251,6 @@
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active-nav'));
-            
             document.getElementById('section-' + sectionId).classList.remove('hidden');
             document.getElementById('nav-' + (sectionId === 'memberList' ? 'members' : 'dashboard')).classList.add('active-nav');
         }
