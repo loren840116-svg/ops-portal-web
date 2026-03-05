@@ -5,11 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CreatorDB | CC/CE Operations System 4.0 Pro</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="[https://cdn.tailwindcss.com](https://www.google.com/search?q=https://cdn.tailwindcss.com)"></script>
+<script src="[https://cdn.jsdelivr.net/npm/chart.js](https://www.google.com/search?q=https://cdn.jsdelivr.net/npm/chart.js)"></script>
+<link href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://www.google.com/search?q=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+@import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap](https://www.google.com/search?q=https://fonts.googleapis.com/css2%3Ffamily%3DInter:wght%40300%3B400%3B600%3B700%3B900%26display%3Dswap)');
 :root { --bg-main: #f8fafc; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(0, 0, 0, 0.05); --text-main: #1e293b; --text-muted: #64748b; --nav-hover: rgba(59, 130, 246, 0.1); }
 .dark-mode { --bg-main: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%); --glass-bg: rgba(30, 41, 59, 0.7); --glass-border: rgba(255, 255, 255, 0.1); --text-main: #f8fafc; --text-muted: #94a3b8; --nav-hover: rgba(59, 130, 246, 0.2); }
 body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: all 0.4s ease; min-height: 100vh; }
@@ -178,263 +178,285 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(
 
 </main>
 </div>
+
 <script>
-    const API_URL = "[https://script.google.com/macros/s/AKfycbyRSBQEwNA1BUmbik5n7tpDzJPpZ9Fyh874BFiU2cHnVM5v4yk3HgNrNrfd2MxeRZj8/exec](https://script.google.com/macros/s/AKfycbyRSBQEwNA1BUmbik5n7tpDzJPpZ9Fyh874BFiU2cHnVM5v4yk3HgNrNrfd2MxeRZj8/exec)"; 
-    const FX = { USD: 1, TWD: 33 };
+const API_URL = "[https://script.google.com/macros/s/AKfycbwrnFcA8L_ipnYezNBaww0yNayD2v70zsGxMRhLnRx-mT3gZCSB1gquy168MbgSzHjx/exec](https://script.google.com/macros/s/AKfycbwrnFcA8L_ipnYezNBaww0yNayD2v70zsGxMRhLnRx-mT3gZCSB1gquy168MbgSzHjx/exec)";
+const FX = { USD: 1, TWD: 33 };
 
-    let currentUser = null;
-    let allMembers = [];
-    let chartInstances = {};
-    
-    // 模擬數據：用於呈現 Home 與 CM Dashboard 的圖表
-    let activeCampaigns = [{ name: 'Test Campaign 1', modifier: 1.0 }, { name: 'Hard Campaign', modifier: 1.2 }];
-    let myQStats = {
-        1: { deals: 12, marginUSD: 18000, bonusUSD: 850 },
-        2: { deals: 0, marginUSD: 0, bonusUSD: 0 },
-        3: { deals: 0, marginUSD: 0, bonusUSD: 0 },
-        4: { deals: 0, marginUSD: 0, bonusUSD: 0 }
-    };
+let currentUser = null;
+let allMembers = [];
+let chartInstances = {};
 
-    // --- 主題切換邏輯 ---
-    function toggleTheme() {
-        const body = document.body;
-        const icon = document.getElementById('themeIcon');
-        if (body.classList.contains('dark-mode')) {
-            body.classList.remove('dark-mode');
-            icon.classList.replace('fa-sun', 'fa-moon');
-            icon.classList.replace('text-yellow-500', 'text-slate-600');
-        } else {
-            body.classList.add('dark-mode');
-            icon.classList.replace('fa-moon', 'fa-sun');
-            icon.classList.replace('text-slate-600', 'text-yellow-500');
-        }
-        // 重繪圖表以適應新配色
-        if(document.getElementById('view-cmdashboard').classList.contains('block')) renderCMCharts(); 
-        if(document.getElementById('view-home').classList.contains('block')) renderHomeChart();
-    }
+let activeCampaigns = [{ name: 'Test Campaign 1', modifier: 1.0 }, { name: 'Hard Campaign', modifier: 1.2 }];
+let myQStats = {
+1: { deals: 12, marginUSD: 18000, bonusUSD: 850 },
+2: { deals: 0, marginUSD: 0, bonusUSD: 0 },
+3: { deals: 0, marginUSD: 0, bonusUSD: 0 },
+4: { deals: 0, marginUSD: 0, bonusUSD: 0 }
+};
 
-    // --- 登入與權限驗證 ---
-    async function handleLogin() {
-        const email = document.getElementById('login-email').value.trim().toLowerCase();
-        const btn = document.getElementById('login-btn');
-        const errorMsg = document.getElementById('login-error');
+function toggleTheme() {
+const body = document.body;
+const icon = document.getElementById('themeIcon');
+if (body.classList.contains('dark-mode')) {
+body.classList.remove('dark-mode');
+icon.classList.replace('fa-sun', 'fa-moon');
+icon.classList.replace('text-yellow-500', 'text-slate-600');
+} else {
+body.classList.add('dark-mode');
+icon.classList.replace('fa-moon', 'fa-sun');
+icon.classList.replace('text-slate-600', 'text-yellow-500');
+}
+if(document.getElementById('view-cmdashboard').classList.contains('block')) renderCMCharts();
+if(document.getElementById('view-home').classList.contains('block')) renderHomeChart();
+}
 
-        if (!email) return;
-        btn.disabled = true;
-        btn.innerHTML = '<div class="w-5 h-5 border-2 loader rounded-full mx-auto"></div>';
-        errorMsg.classList.add('hidden');
+async function handleLogin() {
+const email = document.getElementById('login-email').value.trim().toLowerCase();
+const btn = document.getElementById('login-btn');
+const errorMsg = document.getElementById('login-error');
 
-        try {
-            const response = await fetch(`${API_URL}?action=getMembers`, { method: 'GET', redirect: 'follow' });
-            allMembers = await response.json();
-            const user = allMembers.find(m => m.Email.toLowerCase() === email);
+if (!email) return;
+btn.disabled = true;
+btn.innerHTML = '<div class="w-5 h-5 border-2 loader rounded-full mx-auto"></div>';
+errorMsg.classList.add('hidden');
 
-            if (user) {
-                currentUser = user;
-                enterPortal();
-            } else {
-                errorMsg.classList.remove('hidden');
-            }
-        } catch (e) {
-            alert("API Connection Error. Ensure Google Script is deployed as 'Anyone'.\n\nMsg: " + e.message);
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Authorize Access";
-        }
-    }
+try {
+const response = await fetch(`${API_URL}?action=getMembers`, { method: 'GET', redirect: 'follow' });
+allMembers = await response.json();
+const user = allMembers.find(m => m.Email.toLowerCase() === email);
 
-    function enterPortal() {
-        document.getElementById('login-container').classList.add('hidden');
-        document.getElementById('app-container').classList.remove('hidden');
-        
-        document.getElementById('current-user-display').innerText = `${currentUser.Name} | ${currentUser.Role}`;
-        
-        // 權限過濾
-        const role = currentUser.Role.toLowerCase();
-        const isAdminOrAbove = role.includes('admin') || role === 'cm' || role === 'dir';
+if (user) {
+currentUser = user;
+enterPortal();
+} else {
+errorMsg.classList.remove('hidden');
+}
+} catch (e) {
+alert("API Connection Error. Ensure Google Script is deployed as 'Anyone'.\n\nMsg: " + e.message);
+} finally {
+btn.disabled = false;
+btn.innerText = "Authorize Access";
+}
+}
 
-        document.querySelectorAll('[data-roles]').forEach(el => {
-            const allowed = el.getAttribute('data-roles').split(',');
-            let show = false;
-            if(allowed.includes(role)) show = true;
-            if(isAdminOrAbove && allowed.some(r => ['cm','dir','agencyadmin'].includes(r))) show = true;
-            if(role.includes('cc') && allowed.includes('cc')) show = true;
-            if(role.includes('ce') && allowed.includes('ce')) show = true;
-            
-            if(show) el.classList.remove('hidden');
-        });
+function enterPortal() {
+document.getElementById('login-container').classList.add('hidden');
+document.getElementById('app-container').classList.remove('hidden');
 
-        // 初始化視圖資料
-        renderMembers();
-        renderCMTable();
-        setTimeout(() => { renderHomeChart(); renderCMCharts(); }, 300);
-        
-        switchTab('home');
+document.getElementById('current-user-display').innerText = `${currentUser.Name} | ${currentUser.Role}`;
 
-        // 填入個人數據
-        document.getElementById('home-stat-deals').innerText = myQStats[1].deals;
-        document.getElementById('home-stat-margin').innerText = '$' + myQStats[1].marginUSD.toLocaleString();
-        document.getElementById('home-stat-bonus').innerText = '$' + myQStats[1].bonusUSD.toLocaleString();
-        document.getElementById('home-current-q').innerText = "1";
-    }
+const role = currentUser.Role.toLowerCase();
+const isAdminOrAbove = role.includes('admin') || role === 'cm' || role === 'dir';
 
-    // --- 導航控制 ---
-    function switchTab(tabId) {
-        document.querySelectorAll('.view-section').forEach(s => { s.classList.add('hidden'); s.classList.remove('block'); });
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-btn-active'));
-        
-        const target = document.getElementById('view-' + tabId);
-        if (target) { target.classList.remove('hidden'); target.classList.add('block'); }
-        const btn = document.getElementById('nav-' + tabId);
-        if (btn) btn.classList.add('nav-btn-active');
-        
-        const scrollArea = document.getElementById('main-scroll-area');
-        if(scrollArea) scrollArea.scrollTo({top: 0, behavior: 'smooth'});
+document.querySelectorAll('[data-roles]').forEach(el => {
+const allowed = el.getAttribute('data-roles').split(',');
+let show = false;
+if(allowed.includes(role)) show = true;
+if(isAdminOrAbove && allowed.some(r => ['cm','dir','agencyadmin'].includes(r))) show = true;
+if(role.includes('cc') && allowed.includes('cc')) show = true;
+if(role.includes('ce') && allowed.includes('ce')) show = true;
 
-        if(tabId === 'cmdashboard') setTimeout(renderCMCharts, 100);
-        if(tabId === 'home') setTimeout(renderHomeChart, 100);
-    }
+if(show) el.classList.remove('hidden');
+});
 
-    function switchSubTab(portal, tabId) {
-        // 用於 CC/CE SOP 內部的頁籤切換
-    }
+renderMembers();
+renderCMTable();
+setTimeout(() => { renderHomeChart(); renderCMCharts(); }, 300);
 
-    // --- CM Dashboard 圖表邏輯 ---
-    function renderCMCharts() {
-        const container = document.getElementById('cm-ind-charts-container');
-        if (!container) return;
-        container.innerHTML = '';
-        
-        const isDark = document.body.classList.contains('dark-mode');
-        const textColor = isDark ? '#94a3b8' : '#64748b';
-        const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+switchTab('home');
 
-        allMembers.slice(0, 6).forEach((member, i) => {
-            const canvasId = `chart-member-${i}`;
-            const card = document.createElement('div');
-            card.className = "glass p-6 rounded-[32px]";
-            card.innerHTML = `
-                <div class="flex justify-between items-center mb-4">
-                    <h4 class="font-black text-sm tracking-tight">${member.Name}</h4>
-                    <span class="text-[9px] font-black px-2 py-1 rounded-lg bg-blue-500/10 text-blue-500 uppercase">${member.Role}</span>
-                </div>
-                <div class="h-40 w-full"><canvas id="${canvasId}"></canvas></div>
-            `;
-            container.appendChild(card);
+document.getElementById('home-stat-deals').innerText = myQStats[1].deals;
+document.getElementById('home-stat-margin').innerText = '$&#39; + myQStats[1].marginUSD.toLocaleString();
+document.getElementById(&#39;home-stat-bonus&#39;).innerText = &#39;$' + myQStats[1].bonusUSD.toLocaleString();
+document.getElementById('home-current-q').innerText = "1";
+}
 
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
-            chartInstances[canvasId] = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-                    datasets: [{ 
-                        data: [Math.random()*4000+1000, Math.random()*4000+2000, Math.random()*4000+1500, Math.random()*4000+3000], 
-                        backgroundColor: member.Role.toLowerCase().includes('ce') ? '#6366f1' : '#3b82f6', 
-                        borderRadius: 6 
-                    }]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } }, 
-                    scales: { 
-                        y: { display: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }, 
-                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 'bold' } } } 
-                    } 
-                }
-            });
-        });
-    }
+function switchTab(tabId) {
+document.querySelectorAll('.view-section').forEach(s => { s.classList.add('hidden'); s.classList.remove('block'); });
+document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-btn-active'));
 
-    function renderCMTeamPerf() {
-        const tbody = document.getElementById('cm-team-perf-body');
-        if(!tbody) return;
-        let deals = 0; let margin = 0;
-        tbody.innerHTML = allMembers.map(m => {
-            let d = Math.floor(Math.random() * 10)+2; deals += d;
-            let mrg = d * 1200; margin += mrg;
-            let stat = mrg > 6000 ? '<span class="bg-emerald-500/20 text-emerald-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">On Track</span>' : '<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Push</span>';
-            return `<tr class="hover:bg-white/5 transition"><td class="p-5 font-bold">${m.Name}</td><td class="p-5 opacity-60 text-xs font-black tracking-widest uppercase">${m.Role}</td><td class="p-5 text-center font-bold">${d}</td><td class="p-5 text-right text-emerald-500 font-mono font-bold">$${mrg.toLocaleString()}</td><td class="p-5 text-center">${stat}</td></tr>`;
-        }).join('');
-        document.getElementById('cm-stat-members').innerText = allMembers.length;
-        document.getElementById('cm-stat-deals').innerText = deals;
-        document.getElementById('cm-stat-margin').innerText = '$' + margin.toLocaleString();
-        renderCMCharts();
-    }
+const target = document.getElementById('view-' + tabId);
+if (target) { target.classList.remove('hidden'); target.classList.add('block'); }
+const btn = document.getElementById('nav-' + tabId);
+if (btn) btn.classList.add('nav-btn-active');
 
-    // --- Home 儀表板圖表 ---
-    function renderHomeChart() {
-        const canvasId = 'homeChart';
-        const container = document.getElementById(canvasId);
-        if(!container) return;
-        
-        const isDark = document.body.classList.contains('dark-mode');
-        const textColor = isDark ? '#94a3b8' : '#64748b';
-        const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+const scrollArea = document.getElementById('main-scroll-area');
+if(scrollArea) scrollArea.scrollTo({top: 0, behavior: 'smooth'});
 
-        const ctx = container.getContext('2d');
-        if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
-        chartInstances[canvasId] = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-                datasets: [{ 
-                    label: 'Bonus (USD)',
-                    data: [myQStats[1].bonusUSD, myQStats[2].bonusUSD, myQStats[3].bonusUSD, myQStats[4].bonusUSD], 
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)', 
-                    borderColor: '#3b82f6', 
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                plugins: { legend: { display: false } }, 
-                scales: { 
-                    y: { display: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }, 
-                    x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 'bold' } } } 
-                } 
-            }
-        });
-    }
+if(tabId === 'cmdashboard') setTimeout(renderCMCharts, 100);
+if(tabId === 'home') setTimeout(renderHomeChart, 100);
+}
 
-    // --- 目錄列表 ---
-    function renderMembers() {
-        const tbody = document.getElementById('member-list-body');
-        if(!tbody) return;
-        tbody.innerHTML = allMembers.map(m => `<tr class="hover:bg-white/5 transition"><td class="p-6 font-bold text-lg">${m.Name}</td><td class="p-6 opacity-60 font-medium">${m.Email}</td><td class="p-6 text-center"><span class="px-3 py-1 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase tracking-widest border border-blue-500/20">${m.Role}</span></td></tr>`).join('');
-    }
+function switchSubTab(portal, tabId) {
+document.querySelectorAll('.sub-view-' + portal).forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
+document.getElementById(portal + '-sub-' + tabId).classList.remove('hidden');
+document.getElementById(portal + '-sub-' + tabId).classList.add('block');
 
-    // --- 報價計算機 ---
-    function calcPricing() {
-        const views = parseFloat(document.getElementById('pc-views').value) || 0;
-        const cpm = parseFloat(document.getElementById('pc-cpm').value) || 0;
-        const crPriceRaw = parseFloat(document.getElementById('pc-cr-price').value) || 0;
-        const crCur = document.getElementById('pc-cr-cur').value;
-        const crPriceUSD = crPriceRaw / FX[crCur];
+document.querySelectorAll('.tab-btn-' + portal).forEach(btn => {
+btn.classList.remove('bg-' + (portal==='cc'?'blue':'indigo') + '-500/10', 'text-' + (portal==='cc'?'blue':'indigo') + '-500');
+btn.classList.add('opacity-60');
+});
+const activeBtn = document.getElementById('tab-' + portal + '-' + tabId);
+if (activeBtn) {
+activeBtn.classList.remove('opacity-60');
+activeBtn.classList.add('bg-' + (portal==='cc'?'blue':'indigo') + '-500/10', 'text-' + (portal==='cc'?'blue':'indigo') + '-500');
+}
+}
 
-        const m1USD = (views / 1000) * cpm;
-        const m2USD = (views * 1.2 / 1000) * cpm;
+function renderCMCharts() {
+const container = document.getElementById('cm-ind-charts-container');
+if (!container) return;
+container.innerHTML = '';
 
-        document.getElementById('pc-m1-usd').innerText = '$' + m1USD.toLocaleString(undefined,{maximumFractionDigits:2});
-        let m1Net = m1USD - crPriceUSD;
-        let m1El = document.getElementById('pc-m1-prof-usd');
-        m1El.innerText = `Net: $${m1Net.toLocaleString(undefined,{maximumFractionDigits:2})}`;
-        m1El.className = m1Net > 0 ? "text-lg font-bold text-emerald-500 mt-2" : "text-lg font-bold text-red-500 mt-2";
+const isDark = document.body.classList.contains('dark-mode');
+const textColor = isDark ? '#94a3b8' : '#64748b';
+const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
 
-        document.getElementById('pc-m2-usd').innerText = '$' + m2USD.toLocaleString(undefined,{maximumFractionDigits:2});
-        let m2Net = m2USD - crPriceUSD;
-        let m2El = document.getElementById('pc-m2-prof-usd');
-        m2El.innerText = `Net: $${m2Net.toLocaleString(undefined,{maximumFractionDigits:2})}`;
-        m2El.className = m2Net > 0 ? "text-lg font-bold text-emerald-500 mt-2" : "text-lg font-bold text-red-500 mt-2";
-    }
+allMembers.slice(0, 6).forEach((member, i) => {
+const canvasId = `chart-member-${i}`;
+const card = document.createElement('div');
+card.className = "glass p-6 rounded-[32px]";
+card.innerHTML = `&lt;div class=&quot;flex justify-between items-center mb-4&quot;&gt; &lt;h4 class=&quot;font-black text-sm tracking-tight&quot;&gt;${member.Name}&lt;/h4&gt; &lt;span class=&quot;text-[9px] font-black px-2 py-1 rounded-lg bg-blue-500/10 text-blue-500 uppercase&quot;&gt;${member.Role}&lt;/span&gt; &lt;/div&gt; &lt;div class=&quot;h-40 w-full&quot;&gt;&lt;canvas id=&quot;${canvasId}&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;`;
+container.appendChild(card);
 
-    // --- 系統功能 ---
-    function logout() { location.reload(); }
-    function hideSearchIfClickedOutside(e) { if (!document.getElementById('search-container').contains(e.target)) document.getElementById('search-dropdown').classList.add('hidden'); }
-    function performSearch() {}
+const ctx = document.getElementById(canvasId).getContext('2d');
+if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
+chartInstances[canvasId] = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+datasets: [{
+data: [Math.random()*4000+1000, Math.random()*4000+2000, Math.random()*4000+1500, Math.random()*4000+3000],
+backgroundColor: member.Role.toLowerCase().includes('ce') ? '#6366f1' : '#3b82f6',
+borderRadius: 6
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { legend: { display: false } },
+scales: {
+y: { display: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 'bold' } } }
+}
+}
+});
+});
+}
+
+function renderCMTeamPerf() {
+const tbody = document.getElementById('cm-team-perf-body');
+if(!tbody) return;
+let deals = 0; let margin = 0;
+tbody.innerHTML = allMembers.map(m => {
+let d = Math.floor(Math.random() * 10)+2; deals += d;
+let mrg = d * 1200; margin += mrg;
+let stat = mrg > 6000 ? '<span class="bg-emerald-500/20 text-emerald-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">On Track</span>' : '<span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Push</span>';
+return `&lt;tr class=&quot;hover:bg-white/5 transition&quot;&gt;&lt;td class=&quot;p-5 font-bold&quot;&gt;${m.Name}&lt;/td&gt;&lt;td class=&quot;p-5 opacity-60 text-xs font-black tracking-widest uppercase&quot;&gt;${m.Role}&lt;/td&gt;&lt;td class=&quot;p-5 text-center font-bold&quot;&gt;${d}&lt;/td&gt;&lt;td class=&quot;p-5 text-right text-emerald-500 font-mono font-bold&quot;&gt;$${mrg.toLocaleString()}&lt;/td&gt;&lt;td class=&quot;p-5 text-center&quot;&gt;${stat}&lt;/td&gt;&lt;/tr&gt;`;
+}).join('');
+document.getElementById('cm-stat-members').innerText = allMembers.length;
+document.getElementById('cm-stat-deals').innerText = deals;
+document.getElementById('cm-stat-margin').innerText = '$' + margin.toLocaleString();
+renderCMCharts();
+}
+
+function renderHomeChart() {
+const canvasId = 'homeChart';
+const container = document.getElementById(canvasId);
+if(!container) return;
+
+const isDark = document.body.classList.contains('dark-mode');
+const textColor = isDark ? '#94a3b8' : '#64748b';
+const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+const ctx = container.getContext('2d');
+if(chartInstances[canvasId]) chartInstances[canvasId].destroy();
+chartInstances[canvasId] = new Chart(ctx, {
+type: 'line',
+data: {
+labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+datasets: [{
+label: 'Bonus (USD)',
+data: [myQStats[1].bonusUSD, myQStats[2].bonusUSD, myQStats[3].bonusUSD, myQStats[4].bonusUSD],
+backgroundColor: 'rgba(59, 130, 246, 0.2)',
+borderColor: '#3b82f6',
+fill: true,
+tension: 0.4
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { legend: { display: false } },
+scales: {
+y: { display: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10, weight: 'bold' } } }
+}
+}
+});
+}
+
+function renderMembers() {
+const tbody = document.getElementById('member-list-body');
+if(!tbody) return;
+tbody.innerHTML = allMembers.map(m => `&lt;tr class=&quot;hover:bg-white/5 transition&quot;&gt;&lt;td class=&quot;p-6 font-bold text-lg&quot;&gt;${m.Name}&lt;/td&gt;&lt;td class=&quot;p-6 opacity-60 font-medium&quot;&gt;${m.Email}&lt;/td&gt;&lt;td class=&quot;p-6 text-center&quot;&gt;&lt;span class=&quot;px-3 py-1 rounded-xl bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase tracking-widest border border-blue-500/20&quot;&gt;${m.Role}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;`).join('');
+}
+
+function calcPricing() {
+const views = parseFloat(document.getElementById('pc-views').value) || 0;
+const cpm = parseFloat(document.getElementById('pc-cpm').value) || 0;
+const crPriceRaw = parseFloat(document.getElementById('pc-cr-price').value) || 0;
+const crCur = document.getElementById('pc-cr-cur').value;
+const crPriceUSD = crPriceRaw / FX[crCur];
+
+const m1USD = (views / 1000) * cpm;
+const m2USD = (views * 1.2 / 1000) * cpm;
+
+document.getElementById('pc-m1-usd').innerText = '$' + m1USD.toLocaleString(undefined,{maximumFractionDigits:2});
+let m1Net = m1USD - crPriceUSD;
+let m1El = document.getElementById('pc-m1-prof-usd');
+m1El.innerText = `Net: $${m1Net.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+m1El.className = m1Net > 0 ? "text-lg font-bold text-emerald-500 mt-2" : "text-lg font-bold text-red-500 mt-2";
+
+document.getElementById('pc-m2-usd').innerText = '$' + m2USD.toLocaleString(undefined,{maximumFractionDigits:2});
+let m2Net = m2USD - crPriceUSD;
+let m2El = document.getElementById('pc-m2-prof-usd');
+m2El.innerText = `Net: $${m2Net.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+m2El.className = m2Net > 0 ? "text-lg font-bold text-emerald-500 mt-2" : "text-lg font-bold text-red-500 mt-2";
+}
+
+function addCCDealRow() {
+const tr = document.createElement('tr');
+let opts = '<option value="1">-- Select --</option>'; activeCampaigns.forEach(c => opts += `&lt;option value=&quot;${c.modifier}&quot;&gt;${c.name}&lt;/option&gt;`);
+tr.innerHTML = `&lt;td class=&quot;p-2&quot;&gt;&lt;select class=&quot;cc-mod w-full p-2 bg-black/10 rounded outline-none text-xs text-inherit&quot;&gt;${opts}&lt;/select&gt;&lt;/td&gt;&lt;td class=&quot;p-2&quot;&gt;&lt;input type=&quot;number&quot; class=&quot;cc-cl-pr w-full p-2 bg-black/10 rounded outline-none text-xs font-mono text-white&quot; placeholder=&quot;Client USD&quot; oninput=&quot;calcCC()&quot;&gt;&lt;/td&gt;&lt;td class=&quot;p-2&quot;&gt;&lt;input type=&quot;number&quot; class=&quot;cc-cr-pr w-full p-2 bg-black/10 rounded outline-none text-xs font-mono text-white&quot; placeholder=&quot;Creator USD&quot; oninput=&quot;calcCC()&quot;&gt;&lt;/td&gt;&lt;td class=&quot;p-2 text-emerald-400 font-bold text-xs cc-prof&quot;&gt;$0&lt;/td&gt;&lt;td class=&quot;p-2 text-right&quot;&gt;&lt;button onclick=&quot;this.closest(&#39;tr&#39;).remove(); calcCC()&quot; class=&quot;opacity-50 hover:text-red-500&quot;&gt;✖&lt;/button&gt;&lt;/td&gt;`;
+document.getElementById('cc-deals-body').appendChild(tr);
+}
+
+function calcCC() {
+let tot = 0;
+document.querySelectorAll('#cc-deals-body tr').forEach(r => {
+let mod = parseFloat(r.querySelector('.cc-mod').value)||1; let cl = parseFloat(r.querySelector('.cc-cl-pr').value)||0; let cr = parseFloat(r.querySelector('.cc-cr-pr').value)||0;
+let p = (cl - cr) * mod; r.querySelector('.cc-prof').innerText = '$&#39;+p.toLocaleString(undefined,{maximumFractionDigits:2}); tot+=p;
+});
+document.getElementById(&#39;cc-out-gross&#39;).innerText = &#39;$'+tot.toLocaleString(undefined,{maximumFractionDigits:2});
+let ret = tot*0.2;
+document.getElementById('cc-out-ret').innerText = '-$&#39;+ret.toLocaleString(undefined,{maximumFractionDigits:2}); 
+let net = tot-ret; 
+document.getElementById(&#39;cc-out-net&#39;).innerText = &#39;$'+net.toLocaleString(undefined,{maximumFractionDigits:2});
+let b = 0; let rem = net>0?net:0;
+let t1 = Math.min(rem,1515); if(t1>0) b+=t1*0.05; rem-=t1;
+let t2 = Math.min(rem,4545); if(t2>0) b+=t2*0.1; rem-=t2;
+let t3 = Math.min(rem,9091); if(t3>0) b+=t3*0.15; rem-=t3;
+if(rem>0) b+=rem*0.2;
+document.getElementById('cc-out-bonus-usd').innerText = '$'+b.toLocaleString(undefined,{maximumFractionDigits:2});
+}
+function refreshCCCalc() { document.getElementById('cc-deals-body').innerHTML=''; addCCDealRow(); calcCC(); alert('Quarter recorded to DB.'); }
+
+function logout() { location.reload(); }
+function hideSearchIfClickedOutside(e) { if (!document.getElementById('search-container').contains(e.target)) document.getElementById('search-dropdown').classList.add('hidden'); }
+function performSearch() {}
 </script>
+
 </body>
 </html>
