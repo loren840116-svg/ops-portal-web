@@ -580,7 +580,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyiXz3dfg00PFRtMxuy9Q4pCzT9cA3rEnvuOVI6YQAyAzEZGRly0ENbvbftXfRKELdeqw/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbyoOqH2XqAytf91NEaNJZePbl3It3gbC4R-dmwUHAca2xcBIls7Es8IlgEaMasaAQtR/exec"; // ⚠️請確保這串是你用「個人信箱」最新部署出來的網址！
         
         let currentUserRole = null; 
         let currentUserName = '';
@@ -599,25 +599,11 @@
             { id: 3, name: 'Brand C - Easy', type: 'New', modifier: 0.8 }
         ];
 
-        let myQStats = {
-            1: { deals: 0, marginUSD: 0, bonusUSD: 0 },
-            2: { deals: 0, marginUSD: 0, bonusUSD: 0 },
-            3: { deals: 0, marginUSD: 0, bonusUSD: 0 },
-            4: { deals: 0, marginUSD: 0, bonusUSD: 0 }
-        };
+        let myQStats = { 1: { deals: 0, marginUSD: 0, bonusUSD: 0 }, 2: { deals: 0, marginUSD: 0, bonusUSD: 0 }, 3: { deals: 0, marginUSD: 0, bonusUSD: 0 }, 4: { deals: 0, marginUSD: 0, bonusUSD: 0 } };
         let currentQuarter = 1;
-
-        let globalYearlyArchives = [
-            { year: '2025', user: 'yogi', data: [1200, 1500, 2000, 3000] }
-        ];
-
-        let pendingAssessments = [
-            { id: 101, date: '2026-03-01', member: 'George', type: 'CE Conversion', cmStatus: 'Recommended for Approval', cmFb: 'Ready for trial. Execution is flawless.', cmName: 'cm', criteriaHtml: '<ul class="list-disc pl-5 text-xs text-slate-600 mt-2"><li>✅ Sourcing Logic</li><li>✅ Data Accuracy</li><li>✅ Zero-Error Record</li></ul>' }
-        ];
-        
-        let allAssessments = [
-            { id: 100, date: '2026-02-15', member: 'Yogi', type: 'Promotion', status: 'Approved', cmFb: 'Excellent work.', dirFb: 'Agreed. Proceed with promotion.' }
-        ];
+        let globalYearlyArchives = [{ year: '2025', user: 'yogi', data: [1200, 1500, 2000, 3000] }];
+        let pendingAssessments = [{ id: 101, date: '2026-03-01', member: 'George', type: 'CE Conversion', cmStatus: 'Recommended for Approval', cmFb: 'Ready for trial. Execution is flawless.', cmName: 'cm', criteriaHtml: '<ul class="list-disc pl-5 text-xs text-slate-600 mt-2"><li>✅ Sourcing Logic</li><li>✅ Data Accuracy</li><li>✅ Zero-Error Record</li></ul>' }];
+        let allAssessments = [{ id: 100, date: '2026-02-15', member: 'Yogi', type: 'Promotion', status: 'Approved', cmFb: 'Excellent work.', dirFb: 'Agreed. Proceed with promotion.' }];
 
         function toggleTheme() {
             const body = document.body;
@@ -650,20 +636,22 @@
                 const response = await fetch(`${API_URL}?action=getMembers`, { method: 'GET', redirect: 'follow' });
                 const text = await response.text(); 
                 
+                // 檢查是否遇到 Google 權限牆回傳 HTML
                 if(text.trim().startsWith('<')) {
-                    throw new Error("Google API 被擋，啟動備用登入模式。");
+                    throw new Error("Google回傳了登入網頁，表示遭遇多帳號衝突或權限仍被擋。");
                 }
                 
                 allMembers = JSON.parse(text);
                 
+                // 🌟 完美對接新表頭：Email, Name, Role, Assigned Manager
                 members = allMembers.map(m => ({
                     name: m.Name || 'Unknown',
                     title: m.Role || 'CC',
-                    cm: m.CM || 'None',
+                    cm: m['Assigned Manager'] || m.CM || 'None',
                     email: m.Email
                 }));
 
-                const user = allMembers.find(m => m.Email.toLowerCase() === email);
+                const user = allMembers.find(m => m.Email && m.Email.toLowerCase() === email);
 
                 if (user) {
                     currentUser = user;
@@ -682,9 +670,12 @@
                 }
             } catch (error) {
                 console.warn(error.message);
+                alert("🚨 連線失敗！\n原因：" + error.message + "\n\n💡 請確保：\n1. 用『無痕視窗』開啟你的 GitHub 網頁測試。\n2. API 網址確定是用個人信箱部署的。");
+                
+                // 啟動備用模式
                 allMembers = [
-                    {Email: email, Name: 'Test Operator', Role: 'AgencyAdmin', CM: 'None'},
-                    {Email: 'cc@test.com', Name: 'Yogi', Role: 'CC', CM: 'Test Operator'}
+                    {Email: email, Name: 'Test Operator', Role: 'AgencyAdmin', 'Assigned Manager': 'None'},
+                    {Email: 'cc@test.com', Name: 'Yogi', Role: 'CC', 'Assigned Manager': 'Test Operator'}
                 ];
                 members = [
                     {name: 'Test Operator', title: 'AgencyAdmin', cm: 'None', email: email},
@@ -693,8 +684,6 @@
                 currentUser = allMembers[0];
                 currentUserRole = 'agencyadmin';
                 currentUserName = 'Test Operator';
-                
-                alert("Google API 部署權限可能不正確 (收到 HTML 登入要求)。\n已啟動備用離線模式，為您自動賦予 Admin 權限進入系統測試。");
                 enterPortal();
             } finally {
                 btn.disabled = false;
@@ -708,8 +697,9 @@
             
             let roleDisplay = currentUser.Role;
             document.getElementById('current-user-display').innerText = `${currentUserName} | ${roleDisplay}`;
+            if(document.getElementById('cm-welcome-title')) document.getElementById('cm-welcome-title').innerText = `Team Intelligence`;
+            if(document.getElementById('home-welcome')) document.getElementById('home-welcome').innerText = `Command Center`;
             
-            // 動態顯示側邊欄按鈕
             document.querySelectorAll('.nav-btn, span[data-roles]').forEach(el => {
                 const roles = el.getAttribute('data-roles');
                 if (roles && roles.split(',').includes(currentUserRole)) el.classList.remove('hidden');
@@ -736,7 +726,13 @@
                 setTimeout(() => { renderHomeChart(); }, 500);
             }
 
-            // 🎯 核心修復：根據身分強制跳轉預設首頁
+            // 🌟 自動隱藏所有的 Base Salary 相關欄位
+            const salaryFields = ['cc-base-salary', 'cc-out-third-month', 'ce-base-salary', 'ce-out-third-month'];
+            salaryFields.forEach(id => {
+                let el = document.getElementById(id);
+                if(el && el.parentElement) el.parentElement.style.display = 'none';
+            });
+
             if (['cm', 'dir', 'agencyadmin'].includes(currentUserRole)) {
                 switchTab('cmdashboard');
             } else {
@@ -912,7 +908,6 @@
             renderCMIndividualCharts();
         }
 
-        // --- WATCHLIST TOOL ---
         function searchWatchlist() {
             let input = document.getElementById('watchlist-search').value.trim().toLowerCase();
             let resultDiv = document.getElementById('watchlist-result');
@@ -920,7 +915,6 @@
             
             if(!input) { resultDiv.classList.add('hidden'); return; }
 
-            // Mock Data Logic
             if(input.includes('bad') || input.includes('scam')) {
                 resultDiv.classList.add('bg-red-100', 'text-red-700', 'border-red-300');
                 resultDiv.innerHTML = '🚫 <strong>RED FLAG:</strong> Do NOT contract this creator. Previously failed deliverables.';
@@ -933,7 +927,6 @@
             }
         }
 
-        // --- 4. PRICING CALCULATOR (MULTI-CURRENCY) ---
         function clearPricing() { document.getElementById('pc-views').value=''; document.getElementById('pc-cr-price').value=''; document.getElementById('pc-cpm').value=''; calcPricing(); }
         function fmtUSD(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
         function fmtTWD(n) { return 'NT$' + Math.round(n).toLocaleString('en-US'); }
@@ -967,7 +960,6 @@
             document.getElementById('pc-m2-prof-usd').className = m2Prof > 0 ? "text-xl font-bold text-emerald-500 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full" : "text-xl font-bold text-red-500 mt-4 bg-slate-500/5 p-4 rounded-xl border inline-block w-full";
         }
 
-        // --- 5. CC BONUS CALCULATOR & MODIFIER LOGIC ---
         function getCampOptions() { 
             let html = '<option value="1">-- Select --</option>'; 
             activeCampaigns.forEach(c => html += `<option value="${c.modifier}">${c.name} (${c.modifier}x)</option>`); 
@@ -990,6 +982,7 @@
             document.getElementById('cc-deals-body').appendChild(tr);
         }
 
+        // 🌟 拔除底薪邏輯
         function calculateCCBonus() {
             let totalGrossUSD = 0;
             document.querySelectorAll('#cc-deals-body tr').forEach(row => {
@@ -999,12 +992,11 @@
                 let crPr = parseFloat(row.querySelector('.cc-cr-pr').value) || 0;
                 let crFx = FX[row.querySelector('.cc-cr-cur').value];
                 
-                let profUSD = (clPr / clFx) - (crPr / crFx);
-                let modProfUSD = profUSD * mod; // 🌟 應用加乘 Modifier
+                let profUSD = ((clPr / clFx) - (crPr / crFx)) * mod;
                 
-                row.querySelector('.cc-row-prof').innerText = fmtUSD(modProfUSD);
-                row.querySelector('.cc-row-prof').className = modProfUSD > 0 ? "p-2 text-right font-bold text-emerald-600 cc-row-prof text-xs leading-tight py-2" : "p-2 text-right font-bold text-slate-400 cc-row-prof text-xs leading-tight py-2";
-                totalGrossUSD += modProfUSD;
+                row.querySelector('.cc-row-prof').innerText = fmtUSD(profUSD);
+                row.querySelector('.cc-row-prof').className = profUSD > 0 ? "p-2 text-right font-bold text-emerald-600 cc-row-prof text-xs leading-tight py-2" : "p-2 text-right font-bold text-slate-400 cc-row-prof text-xs leading-tight py-2";
+                totalGrossUSD += profUSD;
             });
 
             document.getElementById('cc-out-gross').innerText = fmtUSD(totalGrossUSD);
@@ -1025,64 +1017,44 @@
             
             let finalTWD = totBonusUSD * FX.TWD;
             document.getElementById('cc-out-bonus-twd').innerText = fmtTWD(finalTWD);
-            
-            let baseTWD = parseFloat(document.getElementById('cc-base-salary').value) || 0;
-            document.getElementById('cc-out-third-month').innerText = fmtTWD(baseTWD + finalTWD);
 
             globalCCTotalBonusUSD = totBonusUSD; 
             if(['ce', 'dir'].includes(currentUserRole)) calculateCEBonus(); 
         }
 
-        // --- API SAVING FOR CC & CE ---
-        function saveCCDealsToDB() {
-            let rowCount = document.querySelectorAll('#cc-deals-body tr').length;
-            if(rowCount === 0) return alert("No deals to save.");
+        function archiveToDatabase(type) {
+            let rowCount = type === 'CC' ? document.querySelectorAll('#cc-deals-body tr').length : document.querySelectorAll('#ce-deals-body tr').length;
+            if(rowCount === 0) return alert("No items to archive.");
+            
+            let bonusStr = type === 'CC' ? document.getElementById('cc-out-bonus-usd').innerText : document.getElementById('ce-grand-usd').innerText;
             
             let payload = {
                 sheet: "Deals",
                 data: [
                     new Date().toLocaleDateString(),
                     currentUserName,
-                    "CC",
+                    type,
                     rowCount,
-                    document.getElementById('cc-out-gross').innerText,
-                    document.getElementById('cc-out-bonus-usd').innerText
+                    bonusStr
                 ]
             };
+
+            let btn = document.getElementById('btn-archive-cloud');
+            if(btn) btn.innerText = "☁️ Saving...";
 
             fetch(API_URL, {
                 method: "POST",
                 body: JSON.stringify(payload),
                 mode: "no-cors"
-            }).then(() => alert("Deals successfully pushed to Google Sheet (Deals Tab)."))
-              .catch(() => alert("Saved locally (Offline mode active)."));
+            }).then(() => {
+                alert(type + " data successfully pushed to Google Sheet (Deals Tab).");
+                if(btn) btn.innerText = "☁️ Save & Archive";
+            }).catch(() => {
+                alert("Saved locally (Offline mode active).");
+                if(btn) btn.innerText = "☁️ Save & Archive";
+            });
         }
 
-        function saveCEDealsToDB() {
-            let rowCount = document.querySelectorAll('#ce-deals-body tr').length;
-            if(rowCount === 0) return alert("No campaigns to save.");
-            
-            let payload = {
-                sheet: "Deals",
-                data: [
-                    new Date().toLocaleDateString(),
-                    currentUserName,
-                    "CE",
-                    rowCount,
-                    document.getElementById('ce-out-gross').innerText,
-                    document.getElementById('ce-grand-usd').innerText
-                ]
-            };
-
-            fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify(payload),
-                mode: "no-cors"
-            }).then(() => alert("Campaigns successfully pushed to Google Sheet (Deals Tab)."))
-              .catch(() => alert("Saved locally (Offline mode active)."));
-        }
-
-        // --- 6. CE BONUS CALCULATOR ---
         function refreshCCCalc() { 
             let totalBonusStr = document.getElementById('cc-out-bonus-usd').innerText.replace(/[$,]/g,'');
             let totalBonus = parseFloat(totalBonusStr) || 0;
@@ -1149,6 +1121,7 @@
             document.getElementById('ce-deals-body').appendChild(tr);
         }
 
+        // 🌟 拔除底薪邏輯
         function calculateCEBonus() {
             let totalGrossUSD = 0;
             document.querySelectorAll('#ce-deals-body tr').forEach(row => {
@@ -1172,12 +1145,8 @@
             document.getElementById('ce-grand-usd').innerText = fmtUSD(grandUSD);
             let grandTWD = grandUSD * FX.TWD;
             document.getElementById('ce-grand-twd').innerText = fmtTWD(grandTWD);
-
-            let baseTWD = parseFloat(document.getElementById('ce-base-salary').value) || 0;
-            document.getElementById('ce-out-third-month').innerText = fmtTWD(baseTWD + grandTWD);
         }
 
-        // --- 7. CSV EXPORT & YEARLY ARCHIVE ---
         function exportToCSV() {
             let csv = "Member,Role,Emails Sent,Closed Deals,Total Deals\n";
             document.querySelectorAll('#cm-team-perf-body tr').forEach(row => {
@@ -1210,23 +1179,11 @@
                 let d = new Date(); let year = d.getFullYear();
                 let bData = [myQStats[1].bonusUSD, myQStats[2].bonusUSD, myQStats[3].bonusUSD, myQStats[4].bonusUSD];
                 
-                // Push to Google Sheet
-                let payload = {
-                    sheet: "Archives",
-                    data: [ year, currentUserName, currentUserRole, myQStats[1].bonusUSD + myQStats[2].bonusUSD + myQStats[3].bonusUSD + myQStats[4].bonusUSD ]
-                };
+                let payload = { sheet: "Archives", data: [ year, currentUserName, currentUserRole, myQStats[1].bonusUSD + myQStats[2].bonusUSD + myQStats[3].bonusUSD + myQStats[4].bonusUSD ] };
                 fetch(API_URL, { method: "POST", body: JSON.stringify(payload), mode: "no-cors" });
 
                 let archiveId = 'arch-' + Date.now();
-                let accHTML = `
-                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-4">
-                    <button onclick="toggleAccordion('${archiveId}')" class="w-full p-5 text-left font-bold text-slate-800 flex justify-between bg-slate-50">
-                        <span>Year: ${year} Performance Report</span><span class="accordion-icon">▼</span>
-                    </button>
-                    <div id="${archiveId}" class="accordion-content border-t border-slate-100 p-5">
-                        <div class="max-w-2xl mx-auto relative h-64 w-full"><canvas id="chart-${archiveId}"></canvas></div>
-                    </div>
-                </div>`;
+                let accHTML = `<div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-4"><button onclick="toggleAccordion('${archiveId}')" class="w-full p-5 text-left font-bold text-slate-800 flex justify-between bg-slate-50"><span>Year: ${year} Performance Report</span><span class="accordion-icon">▼</span></button><div id="${archiveId}" class="accordion-content border-t border-slate-100 p-5"><div class="max-w-2xl mx-auto relative h-64 w-full"><canvas id="chart-${archiveId}"></canvas></div></div></div>`;
                 document.getElementById('my-archives-container').insertAdjacentHTML('beforeend', accHTML);
                 
                 setTimeout(() => {
@@ -1235,28 +1192,19 @@
                 }, 100);
 
                 globalYearlyArchives.push({ year: year.toString(), user: currentUserName, data: [...bData] });
-                
                 for(let i=1; i<=4; i++) { myQStats[i] = {deals:0, marginUSD:0, bonusUSD:0}; }
                 currentQuarter = 1;
                 renderMyLogs(); renderMyYearlyChart(); renderHomeChart();
                 
-                document.getElementById('home-stat-deals').innerText = "0";
-                document.getElementById('home-stat-margin').innerText = "$0";
-                document.getElementById('home-stat-bonus').innerText = "$0";
-                document.getElementById('home-current-q').innerText = "Q1";
-
+                document.getElementById('home-stat-deals').innerText = "0"; document.getElementById('home-stat-margin').innerText = "$0"; document.getElementById('home-stat-bonus').innerText = "$0"; document.getElementById('home-current-q').innerText = "Q1";
                 alert('Year archived successfully!');
                 if(['cm','dir','agencyadmin'].includes(currentUserRole)) { renderArchives(); renderCMTeamPerf(); }
             }
         }
 
         function renderCampaignList() {
-            const tbody = document.getElementById('campaign-list-body'); 
-            tbody.innerHTML = '';
-            if(activeCampaigns.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">No active campaigns.</td></tr>';
-                return;
-            }
+            const tbody = document.getElementById('campaign-list-body'); tbody.innerHTML = '';
+            if(activeCampaigns.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">No active campaigns.</td></tr>'; return; }
             activeCampaigns.forEach((c, i) => {
                 let diffText = c.modifier === 1.2 ? 'Hard (1.2x)' : (c.modifier === 0.8 ? 'Easy (0.8x)' : 'Normal (1.0x)');
                 let diffColor = c.modifier === 1.2 ? 'text-red-500' : (c.modifier === 0.8 ? 'text-emerald-500' : 'text-blue-500');
@@ -1265,18 +1213,13 @@
         }
         
         function addCampaign() { 
-            let name = document.getElementById('add-camp-name').value.trim(); 
-            let type = document.getElementById('add-camp-type').value; 
-            let diff = parseFloat(document.getElementById('add-camp-diff').value); 
+            let name = document.getElementById('add-camp-name').value.trim(); let type = document.getElementById('add-camp-type').value; let diff = parseFloat(document.getElementById('add-camp-diff').value); 
             if(name) { 
                 activeCampaigns.push({id: Date.now(), name, type, modifier: diff}); 
-                
-                // Push to DB
                 let payload = { sheet: "Campaigns", data: [Date.now(), name, type, diff] };
                 fetch(API_URL, { method: "POST", body: JSON.stringify(payload), mode: "no-cors" });
 
-                document.getElementById('add-camp-name').value=''; 
-                renderCampaignList(); 
+                document.getElementById('add-camp-name').value=''; renderCampaignList(); 
                 if(document.getElementById('cc-deals-body').children.length > 0) refreshCCCalc();
                 if(document.getElementById('ce-deals-body').children.length > 0) refreshCECalc();
             }
@@ -1288,15 +1231,11 @@
             const adminTbody = document.getElementById('admin-member-list'); if(adminTbody) adminTbody.innerHTML = '';
             const select = document.getElementById('assess-mem'); if(select) select.innerHTML = '<option value="">-- Select --</option>';
             
-            if(members.length === 0) {
-                if(tbody) tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">No members.</td></tr>';
-                return;
-            }
+            if(members.length === 0) { if(tbody) tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">No members.</td></tr>'; return; }
 
             members.forEach((m, i) => {
                 let row = `<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${m.name}</td><td class="p-4 text-slate-600"><span class="bg-slate-200 px-2 py-1 rounded text-xs font-bold">${m.title}</span></td><td class="p-4 text-slate-500">${m.cm}</td><td class="p-4 text-right"><button onclick="editAdminMember(${i})" class="text-blue-500 font-bold text-xs mr-2">Edit</button><button onclick="deleteAdminMember(${i})" class="text-slate-400 hover:text-red-500 text-xs font-bold transition">Del</button></td></tr>`;
-                if(tbody) tbody.innerHTML += row;
-                if(adminTbody) adminTbody.innerHTML += row;
+                if(tbody) tbody.innerHTML += row; if(adminTbody) adminTbody.innerHTML += row;
                 if(select) select.innerHTML += `<option value="${m.name}">${m.name} (${m.title})</option>`;
             });
         }
@@ -1306,42 +1245,31 @@
             let nI = document.getElementById('admin-mem-name') || document.getElementById('mem-name');
             let tI = document.getElementById('admin-mem-title') || document.getElementById('mem-title');
             let cI = document.getElementById('admin-mem-cm') || document.getElementById('mem-cm');
-            
-            if(nI) nI.value = members[index].name;
-            if(tI) tI.value = members[index].title;
-            if(cI) cI.value = members[index].cm;
+            if(nI) nI.value = members[index].name; if(tI) tI.value = members[index].title; if(cI) cI.value = members[index].cm;
             
             let btn1 = document.getElementById('admin-btn-save'); if(btn1) btn1.innerText = "Update Member";
             let btn2 = document.getElementById('mem-btn-save'); if(btn2) btn2.innerText = "Update Member";
-            let t1 = document.getElementById('mem-action-title'); if(t1) t1.innerText = "✏️ Edit Member";
-            let t2 = document.getElementById('admin-mem-action-title'); if(t2) t2.innerText = "✏️ Edit System Member";
         }
-
         function deleteAdminMember(index) { members.splice(index, 1); renderMembers(); renderCMTeamPerf(); }
 
         function saveMember() { 
-            let name = document.getElementById('mem-name').value.trim(); 
-            let title = document.getElementById('mem-title').value.trim(); 
-            let cm = document.getElementById('mem-cm').value.trim() || 'Unassigned'; 
+            let name = document.getElementById('mem-name').value.trim(); let title = document.getElementById('mem-title').value.trim(); let cm = document.getElementById('mem-cm').value.trim() || 'Unassigned'; 
             if(name && title) { 
-                if(editMemberIndex > -1) { members[editMemberIndex] = {name, title, cm}; editMemberIndex = -1; document.getElementById('mem-btn-save').innerText = "Add Member"; let t1 = document.getElementById('mem-action-title'); if(t1) t1.innerText = "➕ Add New Member"; } 
+                if(editMemberIndex > -1) { members[editMemberIndex] = {name, title, cm}; editMemberIndex = -1; document.getElementById('mem-btn-save').innerText = "Add Member"; } 
                 else { members.push({name, title, cm}); }
                 document.getElementById('mem-name').value=''; document.getElementById('mem-title').value=''; document.getElementById('mem-cm').value=''; renderMembers(); renderCMTeamPerf();
             }
         }
-
         function adminSaveMember() {
-            let name = document.getElementById('admin-mem-name').value.trim(); 
-            let title = document.getElementById('admin-mem-title').value.trim(); 
-            let cm = document.getElementById('admin-mem-cm').value.trim() || 'Unassigned'; 
+            let name = document.getElementById('admin-mem-name').value.trim(); let title = document.getElementById('admin-mem-title').value.trim(); let cm = document.getElementById('admin-mem-cm').value.trim() || 'Unassigned'; 
             if(name && title) { 
-                if(editMemberIndex > -1) { members[editMemberIndex] = {name, title, cm}; editMemberIndex = -1; document.getElementById('admin-btn-save').innerText = "Add to System"; let t2 = document.getElementById('admin-mem-action-title'); if(t2) t2.innerText = "➕ System: Add New Member"; } 
+                if(editMemberIndex > -1) { members[editMemberIndex] = {name, title, cm}; editMemberIndex = -1; document.getElementById('admin-btn-save').innerText = "Add to System"; } 
                 else { members.push({name, title, cm}); }
                 document.getElementById('admin-mem-name').value=''; document.getElementById('admin-mem-title').value=''; document.getElementById('admin-mem-cm').value=''; renderMembers(); renderCMTeamPerf();
             }
         }
 
-        // 🌟 核心：動態 Assessment 下拉選單邏輯
+        // 🌟 修復的 Assessment 職位過濾邏輯
         function updateAssessmentOptions() {
             let memName = document.getElementById('assess-mem').value;
             let typeSelect = document.getElementById('assess-type');
@@ -1352,24 +1280,16 @@
             let mem = members.find(m => m.name === memName);
             let role = mem ? mem.title.toLowerCase() : '';
             
-            let options = [
-                '<option value="Promotion">Promotion</option>',
-                '<option value="Salary Raise">Salary Raise</option>'
-            ];
+            let options = ['<option value="Promotion">Promotion</option>', '<option value="Salary Raise">Salary Raise</option>'];
             
             if (role.includes('cc') || role === 'coordinator') {
-                options.push('<option value="CE Conversion">CE Conversion</option>');
-                options.push('<option value="CM Conversion">CM Conversion</option>');
+                options.push('<option value="CE Conversion">CE Conversion</option>', '<option value="CM Conversion">CM Conversion</option>');
             } else if (role.includes('ce') || role === 'executive') {
                 options.push('<option value="CM Conversion">CM Conversion</option>');
             }
             
             typeSelect.innerHTML = options.join('');
-            
-            if (Array.from(typeSelect.options).some(opt => opt.value === currentType)) {
-                typeSelect.value = currentType;
-            }
-            
+            if (Array.from(typeSelect.options).some(opt => opt.value === currentType)) typeSelect.value = currentType;
             toggleAssessmentChecklist();
         }
 
@@ -1377,284 +1297,86 @@
             let type = document.getElementById('assess-type').value;
             let container = document.getElementById('assess-checklist-container');
             if(type === 'CE Conversion') {
-                container.innerHTML = `
-                <div class="bg-white p-6 rounded-lg border border-slate-200">
-                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-                        <h4 class="font-extrabold text-blue-900 mb-2 flex items-center"><span class="mr-2">🛑</span> Prerequisites (Gatekeeper Requirements)</h4>
-                        <p class="text-xs text-blue-700 mb-3 font-semibold italic border-b border-blue-200/50 pb-2">Both must be checked before proceeding with the examination.</p>
-                        <div class="space-y-3">
-                            <label class="flex items-start space-x-3 cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 text-blue-600 rounded border-blue-300"><span class="text-blue-900 text-xs leading-relaxed"><strong>Tenure:</strong> Has served as a Campaign Coordinator for <strong>more than 1 year</strong>.</span></label>
-                            <label class="flex items-start space-x-3 cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 text-blue-600 rounded border-blue-300"><span class="text-blue-900 text-xs leading-relaxed"><strong>Executive-Level Reporting & CM Endorsement:</strong> Consistently delivers highly structured, objective, and "client-ready" status updates via Trello and internal channels (proactively filtering out creator noise to present clear, actionable decision points for the CE). This must be backed by a formal referral from a CM with proven performance records.</span></label>
-                        </div>
-                    </div>
-                    <p class="text-sm font-bold text-slate-700 mb-2">Evaluation Criteria (Path to CE):</p>
-                    <table class="w-full text-left text-sm text-slate-700 border-t border-slate-200 mt-2">
-                        <thead class="bg-slate-800 text-white"><tr><th class="p-3 w-16 text-center">Tick</th><th class="p-3 w-48">Category</th><th class="p-3">Criteria required for promotion (1 Pt Each)</th></tr></thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Zero-Error Record:</strong> Flawless execution on Trello CRM updates and contract clauses.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Gatekeeping:</strong> Strictly enforces the "Hard Gate" rule (No contract = No product).</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Margin Protection:</strong> Habitually uses the Pricing Calculator to protect Target Margin.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Value Maximization:</strong> Successfully negotiates additional deliverables without increasing budget.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Error Recovery:</strong> Knows exact protocol for margin errors (e.g., quoting creator price).</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Day 5 Foresight:</strong> Proactively flags funnel shortages/budget risks to management early.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Red Flag Detection:</strong> Identifies critical red flags independently (e.g., bots, brand safety).</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Strategy & Risk</td><td class="p-3 text-slate-700"><strong>Timeline Mapping:</strong> Anticipates delays and plans micro-deadlines backward from Go-Live.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>The "Translator":</strong> Translates vague client feedback into clear, stress-free creator directives.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Escalation Tactics:</strong> Uses Consequence-Based Escalation for unresponsive clients.</td></tr>
-                            <tr class="hover:bg-slate-50 bg-slate-50/50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Client Mgmt.</td><td class="p-3 text-slate-700"><strong>Crisis & Offboarding:</strong> Understands 8-Step Pre-Drop SOP and Pivot/Clean Break scripts.</td></tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Leadership</td><td class="p-3 text-slate-700"><strong>The Team Shield:</strong> Acts as a Go-To Authority; absorbs pressure with high EQ.</td></tr>
-                        </tbody>
-                    </table>
-                </div>`;
-            } else if (type === 'CM Conversion') {
-                container.innerHTML = `<div class="bg-slate-50 p-6 rounded-lg border border-slate-200 text-sm text-slate-500 italic text-center">Criteria checklist currently blank for framework development. Please use the feedback area below to document evaluation.</div>`;
-            } else {
-                container.innerHTML = '';
-            }
+                container.innerHTML = `<div class="bg-white p-6 rounded-lg border border-slate-200"><div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4"><h4 class="font-extrabold text-blue-900 mb-2 flex items-center"><span class="mr-2">🛑</span> Prerequisites (Gatekeeper Requirements)</h4><p class="text-xs text-blue-700 mb-3 font-semibold italic border-b border-blue-200/50 pb-2">Both must be checked before proceeding with the examination.</p><div class="space-y-3"><label class="flex items-start space-x-3 cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 text-blue-600 rounded border-blue-300"><span class="text-blue-900 text-xs leading-relaxed"><strong>Tenure:</strong> Has served as a Campaign Coordinator for <strong>more than 1 year</strong>.</span></label><label class="flex items-start space-x-3 cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 text-blue-600 rounded border-blue-300"><span class="text-blue-900 text-xs leading-relaxed"><strong>Executive-Level Reporting & CM Endorsement:</strong> Consistently delivers highly structured, objective, and "client-ready" status updates via Trello and internal channels.</span></label></div></div><p class="text-sm font-bold text-slate-700 mb-2">Evaluation Criteria (Path to CE):</p><table class="w-full text-left text-sm text-slate-700 border-t border-slate-200 mt-2"><thead class="bg-slate-800 text-white"><tr><th class="p-3 w-16 text-center">Tick</th><th class="p-3 w-48">Category</th><th class="p-3">Criteria required for promotion (1 Pt Each)</th></tr></thead><tbody class="divide-y divide-slate-100"><tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Sourcing Logic:</strong> Consistently applies the 3:1 Sourcing Rule without micro-management.</td></tr><tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-slate-800">Execution Mastery</td><td class="p-3 text-slate-700"><strong>Data Accuracy:</strong> Accurately calculates 20-video average views, stripping viral outliers.</td></tr><tr class="hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"></td><td class="p-3 font-bold text-blue-700">Financial Acumen</td><td class="p-3 text-slate-700"><strong>Pricing Anchor:</strong> Always initiates negotiations using Model 1 at Target CPM.</td></tr></tbody></table></div>`;
+            } else { container.innerHTML = ''; }
         }
 
         function submitAssessmentToDir() {
-            let member = document.getElementById('assess-mem').value; 
-            let type = document.getElementById('assess-type').value; 
-            let cmStatus = document.getElementById('assess-status').value; 
-            let cmFb = document.getElementById('assess-fb').value.trim();
-            
+            let member = document.getElementById('assess-mem').value; let type = document.getElementById('assess-type').value; let cmStatus = document.getElementById('assess-status').value; let cmFb = document.getElementById('assess-fb').value.trim();
             if(!member || !cmFb) return alert("Please select a member and provide feedback.");
-
-            let criteriaHtml = '';
-            if(type === 'CE Conversion') {
-                let trs = document.querySelectorAll('#assess-checklist-container tbody tr');
-                if(trs.length > 0) {
-                    criteriaHtml = '<div class="mt-3 pt-3 border-t border-slate-200"><strong class="text-xs text-slate-500 uppercase tracking-widest block mb-2">Checklist Evaluation Results:</strong><ul class="list-disc pl-5 text-xs text-slate-600 space-y-1">';
-                    trs.forEach(tr => {
-                        let isChecked = tr.querySelector('input[type="checkbox"]').checked;
-                        let text = tr.querySelector('td:nth-child(3)').innerText;
-                        criteriaHtml += `<li>${isChecked ? '✅' : '❌'} ${text}</li>`;
-                    });
-                    criteriaHtml += '</ul></div>';
-                }
-            }
-
             let ds = new Date().toLocaleDateString();
-            pendingAssessments.push({ id: Date.now(), date: ds, member, type, cmStatus, cmFb, cmName: currentUserName, criteriaHtml });
-            
-            // Push to DB
+            pendingAssessments.push({ id: Date.now(), date: ds, member, type, cmStatus, cmFb, cmName: currentUserName, criteriaHtml: '' });
             let payload = { sheet: "Assessments", data: [ds, currentUserName, member, type, cmStatus, cmFb] };
             fetch(API_URL, { method: "POST", body: JSON.stringify(payload), mode: "no-cors" });
-
-            document.getElementById('assess-fb').value = '';
-            document.getElementById('assess-mem').selectedIndex = 0;
-            document.getElementById('assess-type').selectedIndex = 0;
-            document.getElementById('assess-status').value = 'To be decided';
-            toggleAssessmentChecklist();
-            
             alert('Assessment successfully forwarded to Director for final approval!'); 
         }
 
         function renderDirQueue() {
-            const list = document.getElementById('dir-pending-list'); 
-            list.innerHTML = '';
+            const list = document.getElementById('dir-pending-list'); list.innerHTML = '';
             if(pendingAssessments.length === 0) { list.innerHTML = '<p class="text-slate-500 italic bg-white p-4 rounded-xl border border-slate-200">No pending assessments.</p>'; }
-            
             pendingAssessments.forEach((p, i) => {
-                list.innerHTML += `
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-yellow-500 mb-4">
-                    <div class="flex justify-between items-center mb-4"><h4 class="font-bold text-lg text-slate-800">${p.type} Request <span class="text-slate-500 text-sm font-normal">(${p.member})</span></h4><span class="text-xs text-slate-500 border border-slate-200 px-2 py-1 rounded bg-slate-50">${p.date}</span></div>
-                    <div class="bg-slate-50 p-4 rounded-lg mb-4 text-sm border border-slate-100 shadow-inner">
-                        <p class="mb-1"><strong class="text-slate-500">CM Recommendation:</strong> <span class="font-bold text-slate-700">${p.cmStatus}</span></p>
-                        <p><strong class="text-slate-500 block mb-1">CM Feedback:</strong> ${p.cmFb}</p>
-                        ${p.criteriaHtml || ''}
-                    </div>
-                    <div class="space-y-3 border-t border-slate-100 pt-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Director Decision</label>
-                            <select id="dir-status-${p.id}" class="w-full p-2 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 font-bold text-slate-700">
-                                <option value="Approved">✅ Approved</option>
-                                <option value="To be decided" selected>⏳ To be decided</option>
-                                <option value="Rejected">❌ Rejected</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Director Final Comment</label>
-                            <textarea id="dir-fb-${p.id}" class="w-full p-3 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 text-sm text-slate-700" rows="3" placeholder="Final remarks for the record..."></textarea>
-                        </div>
-                        <div class="flex justify-end pt-2">
-                            <button onclick="finalizeAssessment(${p.id})" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-2 rounded-lg transition shadow-md">Finalize & Archive</button>
-                        </div>
-                    </div>
-                </div>`;
+                list.innerHTML += `<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-yellow-500 mb-4"><div class="flex justify-between items-center mb-4"><h4 class="font-bold text-lg text-slate-800">${p.type} Request <span class="text-slate-500 text-sm font-normal">(${p.member})</span></h4><span class="text-xs text-slate-500 border border-slate-200 px-2 py-1 rounded bg-slate-50">${p.date}</span></div><div class="bg-slate-50 p-4 rounded-lg mb-4 text-sm border border-slate-100 shadow-inner"><p class="mb-1"><strong class="text-slate-500">CM Recommendation:</strong> <span class="font-bold text-slate-700">${p.cmStatus}</span></p><p><strong class="text-slate-500 block mb-1">CM Feedback:</strong> ${p.cmFb}</p>${p.criteriaHtml || ''}</div><div class="space-y-3 border-t border-slate-100 pt-4"><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Director Decision</label><select id="dir-status-${p.id}" class="w-full p-2 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 font-bold text-slate-700"><option value="Approved">✅ Approved</option><option value="To be decided" selected>⏳ To be decided</option><option value="Rejected">❌ Rejected</option></select></div><div><label class="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest">Director Final Comment</label><textarea id="dir-fb-${p.id}" class="w-full p-3 border border-slate-300 rounded outline-none focus:ring-2 focus:ring-purple-500 text-sm text-slate-700" rows="3" placeholder="Final remarks for the record..."></textarea></div><div class="flex justify-end pt-2"><button onclick="finalizeAssessment(${p.id})" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-2 rounded-lg transition shadow-md">Finalize & Archive</button></div></div></div>`;
             });
         }
 
         function finalizeAssessment(id) {
-            let index = pendingAssessments.findIndex(p => p.id === id);
-            if(index === -1) return;
-            
-            let p = pendingAssessments[index];
-            let dirStatus = document.getElementById(`dir-status-${p.id}`).value;
-            let dirFb = document.getElementById(`dir-fb-${p.id}`).value.trim();
+            let index = pendingAssessments.findIndex(p => p.id === id); if(index === -1) return;
+            let p = pendingAssessments[index]; let dirStatus = document.getElementById(`dir-status-${p.id}`).value; let dirFb = document.getElementById(`dir-fb-${p.id}`).value.trim();
             if(!dirFb) return alert("Please provide a final comment.");
-
             let fullFb = `[CM ${p.cmName} Rec: ${p.cmStatus}] ${p.cmFb} | [DIR Note]: ${dirFb}`;
-            
-            allAssessments.push({
-                id: p.id,
-                date: new Date().toLocaleDateString(),
-                member: p.member,
-                type: p.type,
-                status: dirStatus,
-                fb: fullFb,
-                cmFb: p.cmFb,
-                dirFb: dirFb,
-                criteriaHtml: p.criteriaHtml
-            });
-
-            pendingAssessments.splice(index, 1);
-            alert("Assessment finalized and archived.");
-            renderDirQueue();
-            renderArchives();
-        }
-
-        function archiveAdminYearly() {
-            if(confirm("Archive global agency data for this year?")) {
-                alert("Agency data archived successfully.");
-                renderArchives();
-            }
+            allAssessments.push({ id: p.id, date: new Date().toLocaleDateString(), member: p.member, type: p.type, status: dirStatus, fb: fullFb, cmFb: p.cmFb, dirFb: dirFb, criteriaHtml: p.criteriaHtml });
+            pendingAssessments.splice(index, 1); alert("Assessment finalized and archived."); renderDirQueue(); renderArchives();
         }
 
         function renderArchives() {
-            const container = document.getElementById('admin-archive-container') || document.getElementById('cm-archive-container');
-            if(!container) return;
+            const container = document.getElementById('admin-archive-container') || document.getElementById('cm-archive-container'); if(!container) return;
             container.innerHTML = '<h3 class="font-bold text-slate-800">🗄️ Yearly Archives</h3>';
-            
-            if(globalYearlyArchives.length === 0) {
-                container.innerHTML += '<p class="text-slate-500 italic">No archives found.</p>';
-            }
-
+            if(globalYearlyArchives.length === 0) container.innerHTML += '<p class="text-slate-500 italic">No archives found.</p>';
             globalYearlyArchives.forEach((a, index) => { 
                 let archId = 'global-arch-' + index;
-                let accHTML = `
-                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-4">
-                    <button onclick="toggleAccordion('${archId}')" class="w-full p-5 text-left font-bold text-slate-800 flex justify-between bg-slate-50">
-                        <span>Year: ${a.year} - User: ${a.user.toUpperCase()}</span><span class="accordion-icon text-slate-400">▼</span>
-                    </button>
-                    <div id="${archId}" class="accordion-content border-t border-slate-100 p-5">
-                        <div class="max-w-2xl mx-auto relative h-64 w-full"><canvas id="chart-${archId}"></canvas></div>
-                    </div>
-                </div>`;
+                let accHTML = `<div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-4"><button onclick="toggleAccordion('${archId}')" class="w-full p-5 text-left font-bold text-slate-800 flex justify-between bg-slate-50"><span>Year: ${a.year} - User: ${a.user.toUpperCase()}</span><span class="accordion-icon text-slate-400">▼</span></button><div id="${archId}" class="accordion-content border-t border-slate-100 p-5"><div class="max-w-2xl mx-auto relative h-64 w-full"><canvas id="chart-${archId}"></canvas></div></div></div>`;
                 container.insertAdjacentHTML('beforeend', accHTML);
-                
-                setTimeout(() => {
-                    let ctx = document.getElementById('chart-' + archId);
-                    if(ctx) {
-                        new Chart(ctx, { type: 'bar', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{label:'Total Earned USD', data: a.data, backgroundColor: 'rgba(59, 130, 246, 0.5)'}] }, options: {responsive: true, maintainAspectRatio: false}});
-                    }
-                }, 100);
-            });
-
-            const ab = document.getElementById('archive-assess-body'); if(!ab) return;
-            ab.innerHTML='';
-            if(allAssessments.length === 0) ab.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">No assessments yet.</td></tr>';
-            allAssessments.forEach(a => { 
-                let statusColor = a.status === 'Approved' ? 'text-emerald-500 bg-emerald-50' : (a.status === 'Rejected' ? 'text-red-500 bg-red-50' : 'text-slate-500 bg-slate-100'); 
-                ab.innerHTML += `<tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-600">${a.date}</td><td class="p-3 font-bold text-slate-800">${a.member}</td><td class="p-3 text-slate-700">${a.type}</td><td class="p-3"><span class="px-2 py-1 rounded text-xs font-bold border border-slate-200 ${statusColor}">${a.status}</span></td><td class="p-3 text-xs text-slate-500">${a.fb}</td></tr>`; 
+                setTimeout(() => { let ctx = document.getElementById('chart-' + archId); if(ctx) new Chart(ctx, { type: 'bar', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{label:'Total Earned USD', data: a.data, backgroundColor: 'rgba(59, 130, 246, 0.5)'}] }, options: {responsive: true, maintainAspectRatio: false}}); }, 100);
             });
         }
 
         function renderMyAssessments() {
             const list = document.getElementById('my-assessment-list'); list.innerHTML='';
-            
             allAssessments.forEach(a => {
                 let cl = a.status==='Approved' ? 'border-emerald-500 bg-emerald-50' : (a.status==='Rejected' ? 'border-red-500 bg-red-50' : 'border-slate-300 bg-slate-50');
                 let tc = a.status==='Approved' ? 'text-emerald-600' : (a.status==='Rejected' ? 'text-red-600' : 'text-slate-600');
                 let icon = a.status==='Approved' ? '✅' : (a.status==='Rejected' ? '❌' : '⏳');
-                
-                let cmFeedbackHtml = a.cmFb ? `<div class="bg-white p-3 rounded-lg border border-slate-200 shadow-inner"><strong class="block text-xs text-slate-400 uppercase tracking-widest mb-1">CM Feedback:</strong>${a.cmFb} ${a.criteriaHtml || ''}</div>` : '';
-                let dirFeedbackHtml = a.dirFb ? `<div class="bg-purple-50 p-3 rounded-lg border border-purple-200 shadow-inner"><strong class="block text-xs text-purple-500 uppercase tracking-widest mb-1">Director Note:</strong>${a.dirFb}</div>` : `<div class="bg-white p-3 rounded-lg border border-slate-200 shadow-inner"><strong class="block text-xs text-slate-400 uppercase tracking-widest mb-1">Feedback:</strong>${a.fb}</div>`;
-
-                list.innerHTML += `
-                    <div class="p-6 rounded-2xl border-l-4 ${cl} shadow-sm mb-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-slate-800 text-lg">${a.type} Request <span class="text-slate-500 font-normal text-sm ml-2">(${a.member})</span></h3>
-                            <span class="text-xs font-bold text-slate-500 bg-white px-2 py-1 rounded border shadow-sm">${a.date}</span>
-                        </div>
-                        <p class="text-sm font-bold ${tc} mb-4 flex items-center">
-                            <span class="mr-2">${icon}</span> Final Status: ${a.status}
-                        </p>
-                        <div class="text-sm text-slate-700 space-y-3">
-                            ${cmFeedbackHtml}
-                            ${dirFeedbackHtml}
-                        </div>
-                    </div>`;
+                list.innerHTML += `<div class="p-6 rounded-2xl border-l-4 ${cl} shadow-sm mb-4"><div class="flex justify-between items-start mb-2"><h3 class="font-bold text-slate-800 text-lg">${a.type} Request <span class="text-slate-500 font-normal text-sm ml-2">(${a.member})</span></h3><span class="text-xs font-bold text-slate-500 bg-white px-2 py-1 rounded border shadow-sm">${a.date}</span></div><p class="text-sm font-bold ${tc} mb-4 flex items-center"><span class="mr-2">${icon}</span> Final Status: ${a.status}</p></div>`;
             });
             if(list.innerHTML==='') list.innerHTML = '<div class="bg-white p-8 rounded-xl border border-slate-200 text-center text-slate-500 italic">No formal assessments found. Keep up the good work!</div>';
         }
 
         function submitQuiz() { document.getElementById('quiz-form').classList.add('hidden'); document.getElementById('quiz-success').classList.remove('hidden'); }
-
         function updateCC() { const cb = document.querySelectorAll('.cc-check'); let cnt = 0; cb.forEach(c => { const s = c.nextElementSibling; if(c.checked) { s.classList.add('line-through','text-slate-400'); cnt++; } else s.classList.remove('line-through','text-slate-400'); }); document.getElementById('cc-progress-text').innerText = Math.round((cnt/cb.length)*100)+'%'; document.getElementById('cc-progress-bar').style.width = Math.round((cnt/cb.length)*100)+'%'; }
         function resetCCChecklist() { if(confirm("Reset the CC Master Checklist?")) { document.querySelectorAll('.cc-check').forEach(c => c.checked=false); updateCC(); } }
-
         function updateCE() { const cb = document.querySelectorAll('.ce-check'); let cnt = 0; cb.forEach(c => { const s = c.nextElementSibling; if(c.checked) { s.classList.add('line-through','text-slate-400'); cnt++; } else s.classList.remove('line-through','text-slate-400'); }); document.getElementById('ce-progress-text').innerText = Math.round((cnt/cb.length)*100)+'%'; document.getElementById('ce-progress-bar').style.width = Math.round((cnt/cb.length)*100)+'%'; }
         function resetCEChecklist() { if(confirm("Reset the CE Master Checklist?")) { document.querySelectorAll('.ce-check').forEach(c => c.checked=false); updateCE(); } }
-
         function toggleAccordion(id) { document.getElementById(id).classList.toggle('accordion-active'); }
         function copyContent(id) { navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>alert('Copied!')); }
         function copyCode() { navigator.clipboard.writeText(document.getElementById('uidCode').innerText).then(()=>{ let b=document.getElementById('copyBtn'); b.innerText='Copied!';b.classList.replace('bg-slate-700','bg-green-600'); setTimeout(()=>{b.innerText='Copy JS';b.classList.replace('bg-green-600','bg-slate-700');},2000)}); }
 
-        const searchIndex = [
-            { title: "How to define a 'contactable' creator?", keywords: "contactable size views past works follower median", tab: "cc", subtab: "faq", elementId: "faq-cc-1" },
-            { title: "How do I price a channel?", keywords: "price channel cpm calculate", tab: "cc", subtab: "faq", elementId: "faq-cc-2" },
-            { title: "Creator's rate higher than expected CPM?", keywords: "rate higher expensive margin negotiation", tab: "cc", subtab: "faq", elementId: "faq-cc-3" },
-            { title: "Contacting same creator (Dupe checker failure)?", keywords: "dupe checker same creator ownership", tab: "cc", subtab: "faq", elementId: "faq-cc-4" },
-            { title: "Issues after video published (Wrong links)?", keywords: "published issues links unlisted makeup", tab: "cc", subtab: "faq", elementId: "faq-cc-5" },
-            { title: "6-Week Master Workflow", keywords: "6-week master workflow timeline schedule phases", tab: "cc", subtab: "workflow", elementId: "cc-sub-workflow" },
-            { title: "CC Deal Execution SOP", keywords: "deal execution sop checklist trello draft launch script", tab: "cc", subtab: "checklist", elementId: "cc-sub-checklist" },
-            { title: "CC-CE Conversion Examination (Promotion)", keywords: "promotion exam transition prerequisites trial requirements", tab: "cc", subtab: "promotion", elementId: "promotion-prereq" },
-            { title: "The Trial Campaign Protocol", keywords: "trial round debriefing acting shadow manager", tab: "cc", subtab: "promotion", elementId: "trial-protocol" },
-            
-            { title: "CE Master Checklist", keywords: "ce master checklist strategy brief selection product contracting", tab: "ce", subtab: "checklist", elementId: "ce-sub-checklist" },
-            { title: "Day 5 Health Check", keywords: "day 5 health check ratio big fish budget intervention", tab: "ce", subtab: "checklist", elementId: "ce-day5-check" },
-            { title: "Pricing Strategy (Models 1, 2, 3)", keywords: "pricing strategy flat fee view guarantee dynamic scaler vg", tab: "ce", subtab: "pricing", elementId: "ce-sub-pricing" },
-            { title: "8-Step Pre-Drop SOP (Offboarding)", keywords: "offboarding drop client 8-step pre-drop terminate", tab: "ce", subtab: "crisis", elementId: "acc1" },
-            { title: "Email Scripts: Client Offboarding", keywords: "email scripts templates pivot clean break market reality offboarding", tab: "ce", subtab: "crisis", elementId: "acc2" },
-            { title: "Crisis Triggers", keywords: "crisis triggers ghosting reject over budget cm escalation", tab: "ce", subtab: "crisis", elementId: "ce-crisis-triggers" },
-            
-            { title: "The 3-5-5+ Escalation Rule", keywords: "delay escalation timeline 3 5 week late delay nudge warning", tab: "ce", subtab: "delay", elementId: "rule-355" },
-            { title: "Client Ghosting: Creator List Review", keywords: "shortlist approval delay assume close warning", tab: "ce", subtab: "delay", elementId: "delay-stage-1" },
-            { title: "Client Ghosting: Script & Concept Review", keywords: "script review delay timeline push back go live", tab: "ce", subtab: "delay", elementId: "delay-stage-2" },
-            { title: "Client Ghosting: Video Draft Review Delay", keywords: "video draft review delay auto approval liability cm escalation", tab: "ce", subtab: "delay", elementId: "delay-stage-3" },
-            
-            { title: "Pricing Calculator Engine", keywords: "pricing calculator engine calculate margin profit cpm fx currency counteroffer", tab: "calculator", subtab: null, elementId: "view-calculator" },
-            { title: "CC Bonus Calculator", keywords: "bonus cc calculator pay tier profit salary refresh", tab: "bonus-cc", subtab: null, elementId: "view-bonus-cc" },
-            { title: "CE Bonus Calculator", keywords: "bonus ce calculator pay tier revenue usd refresh", tab: "bonus-ce", subtab: null, elementId: "view-bonus-ce" }
-        ];
+        const searchIndex = [ { title: "Pricing Calculator Engine", keywords: "pricing calculator", tab: "calculator", subtab: null, elementId: "view-calculator" } ];
 
         function performSearch() {
             const query = document.getElementById('global-search').value.toLowerCase().trim();
             const sd = document.getElementById('search-dropdown'); const cb = document.getElementById('clear-search');
-            
             if (query === "") { sd.classList.add('hidden'); cb.classList.add('hidden'); return; }
             cb.classList.remove('hidden'); sd.classList.remove('hidden'); sd.innerHTML = ''; 
-            
             const results = searchIndex.filter(item => item.title.toLowerCase().includes(query) || item.keywords.toLowerCase().includes(query));
-            
             if (results.length === 0) { sd.innerHTML = `<div class="p-4 text-sm text-slate-500 text-center italic">No results found for "${query}"</div>`; return; }
-            
             results.forEach(result => {
                 const el = document.createElement('div'); el.className = "p-3 hover:bg-slate-500/20 cursor-pointer transition";
-                let portalName = result.tab === 'cc' ? 'CC Portal' : (result.tab === 'ce' ? 'CE Portal' : 'Tools & Apps');
-                let subName = result.subtab ? ` > ${result.subtab.toUpperCase()}` : '';
-                let badgeColor = result.tab === 'cc' ? 'text-blue-500' : 'text-indigo-500';
-                el.innerHTML = `<div class="text-[10px] font-black ${badgeColor} mb-1 tracking-widest uppercase">${portalName}${subName}</div><div class="text-sm font-bold text-slate-800">${result.title}</div>`;
-                el.onclick = () => goToSearchResult(result.tab, result.subtab, result.elementId);
+                el.innerHTML = `<div class="text-sm font-bold text-slate-800">${result.title}</div>`;
+                el.onclick = () => { document.getElementById('search-dropdown').classList.add('hidden'); switchTab(result.tab); };
                 sd.appendChild(el);
             });
         }
-        function clearSearch() { document.getElementById('global-search').value = ''; document.getElementById('search-dropdown').classList.add('hidden'); document.getElementById('clear-search').classList.add('hidden'); document.getElementById('global-search').focus(); }
+        function clearSearch() { document.getElementById('global-search').value = ''; document.getElementById('search-dropdown').classList.add('hidden'); document.getElementById('clear-search').classList.add('hidden'); }
         function hideSearchIfClickedOutside(e) { if (!document.getElementById('search-container').contains(e.target)) document.getElementById('search-dropdown').classList.add('hidden'); }
         function goToSearchResult(tabId, subtabId, elementId) {
             document.getElementById('search-dropdown').classList.add('hidden'); 
