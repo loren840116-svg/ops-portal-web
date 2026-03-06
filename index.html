@@ -135,8 +135,8 @@
                 <span data-roles="agencyadmin" class="block text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-1 ml-2 hidden">System Admin</span>
                 <button data-roles="agencyadmin" onclick="switchTab('admin-dashboard')" id="nav-admin-dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold text-red-300 border border-red-900/30 bg-red-900/10"><i class="fas fa-gear w-5 text-center"></i><span>Admin Dashboard</span></button>
                 
-                <span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-4 mb-1 ml-2 hidden">Knowledge Base</span>
-                <button data-roles="cc,ce,agencyadmin" onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-house w-5 text-center"></i><span>Home</span></button>
+               <span data-roles="cc,ce,cm,dir,agencyadmin" class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-4 mb-1 ml-2 hidden">Knowledge Base</span>
+                <button data-roles="cc,ce" onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-house w-5 text-center"></i><span>CC/CE Home</span></button>
                 <button data-roles="cc,cm,dir" onclick="switchTab('cc')" id="nav-cc" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-bullseye w-5 text-center"></i><span>CC Portal</span></button>
                 <button data-roles="ce,cm,dir" onclick="switchTab('ce')" id="nav-ce" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition hidden font-bold"><i class="fas fa-shield-alt w-5 text-center"></i><span>CE Portal</span></button>
                 
@@ -580,7 +580,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyoOqH2XqAytf91NEaNJZePbl3It3gbC4R-dmwUHAca2xcBIls7Es8IlgEaMasaAQtR/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbyiXz3dfg00PFRtMxuy9Q4pCzT9cA3rEnvuOVI6YQAyAzEZGRly0ENbvbftXfRKELdeqw/exec"; 
         
         let currentUserRole = null; 
         let currentUserName = '';
@@ -709,14 +709,13 @@
             let roleDisplay = currentUser.Role;
             document.getElementById('current-user-display').innerText = `${currentUserName} | ${roleDisplay}`;
             
-            // Route Access dynamically based on attributes
+            // 動態顯示側邊欄按鈕
             document.querySelectorAll('.nav-btn, span[data-roles]').forEach(el => {
                 const roles = el.getAttribute('data-roles');
                 if (roles && roles.split(',').includes(currentUserRole)) el.classList.remove('hidden');
                 else el.classList.add('hidden');
             });
 
-            // Assessment Dual View Logic
             if(currentUserRole === 'cm') {
                 document.getElementById('cm-assessment-form-container').classList.remove('hidden');
                 document.getElementById('dir-assessment-queue-container').classList.add('hidden');
@@ -726,18 +725,18 @@
                 renderDirQueue();
             }
 
-            // 初始化資料與圖表
             if(['cm','dir','agencyadmin'].includes(currentUserRole)) { 
                 renderCampaignList(); renderMembers(); renderArchives(); renderCMTeamPerf();
                 setTimeout(() => { renderGlobalCharts(); }, 500);
             }
+            
             if(['cc','ce'].includes(currentUserRole)) { 
                 renderMyLogs(); renderMyAssessments(); 
                 document.getElementById('home-personal-stats').classList.remove('hidden');
                 setTimeout(() => { renderHomeChart(); }, 500);
             }
 
-            // 🎯 核心修復：CM 登入後直接跳轉 Team Dashboard
+            // 🎯 核心修復：根據身分強制跳轉預設首頁
             if (['cm', 'dir', 'agencyadmin'].includes(currentUserRole)) {
                 switchTab('cmdashboard');
             } else {
